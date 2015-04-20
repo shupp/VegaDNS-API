@@ -1,6 +1,7 @@
 from peewee import *
 from vegadns.api.models import database, BaseModel
 
+
 class Domain(BaseModel):
     domain = CharField()
     domain_id = IntegerField(primary_key=True)
