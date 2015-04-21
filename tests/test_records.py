@@ -4,6 +4,7 @@ import unittest
 from mock import MagicMock
 
 import vegadns.api.endpoints.records
+import vegadns.api.models.record
 from vegadns.api import app
 
 
@@ -24,22 +25,27 @@ class TestRecords(unittest.TestCase):
             "val": "1.2.3.4",
             "weight": None
         }
-        mock_model_one = MagicMock()
-        mock_model_one.to_dict = MagicMock(return_value=mock_record_one)
+        mock_model_one = vegadns.api.models.record.Record()
+        mock_model_one.get_parent_to_dict = MagicMock(
+            return_value=mock_record_one
+        )
 
         mock_record_two = {
             "distance": 0,
             "domain_id": 1,
-            "host": "1.c.vegadns.ubuntu",
+            "host": "hostmaster.test3.com:ns1.vegadns.ubuntu",
             "port": None,
             "record_id": 9,
-            "ttl": 3600,
-            "type": "A",
-            "val": "1.2.3.4",
+            "ttl": 86400,
+            "type": "S",
+            "val": "16384:2048:1048576:2560",
             "weight": None
         }
-        mock_model_two = MagicMock()
-        mock_model_two.to_dict = MagicMock(return_value=mock_record_two)
+
+        mock_model_two = vegadns.api.models.record.Record()
+        mock_model_two.get_parent_to_dict = MagicMock(
+            return_value=mock_record_two
+        )
 
         vegadns.api.endpoints.records.Records.get_record_list = MagicMock(
             return_value=[mock_model_one, mock_model_two]
@@ -51,4 +57,6 @@ class TestRecords(unittest.TestCase):
         decoded = json.loads(response.data)
         self.assertEqual(decoded['status'], "ok")
         self.assertEqual(decoded['records'][0]['record_id'], 8)
+        self.assertEqual(decoded['records'][0]['type'], 'A')
         self.assertEqual(decoded['records'][1]['record_id'], 9)
+        self.assertEqual(decoded['records'][1]['type'], 'SOA')

@@ -4,6 +4,7 @@ import json
 from mock import MagicMock
 
 import vegadns.api.endpoints.record
+import vegadns.api.models.record
 from vegadns.api import app
 
 
@@ -13,7 +14,7 @@ class TestRecord(unittest.TestCase):
         self.test_app = app.test_client()
 
     def test_get_success(self):
-        # mock get_record and to_dict
+        # mock get_record and get_parent_to_dict
         mock_value = {
             "distance": 0,
             "domain_id": 2,
@@ -26,8 +27,8 @@ class TestRecord(unittest.TestCase):
             "weight": None
         }
 
-        mock_model = MagicMock()
-        mock_model.to_dict = MagicMock(return_value=mock_value)
+        mock_model = vegadns.api.models.record.Record()
+        mock_model.get_parent_to_dict = MagicMock(return_value=mock_value)
         vegadns.api.endpoints.record.Record.get_record = MagicMock(
             return_value=mock_model
         )
@@ -37,3 +38,5 @@ class TestRecord(unittest.TestCase):
         decoded = json.loads(response.data)
         self.assertEqual(decoded['status'], "ok")
         self.assertEqual(decoded['record']['record_id'], 10)
+        # test to_dict() override
+        self.assertEqual(decoded['record']['type'], 'SOA')
