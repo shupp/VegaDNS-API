@@ -1,49 +1,49 @@
 import unittest
 
-from vegadns.validate.records import Validate
+from vegadns.validate import Validate
 
 
 class TestValidate(unittest.TestCase):
+    def setUp(self):
+        self.validate = Validate()
+
     def test_ipv4_valid(self):
-        self.assertTrue(Validate.ipv4('127.0.0.1'))
-        self.assertTrue(Validate.ipv4('255.255.255.0'))
-        self.assertTrue(Validate.ipv4('1.2.3.4'))
+        self.assertTrue(self.validate.ipv4('127.0.0.1'))
+        self.assertTrue(self.validate.ipv4('255.255.255.0'))
+        self.assertTrue(self.validate.ipv4('1.2.3.4'))
 
     def test_ipv4_invalid(self):
-        self.assertFalse(Validate.ipv4('4'))
-        self.assertFalse(Validate.ipv4('4.2.3'))
-        self.assertFalse(Validate.ipv4('294.1.2.0'))
-        self.assertFalse(Validate.ipv4('255.255.255.256'))
-        self.assertFalse(Validate.ipv4('fe80::1610:9fff:fee3:74a9%en0'))
-        self.assertFalse(Validate.ipv4('i like turtles'))
+        self.assertFalse(self.validate.ipv4('4'))
+        self.assertFalse(self.validate.ipv4('4.2.3'))
+        self.assertFalse(self.validate.ipv4('294.1.2.0'))
+        self.assertFalse(self.validate.ipv4('255.255.255.256'))
+        self.assertFalse(self.validate.ipv4('fe80::1610:9fff:fee3:74a9%en0'))
+        self.assertFalse(self.validate.ipv4('i like turtles'))
 
     def test_ipv6_valid(self):
         self.assertTrue(
-            Validate.ipv6('FE80:0000:0000:0000:0202:B3FF:FE1E:8329')
+            self.validate.ipv6('FE80:0000:0000:0000:0202:B3FF:FE1E:8329')
         )
-        self.assertTrue(Validate.ipv6('FE80::0202:B3FF:FE1E:8329'))
-        self.assertTrue(Validate.ipv6('fe80::1'))
+        self.assertTrue(self.validate.ipv6('FE80::0202:B3FF:FE1E:8329'))
+        self.assertTrue(self.validate.ipv6('fe80::1'))
 
     def test_ipv6_invalid(self):
-        self.assertFalse(Validate.ipv6('4'))
-        self.assertFalse(Validate.ipv6('4.2.3'))
-        self.assertFalse(Validate.ipv6('294.1.2.0'))
-        self.assertFalse(Validate.ipv6('255.255.255.256'))
-        self.assertFalse(Validate.ipv6('i like turtles'))
+        self.assertFalse(self.validate.ipv6('4'))
+        self.assertFalse(self.validate.ipv6('4.2.3'))
+        self.assertFalse(self.validate.ipv6('294.1.2.0'))
+        self.assertFalse(self.validate.ipv6('255.255.255.256'))
+        self.assertFalse(self.validate.ipv6('i like turtles'))
 
     def test_record_name_valid(self):
-        self.assertTrue(Validate.record_hostname('vegadns.org'))
-        self.assertTrue(Validate.record_hostname('www.vegadns.org'))
-        self.assertTrue(Validate.record_hostname('foo.www.vegadns.org'))
-        self.assertTrue(Validate.record_hostname('bar.foo.www.vegadns.org'))
+        self.assertTrue(self.validate.record_hostname('vegadns.org'))
+        self.assertTrue(self.validate.record_hostname('www.vegadns.org'))
+        self.assertTrue(self.validate.record_hostname('foo.www.vegadns.org'))
+        self.assertTrue(self.validate.record_hostname('b.foo.www.vegadns.org'))
 
         self.assertTrue(
-            Validate.record_hostname('foo-bar.foo.www.vegadns.org')
-        )
-        self.assertTrue(
-            Validate.record_hostname('1.0/24.1.168.192.in-addr.arpa')
+            self.validate.record_hostname('foo-bar.foo.www.vegadns.org')
         )
 
     def test_record_name_invalid(self):
-        self.assertFalse(Validate.record_hostname('foo'))
-        self.assertFalse(Validate.record_hostname('..vegadns.org'))
+        self.assertFalse(self.validate.record_hostname('foo'))
+        self.assertFalse(self.validate.record_hostname('..vegadns.org'))
