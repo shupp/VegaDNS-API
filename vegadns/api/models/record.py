@@ -19,3 +19,37 @@ class Record(BaseModel):
 
     class Meta:
         db_table = 'records'
+
+
+class RecordTypeException(Exception):
+    pass
+
+
+class RecordType(object):
+    record_types = {
+        'S': 'SOA',
+        'N': 'NS',
+        'A': 'A',
+        '3': 'AAAA',
+        '6': 'AAAA+PTR',
+        'M': 'MX',
+        'P': 'PTR',
+        'T': 'TXT',
+        'C': 'CNAME',
+        'V': 'SRV',
+        'F': 'SPF'
+    }
+
+    def get(self, type):
+        if type in self.record_types.keys():
+            return self.record_types[type]
+        else:
+            raise RecordTypeException('Invalid record type')
+
+    def set(self, type):
+        reversed = {v: k for k, v in self.record_types.items()}
+
+        if type in reversed:
+            return reversed[type]
+        else:
+            raise RecordTypeException('Invalid record type')
