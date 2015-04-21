@@ -30,3 +30,19 @@ class TestValidate(unittest.TestCase):
         self.assertFalse(Validate.ipv6('294.1.2.0'))
         self.assertFalse(Validate.ipv6('255.255.255.256'))
         self.assertFalse(Validate.ipv6('i like turtles'))
+
+    def test_record_name_valid(self):
+        self.assertTrue(Validate.record_hostname('www.vegadns.org'))
+        self.assertTrue(Validate.record_hostname('foo.www.vegadns.org'))
+        self.assertTrue(Validate.record_hostname('bar.foo.www.vegadns.org'))
+
+        self.assertTrue(
+            Validate.record_hostname('foo-bar.foo.www.vegadns.org')
+        )
+        self.assertTrue(
+            Validate.record_hostname('1.0/24.1.168.192.in-addr.arpa')
+        )
+
+    def test_record_name_invalid(self):
+        self.assertFalse(Validate.record_hostname('foo'))
+        self.assertFalse(Validate.record_hostname('..vegadns.org'))

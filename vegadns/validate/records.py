@@ -19,3 +19,21 @@ class Validate(object):
         except socket.error:
             return False
         return True
+
+    @staticmethod
+    def record_hostname(hostname):
+        # All record hostnames must be at least a third level
+        if hostname.count('.') <= 1:
+            return False
+
+        # Currently only allowing a-z,0-9,- etc per old app
+        # May want to revisit this for non-alphanumeric support
+        p = re.compile(
+            '^([\*a-z0-9-\/]+[\.])+[a-z0-9-]+[\.]{0,1}$',
+            re.IGNORECASE
+        )
+
+        print p.match(hostname)
+        if p.match(hostname):
+            return True
+        return False
