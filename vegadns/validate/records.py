@@ -33,7 +33,6 @@ class Validate(object):
             re.IGNORECASE
         )
 
-        print p.match(hostname)
         if p.match(hostname):
             return True
         return False
