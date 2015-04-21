@@ -22,12 +22,12 @@ class Validate(object):
 
     @staticmethod
     def record_hostname(hostname):
-        # All record hostnames must be at least a third level
-        if hostname.count('.') <= 1:
+        # All record hostnames must be at least a second level
+        if hostname.count('.') < 1:
             return False
 
         # Currently only allowing a-z,0-9,- etc per old app
-        # May want to revisit this for non-alphanumeric support
+        # This needs revisiting to be RFC compliant
         p = re.compile(
             '^([\*a-z0-9-\/]+[\.])+[a-z0-9-]+[\.]{0,1}$',
             re.IGNORECASE
