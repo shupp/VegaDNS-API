@@ -51,7 +51,7 @@ class TestRecords(unittest.TestCase):
             return_value=[mock_model_one, mock_model_two]
         )
 
-        response = self.test_app.get('/records?domain=1')
+        response = self.test_app.get('/records?domain_id=1')
         self.assertEqual(response.status, "200 OK")
 
         decoded = json.loads(response.data)

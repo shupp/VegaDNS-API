@@ -10,18 +10,18 @@ class Records(Resource):
     route = '/records'
 
     def get(self):
-        domain = request.args.get('domain')
-        if domain is None:
-            abort(400, message="'domain' parameter is required")
+        domain_id = request.args.get('domain_id')
+        if domain_id is None:
+            abort(400, message="'domain_id' parameter is required")
 
         try:
             records = []
-            for record in self.get_record_list(domain):
+            for record in self.get_record_list(domain_id):
                 records.append(record.to_dict())
         except:
             abort(404, message="no records found")
         return {'status': 'ok', 'records': records}
 
-    def get_record_list(self, domain):
+    def get_record_list(self, domain_id):
         # FIXME need authorization
-        return ModelRecord.select().where(ModelRecord.domain_id == domain)
+        return ModelRecord.select().where(ModelRecord.domain_id == domain_id)
