@@ -1,0 +1,118 @@
+SOA
+{
+    "record_id": 1,
+    "domain_id": 1,
+    "record_type": "SOA",
+    "ttl": 86400,
+    "refresh": 86400,
+    "retry": 2048,
+    "expire": 1048576,
+    "minimum": 2560,
+    "serial": "",
+    "contact": "hostmaster.example.com",
+    "server": "ns1.example.com"
+}
+
+NS
+{
+    "record_id": 1,
+    "domain_id": 1,
+    "record_type": "NS",
+    "name": "example.com",
+    "value": "ns1.example.com",
+    "ttl": 3600
+}
+
+A
+{
+    "record_id": 1,
+    "domain_id": 1,
+    "record_type": "A",
+    "name": "www.example.com",
+    "value": "1.2.3.4",
+    "ttl": 3600
+}
+
+MX
+{
+    "record_id": 1,
+    "domain_id": 1,
+    "record_type": "MX",
+    "name": "example.com",
+    "value": "mail.example.com",
+    "distance": 10,
+    "ttl": 3600,
+}
+
+CNAME
+{
+    "record_id": 1,
+    "domain_id": 1,
+    "type": "CNAME",
+    "name": "www.example.com",
+    "value": "example.com",
+    "ttl": 3600
+}
+
+TXT
+{
+    "record_id": 1,
+    "domain_id": 1,
+    "type": "TXT",
+    "name": "example.com",
+    "value": "v=spf1 mx a ip4:1.2.3.0/24",
+    "ttl": 3600
+}
+
+PTR
+{
+    "record_id": 1,
+    "domain_id": 1,
+    "type": "PTR",
+    "name": "4.3.2.1.in-addr.arpa",
+    "value": "www.example.com",
+    "ttl": 3600
+}
+
+AAAA
+{
+    "record_id": 1,
+    "domain_id": 1,
+    "type": "AAAA",
+    "name": "ipv6.example.com",
+    "value": "0000:0000:0000:0000:0000:ffff:c0a8:11",
+    "ttl": 3600
+}
+
+AAAA+PTR
+{
+    "record_id": 1,
+    "domain_id": 1,
+    "type": "AAAA+PTR",
+    "name": "ipv6.example.com",
+    "value": "0000:0000:0000:0000:0000:ffff:c0a8:11",
+    "ttl": 3600
+}
+
+SRV
+{
+    "record_id": 1,
+    "domain_id": 1,
+    "type": "SRV",
+    "name": "_xmpp-client._tcp.example.com",
+    "value": "mac.office.example.com",
+    "distance": 0,
+    "weight": 10,
+    "port": 5222,
+    "ttl": 60
+}
+
+SPF
+{
+    "record_id": 1,
+    "domain_id": 1,
+    "type": "PTR",
+    "name": "example.com",
+    "value": "v=spf1 mx a ip4:1.2.3.0/24",
+    "ttl": 3600
+}

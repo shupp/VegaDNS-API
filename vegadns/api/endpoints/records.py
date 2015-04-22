@@ -17,7 +17,8 @@ class Records(Resource):
         try:
             records = []
             for record in self.get_record_list(domain_id):
-                records.append(record.to_dict())
+                recordtype = record.to_recordtype()
+                records.append(recordtype.to_dict())
         except:
             abort(404, message="no records found")
         return {'status': 'ok', 'records': records}

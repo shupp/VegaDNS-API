@@ -17,3 +17,10 @@ def endpoint(cls):
 
     api.add_resource(cls, cls_route)
     return cls
+
+
+@api.representation('text/plain')
+def output_text(data, code, headers=None):
+    resp = make_response(data, code)
+    resp.headers.extend(headers or {})
+    return resp

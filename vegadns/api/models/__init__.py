@@ -20,3 +20,10 @@ class BaseModel(Model):
 
     class Meta:
         database = database
+
+
+def ensure_validation(func):
+    def run_validation(cls):
+        cls.validate()
+        return func()
+    return run_validation
