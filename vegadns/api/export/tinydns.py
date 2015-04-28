@@ -18,7 +18,8 @@ class ExportTinydnsData(object):
         elif model.type == "F":
             return "\n"
         elif model.type == "C":
-            return "\n"
+            return "C" + model.host + ":" + model.val + \
+                ":" + str(model.ttl) + "\n"
         elif model.type == "S":
             return "\n"
         elif model.type == "V":
