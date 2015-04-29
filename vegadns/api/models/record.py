@@ -47,8 +47,9 @@ class RecordTypeException(Exception):
 
 
 class AbstractRecordType(object):
-    defaults = {}
-    values = {}
+    def __init__(self, defaults=None):
+        self.defaults = {}
+        self.values = {}
 
     @ensure_validation
     def save():
@@ -100,20 +101,22 @@ class CommonRecord(AbstractRecordType):
 
 
 class SOARecord(AbstractRecordType):
-    defaults = {
-        "ttl": "86400",
-        "refresh": "16384",
-        "retry": "2048",
-        "expire": "1048576",
-        "minimum": "2560",
-        "serial": ""
-    }
+    def __init__(self, defaults=None):
+        self.values = {}
+        self.defaults = {
+            "ttl": "86400",
+            "refresh": "16384",
+            "retry": "2048",
+            "expire": "1048576",
+            "minimum": "2560",
+            "serial": ""
+        }
 
-    def __init__(self, defaults={}):
         # add validation here?
-        for key in self.defaults.keys():
-            if key in defaults:
-                self.defaults[key] = defaults[key]
+        if defaults is not None:
+            for key in self.defaults.keys():
+                if key in defaults:
+                    self.defaults[key] = defaults[key]
 
     def from_model(self, model):
         if model.type != 'S':
