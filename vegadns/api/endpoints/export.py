@@ -2,13 +2,14 @@ from flask import Flask, abort, redirect, url_for, make_response
 from flask.ext.restful import Resource, Api, abort
 
 from vegadns.api import endpoint
+from vegadns.api.endpoints import AbstractEndpoint
 from vegadns.api.models.domain import Domain as ModelDomain
 from vegadns.api.models.record import Record as ModelRecord
 from vegadns.api.export.tinydns import ExportTinydnsData
 
 
 @endpoint
-class Export(Resource):
+class Export(AbstractEndpoint):
     # Future proofing other exports, but tinydns_data only for now
     route = '/export/<format>'
 

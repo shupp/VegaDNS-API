@@ -2,11 +2,12 @@ from flask import Flask, abort, redirect, url_for
 from flask.ext.restful import Resource, Api, abort
 
 from vegadns.api import endpoint
+from vegadns.api.endpoints import AbstractEndpoint
 from vegadns.api.models.domain import Domain as ModelDomain
 
 
 @endpoint
-class Domains(Resource):
+class Domains(AbstractEndpoint):
     route = '/domains'
 
     def get(self):

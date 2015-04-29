@@ -2,11 +2,12 @@ from flask import Flask, abort, redirect, url_for
 from flask.ext.restful import Resource, Api, abort
 
 from vegadns.api import endpoint
+from vegadns.api.endpoints import AbstractEndpoint
 from vegadns.api.models.record import Record as ModelRecord
 
 
 @endpoint
-class Record(Resource):
+class Record(AbstractEndpoint):
     route = '/records/<int:record_id>'
 
     def get(self, record_id):
