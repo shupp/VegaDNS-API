@@ -1,5 +1,5 @@
 # need logger
-from vegadns.api.common import config
+from vegadns.api.config import config
 from peewee import *
 from lib.shortcuts import model_to_dict
 
