@@ -1,13 +1,13 @@
-import unittest
 import json
 
 from mock import MagicMock
 
+from tests.endpoints import AbstractEndpointTest
 import vegadns.api.endpoints.domain
 from vegadns.api import app
 
 
-class TestDomain(unittest.TestCase):
+class TestDomain(AbstractEndpointTest):
     def setUp(self):
         # Use Flask's test client
         self.test_app = app.test_client()
@@ -27,7 +27,14 @@ class TestDomain(unittest.TestCase):
             return_value=mock_model
         )
 
-        response = self.test_app.get('/domains/1')
+        self.mock_auth('test@test.com', 'test')
+
+        response = self.open_with_basic_auth(
+            '/domains/1',
+            'GET',
+            'test@test.com',
+            'test'
+        )
         self.assertEqual(response.status, "200 OK")
         decoded = json.loads(response.data)
         self.assertEqual(decoded['status'], "ok")

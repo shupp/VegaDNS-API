@@ -1,18 +1,13 @@
-import unittest
 import json
 
 from mock import MagicMock
 
+from tests.endpoints import AbstractEndpointTest
 import vegadns.api.endpoints.record
 import vegadns.api.models.record
-from vegadns.api import app
 
 
-class TestRecord(unittest.TestCase):
-    def setUp(self):
-        # Use Flask's test client
-        self.test_app = app.test_client()
-
+class TestRecord(AbstractEndpointTest):
     def test_get_success(self):
         model = vegadns.api.models.record.Record()
 
@@ -30,7 +25,14 @@ class TestRecord(unittest.TestCase):
             return_value=model
         )
 
-        response = self.test_app.get('/records/10')
+        self.mock_auth('test@test.com', 'test')
+
+        response = self.open_with_basic_auth(
+            '/records/10',
+            'GET',
+            'test@test.com',
+            'test'
+        )
         self.assertEqual(response.status, "200 OK")
         decoded = json.loads(response.data)
         self.assertEqual(decoded['status'], "ok")
