@@ -17,18 +17,6 @@ class Record(BaseModel):
     val = CharField(null=True)
     weight = IntegerField(null=True)
 
-    # override to_dict to use readable 'type'
-    def to_dict(self):
-        record_type = RecordType()
-        parent_dict = self.get_parent_to_dict()
-        parent_dict['type'] = record_type.get(parent_dict['type'])
-
-        return parent_dict
-
-    # abstracted for testing
-    def get_parent_to_dict(self):
-        return super(Record, self).to_dict()
-
     def to_recordtype(self):
         instance = AbstractRecordType.singleton(self)
         instance.from_model(self)
