@@ -14,23 +14,20 @@ class TestRecord(unittest.TestCase):
         self.test_app = app.test_client()
 
     def test_get_success(self):
-        # mock get_record and get_parent_to_dict
-        mock_value = {
-            "distance": 0,
-            "domain_id": 2,
-            "host": "hostmaster.test.com:ns1.vegadns.ubuntu",
-            "port": None,
-            "record_id": 10,
-            "ttl": 86400,
-            "type": "S",
-            "val": "16384:2048:1048576:2560",
-            "weight": None
-        }
+        model = vegadns.api.models.record.Record()
 
-        mock_model = vegadns.api.models.record.Record()
-        mock_model.get_parent_to_dict = MagicMock(return_value=mock_value)
+        model.distance = 0
+        model.domain_id = 2
+        model.host = "hostmaster.test.com:ns1.vegadns.ubuntu"
+        model.port = None
+        model.record_id = 10
+        model.ttl = 86400
+        model.type = "S"
+        model.val = "16384:2048:1048576:2560"
+        model.weight = None
+
         vegadns.api.endpoints.record.Record.get_record = MagicMock(
-            return_value=mock_model
+            return_value=model
         )
 
         response = self.test_app.get('/records/10')
@@ -38,5 +35,4 @@ class TestRecord(unittest.TestCase):
         decoded = json.loads(response.data)
         self.assertEqual(decoded['status'], "ok")
         self.assertEqual(decoded['record']['record_id'], 10)
-        # test to_dict() override
-        self.assertEqual(decoded['record']['type'], 'SOA')
+        self.assertEqual(decoded['record']['record_type'], 'SOA')

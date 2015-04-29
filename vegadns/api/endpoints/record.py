@@ -12,11 +12,10 @@ class Record(Resource):
     def get(self, record_id):
         try:
             record = self.get_record(record_id)
-            typerecord = record.to_recordtype()
-            return {'status': 'ok', 'record': typerecord.to_dict()}
+            recordtype = record.to_recordtype()
         except:
             abort(404, message="record does not exist")
-        return {'status': 'ok', 'record': record.to_dict()}
+        return {'status': 'ok', 'record': recordtype.to_dict()}
 
     def get_record(self, record_id):
         # FIXME authorization
