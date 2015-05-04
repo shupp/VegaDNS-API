@@ -65,3 +65,16 @@ class TestTinydnsExport(unittest.TestCase):
             self.export.data_line_from_model(model),
             "'vegadns.ubuntu:v=spf1 mx a ip4" r"\072" + "1.2.3.0/24:3600\n"
         )
+
+    def test_spf_record(self):
+        model = Record()
+
+        model.type = 'F'
+        model.host = 'example.com'
+        model.val = 'v=spf1 mx -all'
+        model.ttl = '3600'
+
+        self.assertEquals(
+            self.export.data_line_from_model(model),
+            ":example.com:99:" r"\016" "v=spf1 mx -all:3600\n"
+        )

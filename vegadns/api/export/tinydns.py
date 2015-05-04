@@ -16,7 +16,10 @@ class ExportTinydnsData(object):
             return "'" + model.host + ":" + model.val.replace(":", r"\072") + \
                    ":" + str(model.ttl) + "\n"
         elif model.type == "F":
-            return "\n"
+            rdata_len = self.dec_to_oct_tinydns(len(model.val))
+            return ":" + model.host + ":99:" + rdata_len + \
+                   model.val.replace(":", r"\072") + ":" + \
+                   str(model.ttl) + "\n"
         elif model.type == "C":
             return "C" + model.host + ":" + model.val + \
                 ":" + str(model.ttl) + "\n"
@@ -53,3 +56,7 @@ class ExportTinydnsData(object):
             output = output + formatted + "\n"
 
         return output
+
+    def dec_to_oct_tinydns(self, decimal):
+        padded_octal = oct(int(decimal)).lstrip('0').zfill(3)
+        return '\\' + padded_octal
