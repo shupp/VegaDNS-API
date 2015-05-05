@@ -48,6 +48,13 @@ class ExportTinydnsData(object):
                 ":" + soa['minimum'] + \
                 ":" + str(soa['ttl']) + \
                 "\n"
+        # NS record
+        elif model.type == "N":
+            return "&" + model.host + \
+                "::" + model.val + \
+                ":" + str(model.ttl) + \
+                "\n"
+
         # SRV record
         elif model.type == "V":
             encoded = self.encode_rdata(

@@ -192,3 +192,18 @@ class TestTinydnsExport(unittest.TestCase):
             self.export.data_line_from_model(model),
             expected
         )
+
+    def test_ns_record(self):
+        model = Record()
+
+        model.type = 'N'
+        model.host = 'example.com'
+        model.val = 'ns1.example.com'
+        model.ttl = 3600
+
+        expected = "&example.com::ns1.example.com:3600\n"
+
+        self.assertEquals(
+            self.export.data_line_from_model(model),
+            expected
+        )
