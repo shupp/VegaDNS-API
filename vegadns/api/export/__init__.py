@@ -1,0 +1,2 @@
+class ExportException(Exception):
+    pass

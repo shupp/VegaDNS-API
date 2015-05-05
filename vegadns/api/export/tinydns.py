@@ -1,5 +1,8 @@
+import struct
+
 from vegadns.ip import IPv6
 from vegadns.validate.ip import ValidateIPAddress
+from vegadns.api.export import ExportException
 
 
 class ExportTinydnsData(object):
@@ -47,7 +50,21 @@ class ExportTinydnsData(object):
                 "\n"
         # SRV record
         elif model.type == "V":
-            return "\n"
+            encoded = self.encode_rdata(
+                'cccq',
+                [
+                    model.distance,
+                    model.weight,
+                    model.port,
+                    model.val.rstrip('.')
+                ]
+            )
+            return ":" + model.host + \
+                ":33:" + \
+                encoded + \
+                ":" + str(model.ttl) + \
+                "\n"
+
         elif model.type == "3" or model.type == "6":
             # AAAA Record
             # FIXME - exception handling
@@ -154,3 +171,37 @@ class ExportTinydnsData(object):
             characters += reversed(part)
 
         return ".".join(characters) + ".ip6.arpa"
+
+    def encode_rdata(self, format, values):
+        rdata = ""
+        if len(format) != len(values):
+            raise Exception("rdata value count mismatch in format")
+
+        for i in range(len(format)):
+            if format[i] == "c":
+                rdata += self.encode_rdata_octets(values[i])
+            elif format[i] == "q":
+                rdata += self.encode_rdata_qname(values[i])
+            else:
+                raise ExportException("Invalid rdata format: " + format[i])
+
+        return rdata
+
+    def encode_rdata_octets(self, value):
+        # Big Endian 16 bit MSB LSB encoding for decimal values to rdata octets
+        packed = struct.pack(">H", value)
+        unpacked = struct.unpack(">BB", packed)
+        return "\\" + oct(int(unpacked[0])).lstrip("0").zfill(3) + \
+            "\\" + oct(int(unpacked[1])).lstrip("0").zfill(3)
+
+    def encode_rdata_qname(self, hostname):
+        # QNAME(RFC 1035 section 4.1.2) encoding for url to octets
+        qnameparts = hostname.split(".")
+        qname = ""
+        for part in qnameparts:
+            qname += "\\" + oct(len(part)).lstrip("0").zfill(3) + part
+
+        # add term octect for QNAME
+        qname += "\\000"
+
+        return qname

@@ -169,3 +169,26 @@ class TestTinydnsExport(unittest.TestCase):
             self.export.data_line_from_model(model),
             expected
         )
+
+    def test_srv_record(self):
+        model = Record()
+
+        model.type = 'V'
+        model.host = '_xmpp-client._tcp.example.com.'
+        model.val = 'xmpp.example.com'
+        model.ttl = '3600'
+        model.distance = 0
+        model.weight = 10
+        model.port = 5222
+
+        expected = (
+            ":_xmpp-client._tcp.example.com."
+            ":33"
+            r":\000\000\000\012\024\146\004xmpp\007example\003com\000"
+            ":3600\n"
+        )
+
+        self.assertEquals(
+            self.export.data_line_from_model(model),
+            expected
+        )
