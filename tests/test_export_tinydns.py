@@ -2,6 +2,7 @@ import unittest
 
 from mock import MagicMock
 
+from vegadns.api.models.domain import Domain
 from vegadns.api.models.record import Record
 from vegadns.api.export.tinydns import ExportTinydnsData
 
@@ -133,6 +134,35 @@ class TestTinydnsExport(unittest.TestCase):
             "^7.e.b.7.e.f.9.a.f.f.f.f.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0"
             ".ip6.arpa"
             ":example.com:3600\n"
+        )
+
+        self.assertEquals(
+            self.export.data_line_from_model(model),
+            expected
+        )
+
+    def test_soa_record(self):
+        domain = Domain()
+        domain.domain = 'example.com'
+        model = Record()
+
+        # joined domain on domain_id
+        model.domain_id = domain
+        model.type = 'S'
+        model.host = 'hostmaster.example.com:ns1.example.com'
+        model.val = '16384:2048:1048576:2560:'
+        model.ttl = '86400'
+
+        expected = (
+            "Zexample.com"
+            ":ns1.example.com"
+            ":hostmaster.example.com"
+            ":"
+            ":16384"
+            ":2048"
+            ":1048576"
+            ":2560"
+            ":86400\n"
         )
 
         self.assertEquals(

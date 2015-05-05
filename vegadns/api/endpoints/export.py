@@ -17,28 +17,44 @@ class Export(AbstractEndpoint):
         if format != 'tinydns':
             abort(400, message="invalid format: " + format)
 
-        domains = []
-        domain_list = self.get_domain_list()
-        for domain in domain_list:
-            # may want to batch here rather than get serially
-            records = self.get_record_list(domain.domain_id)
-            domains.append(
+        records = self.get_records()
+
+        domains = {}
+
+        for record in records:
+            if record.domain_id.domain not in domains:
+                domains[record.domain_id.domain] = []
+
+            domains[record.domain_id.domain].append(record)
+
+        organized = []
+        for key, val in sorted(domains.items()):
+            organized.append(
                 {
-                    'domain_name': domain.domain,
-                    'records': records
+                    'domain_name': key,
+                    'records': val
                 }
             )
 
         tinydns = ExportTinydnsData()
-        datafile = tinydns.export_domains(domains)
+        datafile = tinydns.export_domains(organized)
         response = make_response(datafile)
         response.headers['content-type'] = 'text/plain'
 
         return response
 
-    def get_domain_list(self):
-        # FIXME need IP authorization
-        return ModelDomain.select().where(ModelDomain.status == 'active')
-
-    def get_record_list(self, domain_id):
-        return ModelRecord.select().where(ModelRecord.domain_id == domain_id)
+    def get_records(self):
+        return (
+            ModelRecord.select(ModelDomain, ModelRecord)
+            .join(
+                ModelDomain,
+                on=ModelDomain.domain_id == ModelRecord.domain_id
+            )
+            .where(ModelDomain.status == 'active')
+            .order_by(
+                ModelDomain.domain.asc(),
+                ModelRecord.type.asc(),
+                ModelRecord.host.asc(),
+                ModelRecord.val.asc()
+            )
+        )

@@ -33,7 +33,18 @@ class ExportTinydnsData(object):
                 ":" + str(model.ttl) + "\n"
         # SOA record
         elif model.type == "S":
-            return "\n"
+            soa = model.to_recordtype().to_dict()
+
+            return "Z" + model.domain_id.domain + \
+                ":" + soa['nameserver'] + \
+                ":" + soa['email'] + \
+                ":" + soa['serial'] + \
+                ":" + soa['refresh'] + \
+                ":" + soa['retry'] + \
+                ":" + soa['expire'] + \
+                ":" + soa['minimum'] + \
+                ":" + str(soa['ttl']) + \
+                "\n"
         # SRV record
         elif model.type == "V":
             return "\n"
