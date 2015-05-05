@@ -91,7 +91,7 @@ class ExportTinydnsData(object):
             return out
 
     def export_domain(self, domain_name, records):
-        output = "# " + domain_name + "\n"
+        output = "#" + domain_name + "\n"
         formatted_records = ""
         for record in records:
             formatted_record = self.data_line_from_model(record)
@@ -104,7 +104,7 @@ class ExportTinydnsData(object):
         return output + formatted_records
 
     def export_domains(self, domains):
-        output = ""
+        output = "\n"
         for domain in domains:
             formatted = self.export_domain(
                 domain['domain_name'],
