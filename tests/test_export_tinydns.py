@@ -78,3 +78,64 @@ class TestTinydnsExport(unittest.TestCase):
             self.export.data_line_from_model(model),
             ":example.com:99:" r"\016" "v=spf1 mx -all:3600\n"
         )
+
+    def test_aaaa_record(self):
+        model = Record()
+
+        model.type = '3'
+        model.host = 'example.com'
+        model.val = '0000:0000:0000:0000:0000:ffff:169.254.123.231'
+        model.ttl = '3600'
+
+        expected = (
+            ":example.com:28:"
+            r"\000\000\000\000\000\000\000\000\000\000\377\377\251\376\173\347"
+            ":3600\n"
+        )
+
+        self.assertEquals(
+            self.export.data_line_from_model(model),
+            expected
+        )
+
+    def test_aaaaptr_record(self):
+        model = Record()
+
+        model.type = '3'
+        model.host = 'example.com'
+        model.val = '0000:0000:0000:0000:0000:ffff:169.254.123.231'
+        model.ttl = '3600'
+
+        expected = (
+            ":example.com:28:"
+            r"\000\000\000\000\000\000\000\000\000\000\377\377\251\376\173\347"
+            ":3600\n"
+        )
+
+        self.assertEquals(
+            self.export.data_line_from_model(model),
+            expected
+        )
+
+    def test_aaaaptr_record(self):
+        model = Record()
+
+        model.type = '6'
+        model.host = 'example.com'
+        model.val = '0000:0000:0000:0000:0000:ffff:169.254.123.231'
+        model.ttl = '3600'
+
+        expected = (
+            ":example.com:28:"
+            r"\000\000\000\000\000\000\000\000\000\000\377\377\251\376\173\347"
+            ":3600\n"
+
+            "^7.e.b.7.e.f.9.a.f.f.f.f.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0"
+            ".ip6.arpa"
+            ":example.com:3600\n"
+        )
+
+        self.assertEquals(
+            self.export.data_line_from_model(model),
+            expected
+        )
