@@ -35,4 +35,4 @@ class Auth(object):
 
 
 class AuthException(Exception):
-    pass
+    code = 401
