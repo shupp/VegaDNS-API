@@ -1,5 +1,6 @@
 from vegadns.validate.ip import ValidateIPAddress
 from vegadns.validate.dns import ValidateDNS
+from vegadns.validate.string import ValidateString
 
 
 class Validate(object):
@@ -12,3 +13,6 @@ class Validate(object):
 
     def record_hostname(self, name):
         return ValidateDNS.record_hostname(name)
+
+    def sha256(self, string):
+        return ValidateString().sha256(string)

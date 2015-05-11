@@ -6,7 +6,7 @@ import time
 import random
 
 from vegadns.api.models import database, BaseModel
-from vegadns.validate.string import ValidateString
+from vegadns.validate import Validate
 
 
 class ApiKey(BaseModel):
@@ -28,7 +28,7 @@ class ApiKey(BaseModel):
         return hmac.new(str(key), str(data), hashlib.sha256).hexdigest()
 
     def validate(self):
-        v = ValidateString()
+        v = Validate()
         if not v.sha256(self.key):
             raise Exception('Invalid key')
         if not v.sha256(self.secret):

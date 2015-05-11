@@ -47,3 +47,16 @@ class TestValidate(unittest.TestCase):
     def test_record_name_invalid(self):
         self.assertFalse(self.validate.record_hostname('foo'))
         self.assertFalse(self.validate.record_hostname('..vegadns.org'))
+
+    def test_is_sha256_valid(self):
+        s = 'c69c30d355dd7c8ab3ecae9c005701a51d30e7c3af1855f1f1be3c7919b2b2c1'
+        self.assertTrue(self.validate.sha256(s))
+
+    def test_is_sha256_invalid(self):
+        self.assertFalse(self.validate.sha256('foo'))
+
+        s = 'zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz'
+        self.assertFalse(self.validate.sha256(s))
+
+        s = 'e7c3af1855f1f1be3c7919b2b2c1'
+        self.assertFalse(self.validate.sha256(s))
