@@ -11,7 +11,7 @@ class Account(BaseModel):
     password = CharField(db_column='Password')
     phone = CharField(db_column='Phone')
     status = CharField(db_column='Status')
-    cid = IntegerField(primary_key=True)
+    account_id = IntegerField(primary_key=True, db_column='cid')
     gid = IntegerField(null=True)
 
     class Meta:
