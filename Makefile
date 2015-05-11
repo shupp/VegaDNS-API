@@ -4,7 +4,7 @@ default: check test
 
 # Only check code we've written
 check:
-	pep8 vegadns tests
+	pep8 vegadns tests run.py
 
 # Test everything in the tests directory
 test:
