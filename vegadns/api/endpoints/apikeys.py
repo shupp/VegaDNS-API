@@ -11,19 +11,13 @@ class ApiKeys(AbstractEndpoint):
     route = '/apikeys'
 
     def get(self):
-        try:
-            keys = []
-            for key in self.get_apikey_list():
-                keys.append(key.to_dict())
-        except:
-            abort(404, message="no api keys found")
+        keys = []
+        for key in self.get_apikey_list():
+            keys.append(key.to_dict())
         return {'status': 'ok', 'apikeys': keys}
 
     def post(self):
-        if 'description' in request.form:
-            description = request.form['description']
-        else:
-            description = ""
+        description = request.form.get("description", "")
 
         apikey = self.create_api_key(description, self.auth.account.account_id)
 
