@@ -1,6 +1,6 @@
 # need logger
 from vegadns.api.config import config
-from peewee import *
+from peewee import MySQLDatabase, Model
 from lib.shortcuts import model_to_dict
 
 
