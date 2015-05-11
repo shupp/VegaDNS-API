@@ -1,3 +1,5 @@
 venv
 *.py[cod]
 vegadns/api/config/local.ini
+coverage
+.coverage
