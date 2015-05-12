@@ -1,6 +1,8 @@
 from flask import Flask, abort, redirect, url_for, request
 from flask.ext.restful import Resource, Api, abort
 
+import peewee
+
 from vegadns.api import endpoint
 from vegadns.api.endpoints import AbstractEndpoint
 from vegadns.api.models.apikey import ApiKey as ModelApiKey
@@ -13,14 +15,14 @@ class ApiKey(AbstractEndpoint):
     def get(self, apikey_id):
         try:
             apikey = self.get_apikey(apikey_id)
-        except:
+        except peewee.DoesNotExist:
             abort(404, message="api key not found")
         return {'status': 'ok', 'apikey': apikey.to_dict()}
 
     def put(self, apikey_id):
         try:
             apikey = self.get_apikey(apikey_id)
-        except:
+        except peewee.DoesNotExist:
             abort(404, message="api key not found")
 
         data = request.form
@@ -37,7 +39,7 @@ class ApiKey(AbstractEndpoint):
     def delete(self, apikey_id):
         try:
             apikey = self.get_apikey(apikey_id)
-        except:
+        except peewee.DoesNotExist:
             abort(404, message="api key not found")
 
         apikey.deleted = 1
