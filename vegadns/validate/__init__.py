@@ -16,3 +16,6 @@ class Validate(object):
 
     def sha256(self, string):
         return ValidateString().sha256(string)
+
+    def uuid(self, string):
+        return ValidateString().uuid(string)

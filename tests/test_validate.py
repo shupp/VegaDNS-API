@@ -60,3 +60,10 @@ class TestValidate(unittest.TestCase):
 
         s = 'e7c3af1855f1f1be3c7919b2b2c1'
         self.assertFalse(self.validate.sha256(s))
+
+    def test_is_uuid_valid(self):
+        s = '465aba85-7c4b-4631-86c4-ef3404a463f6'
+        self.assertTrue(self.validate.uuid(s))
+
+    def test_is_uuid_invalid(self):
+        self.assertFalse(self.validate.uuid('foo'))

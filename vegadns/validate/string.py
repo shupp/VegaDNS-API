@@ -1,4 +1,5 @@
 import re
+import uuid
 
 
 class ValidateString(object):
@@ -10,4 +11,11 @@ class ValidateString(object):
         if regex.match(string):
             return True
         else:
+            return False
+
+    def uuid(self, string=None, version=4):
+        try:
+            uuid.UUID(str(string), version=version)
+            return True
+        except ValueError:
             return False
