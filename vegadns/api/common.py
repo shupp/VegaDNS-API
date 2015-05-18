@@ -20,7 +20,10 @@ class Auth(object):
             return True
 
         # determine auth
-        auth_header = self.request.headers['Authorization']
+        auth_header = self.request.headers.get('Authorization', None)
+        if auth_header is None:
+            raise AuthException
+
         p = re.compile('^Bearer[ ]+(.*$)')
         match = p.findall(auth_header)
         if match:
