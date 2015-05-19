@@ -1,4 +1,4 @@
-from peewee import *
+from peewee import IntegerField, CharField
 from vegadns.api.models import database, BaseModel, ensure_validation
 
 

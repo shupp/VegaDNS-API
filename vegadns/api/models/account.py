@@ -1,4 +1,4 @@
-from peewee import *
+from peewee import CharField, IntegerField
 
 from vegadns.api.models import database, BaseModel
 
