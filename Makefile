@@ -17,3 +17,5 @@ coverage-html: clean-coverage
 clean: clean-coverage
 clean-coverage:
 	rm -rf coverage .coverage
+clean-python:
+	find vegadns -name "*.pyc" -exec rm {} \;
