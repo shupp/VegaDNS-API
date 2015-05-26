@@ -2,7 +2,7 @@ import os
 
 from vegadns.api import endpoint, app
 from vegadns.api.endpoints import domain, domains, record, records, export
-from vegadns.api.endpoints import apikeys, apikey
+from vegadns.api.endpoints import apikeys, apikey, groups
 from vegadns.api.endpoints import token
 
 profile = os.environ.get('PROFILE', None)
