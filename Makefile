@@ -18,4 +18,4 @@ clean: clean-coverage
 clean-coverage:
 	rm -rf coverage .coverage
 clean-python:
-	find vegadns -name "*.pyc" -exec rm {} \;
+	find vegadns tests -name "*.pyc" -exec rm {} \;
