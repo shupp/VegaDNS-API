@@ -19,6 +19,23 @@ class Group(AbstractEndpoint):
             abort(404, message="group not found")
         return {'status': 'ok', 'group': group.to_dict()}
 
+    def delete(self, group_id):
+        # only senior_admins can delete
+        if self.auth.account.account_type != 'senior_admin':
+            abort(403, message="insufficient privileges")
+
+        try:
+            group = self.get_group(group_id)
+        except:
+            abort(404, message="group not found")
+
+        try:
+            # FIXME need to delete domain maps when in place
+            group.delete_instance()
+        except:
+            abort(400, message="unable to delete group")
+        return {'status': 'ok'}
+
     def put(self, group_id):
         # only senior_admin can modify the group name
         if self.auth.account.account_type != 'senior_admin':
