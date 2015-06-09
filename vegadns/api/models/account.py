@@ -16,3 +16,6 @@ class Account(BaseModel):
 
     class Meta:
         db_table = 'accounts'
+
+    # For removing password and gid fields via self.to_clean_dict()
+    clean_keys = ["gid", "password"]

@@ -25,6 +25,14 @@ class BaseModel(Model):
     def to_dict(self):
         return model_to_dict(self)
 
+    def to_clean_dict(self):
+        unclean_dict = self.to_dict()
+        if hasattr(self, "clean_keys"):
+            for key in self.clean_keys:
+                unclean_dict.pop(key, None)
+
+        return unclean_dict
+
     @ensure_validation
     def save(self, *args, **kwargs):
         # print self
