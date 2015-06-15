@@ -44,8 +44,28 @@ class DomainGroupMap(BaseModel):
 
     def to_dict(self):
         my_dict = super(DomainGroupMap, self).to_dict()
-        my_dict['can_read'] = self.has_perm(self.READ_PERM)
-        my_dict['can_write'] = self.has_perm(self.WRITE_PERM)
-        my_dict['can_delete'] = self.has_perm(self.DELETE_PERM)
+        self.to_readable_permissions(my_dict, self)
 
         return my_dict
+
+    def to_readable_permissions(self, my_dict, map):
+        my_dict["can_read"] = map.has_perm(self.READ_PERM)
+        my_dict["can_write"] = map.has_perm(self.WRITE_PERM)
+        my_dict["can_delete"] = map.has_perm(self.DELETE_PERM)
+
+    def validate(self):
+        total = 0
+        for perm in self.allowed_perms:
+            total += perm
+
+        if self.permissions < 0 or self.permissions > total:
+            raise ValueError("permissions out of range")
+
+    def format_map(self, joined_map):
+        new = {}
+        new["map_id"] = joined_map.map_id
+        new["group"] = joined_map.group_id.to_clean_dict()
+        new["domain"] = joined_map.domain_id.to_clean_dict()
+        self.to_readable_permissions(new, joined_map)
+
+        return new

@@ -4,6 +4,7 @@ from vegadns.api import endpoint, app
 from vegadns.api.endpoints import domain, domains, record, records, export
 from vegadns.api.endpoints import apikeys, apikey, groups, group
 from vegadns.api.endpoints import token, groupmember, groupmembers, accounts
+from vegadns.api.endpoints import domaingroupmap, domaingroupmaps
 
 profile = os.environ.get('PROFILE', None)
 debug = bool(os.environ.get('DEBUG', None))

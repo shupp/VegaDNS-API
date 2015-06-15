@@ -12,3 +12,6 @@ class Domain(BaseModel):
 
     class Meta:
         db_table = 'domains'
+
+    # For removing unused group_owner field via self.to_clean_dict()
+    clean_keys = ["group_owner"]
