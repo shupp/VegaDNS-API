@@ -4,6 +4,7 @@ from flask.ext.restful import Resource, Api, abort
 from vegadns.api import endpoint
 from vegadns.api.endpoints import AbstractEndpoint
 from vegadns.api.models.domain import Domain as ModelDomain
+from vegadns.api.models.group import Group as ModelGroup
 
 
 @endpoint
@@ -20,4 +21,15 @@ class Domains(AbstractEndpoint):
         return {'status': 'ok', 'domains': domains}
 
     def get_domain_list(self):
-        return ModelDomain.select()  # FIXME need authorization
+        if self.auth.account.account_type == 'senior_admin':
+            return ModelDomain.select()
+
+        domains = []
+        self.auth.account.load_domains()
+        for domain_id in self.auth.account.domains:
+            if self.auth.account.can_read_domain(domain_id):
+                domains.append(
+                    self.auth.account.domains[domain_id]["domain"]
+                )
+
+        return domains
