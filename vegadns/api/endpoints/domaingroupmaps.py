@@ -16,10 +16,14 @@ class DomainGroupMaps(AbstractEndpoint):
 
     def get(self):
         domain_id = request.args.get('domain_id')
-        if domain_id is None:
-            abort(400, message="'domain_id' parameter is required")
+        group_id = request.args.get('group_id')
+        if domain_id is None and group_id is None:
+            abort(
+                400,
+                message="'domain_id' or 'group_id' parameter is required"
+            )
 
-        collection = self.get_domain_group_maps(domain_id)
+        collection = self.get_domain_group_maps(domain_id, group_id)
         maps = []
         for m in collection:
             formatted = m.format_map(m)
@@ -86,16 +90,38 @@ class DomainGroupMaps(AbstractEndpoint):
 
         return {'status': 'ok', 'domaingroupmap': formatted}, 201
 
-    def get_domain_group_maps(self, domain_id):
-        return ModelMap.select(ModelMap, ModelGroup, ModelDomain).where(
-            ModelMap.domain_id == domain_id
-        ).join(
-            ModelGroup,
-            on=ModelMap.group_id == ModelGroup.group_id
-        ).switch(ModelMap).join(
-            ModelDomain,
-            on=ModelMap.domain_id == ModelDomain.domain_id
-        )
+    def get_domain_group_maps(self, domain_id, group_id):
+        if domain_id is not None and group_id is not None:
+            return ModelMap.select(ModelMap, ModelGroup, ModelDomain).where(
+                ModelMap.domain_id == domain_id,
+                ModelMap.group_id == group_id
+            ).join(
+                ModelGroup,
+                on=ModelMap.group_id == ModelGroup.group_id
+            ).switch(ModelMap).join(
+                ModelDomain,
+                on=ModelMap.domain_id == ModelDomain.domain_id
+            )
+        if domain_id is not None:
+            return ModelMap.select(ModelMap, ModelGroup, ModelDomain).where(
+                ModelMap.domain_id == domain_id
+            ).join(
+                ModelGroup,
+                on=ModelMap.group_id == ModelGroup.group_id
+            ).switch(ModelMap).join(
+                ModelDomain,
+                on=ModelMap.domain_id == ModelDomain.domain_id
+            )
+        elif group_id is not None:
+            return ModelMap.select(ModelMap, ModelGroup, ModelDomain).where(
+                ModelMap.group_id == group_id
+            ).join(
+                ModelGroup,
+                on=ModelMap.group_id == ModelGroup.group_id
+            ).switch(ModelMap).join(
+                ModelDomain,
+                on=ModelMap.domain_id == ModelDomain.domain_id
+            )
 
     def get_domain(self, domain_id):
         return ModelDomain.get(
