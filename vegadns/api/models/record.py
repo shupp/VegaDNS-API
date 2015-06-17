@@ -1,5 +1,10 @@
-from peewee import IntegerField, CharField
+import re
+
+from peewee import IntegerField, CharField, PrimaryKeyField
+
 from vegadns.api.models import database, BaseModel, ensure_validation
+from vegadns.validate.dns import ValidateDNS
+from vegadns.validate.ip import ValidateIPAddress
 
 
 class Record(BaseModel):
@@ -7,11 +12,7 @@ class Record(BaseModel):
     domain_id = IntegerField(db_column='domain_id')
     host = CharField()
     port = IntegerField(null=True)
-    record_id = IntegerField(
-        db_column='record_id',
-        unique=True,
-        primary_key=True
-    )
+    record_id = PrimaryKeyField()
     ttl = IntegerField()
     type = CharField(null=True)
     val = CharField(null=True)
@@ -25,12 +26,26 @@ class Record(BaseModel):
     class Meta:
         db_table = 'records'
 
+    def validate(self):
+        recordtype = self.to_recordtype()
+        recordtype.validate()
+
+    @staticmethod
+    def hostname_in_domain(hostname, domain):
+        p = re.compile(".*" + domain + "([.])?$", re.IGNORECASE)
+        m = p.match(hostname)
+        return bool(m)
+
 
 class RecordException(Exception):
     pass
 
 
 class RecordTypeException(Exception):
+    pass
+
+
+class RecordValueException(ValueError):
     pass
 
 
@@ -62,6 +77,11 @@ class AbstractRecordType(object):
             'Method not defined'
         )
 
+    def from_form_data(self, form):
+        raise RecordException(
+            'Method not defined'
+        )
+
     def to_dict(self):
         return self.values
 
@@ -86,6 +106,18 @@ class CommonRecord(AbstractRecordType):
         self.values['name'] = model.host
         self.values['value'] = model.val
         self.values['ttl'] = model.ttl
+
+    def to_model(self):
+        model = Record()
+        if self.values.get("record_id") is not None:
+            model.record_id = self.values["record_id"]
+        model.domain_id = self.values["domain_id"]
+        model.type = RecordType().set(self.record_type)
+        model.host = self.values["name"]
+        model.val = self.values["value"]
+        model.ttl = self.values["ttl"]
+
+        return model
 
 
 class SOARecord(AbstractRecordType):
@@ -158,6 +190,21 @@ class NSRecord(CommonRecord):
 class ARecord(CommonRecord):
     record_type = 'A'
 
+    def validate(self):
+        domain_id = self.values.get("domain_id")
+        if not domain_id:
+            raise RecordValueException("domain_id is not set")
+
+        name = str(self.values.get("name"))
+        if not ValidateDNS.record_hostname(name):
+            raise RecordValueException("Invalide name: " + name)
+
+        ip = str(self.values.get("value"))
+        if not ValidateIPAddress.ipv4(ip):
+            raise RecordValueException(
+                "Invalide IP address: " + ip
+            )
+
 
 class MXRecord(CommonRecord):
     record_type = 'MX'
@@ -227,14 +274,21 @@ class RecordType(object):
             raise RecordTypeException('Invalid record type')
 
     def set(self, type):
+        if not type:
+            raise RecordTypeException('Invalid record type')
+
         for k, v in self.record_types.items():
-            if v['name'] == type:
+            if v['name'] == type.upper():
                 return k
 
         raise RecordTypeException('Invalid record type')
 
     def get_class(self, type):
-        return self.record_types[type]['record_class']
+        upper = type.upper()
+        if upper not in self.record_types.keys():
+            raise RecordTypeException('Invalid record type')
+
+        return self.record_types[upper]['record_class']
 
     def to_record_model(self):
         pass
