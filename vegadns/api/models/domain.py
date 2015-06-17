@@ -2,6 +2,7 @@ from peewee import CharField, IntegerField, PrimaryKeyField
 
 from vegadns.api.models import database, BaseModel
 from vegadns.api.models.record import Record
+from vegadns.api.models.domain_group_map import DomainGroupMap
 from vegadns.validate.dns import ValidateDNS
 
 
@@ -34,3 +35,19 @@ class Domain(BaseModel):
         return Record.select(Record).where(
             Record.domain_id == self.domain_id
         )
+
+    def get_domain_group_maps(self):
+        if not self.domain_id:
+            raise Exception("Cannot get maps, domain_id is not set")
+
+        return DomainGroupMap.select(DomainGroupMap).where(
+            DomainGroupMap.domain_id == self.domain_id
+        )
+
+    def delete_records(self):
+        for record in self.get_records():
+            record.delete_instance()
+
+    def delete_domain_group_maps(self):
+        for map in self.get_domain_group_maps():
+            map.delete_instance()

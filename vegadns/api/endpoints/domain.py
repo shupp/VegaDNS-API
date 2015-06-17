@@ -65,7 +65,8 @@ class Domain(AbstractEndpoint):
         except peewee.DoesNotExist:
             abort(404, message="domain does not exist")
 
-        # FIXME delete records first
+        domain.delete_domain_group_maps()
+        domain.delete_records()
         domain.delete_instance()
 
         return {'status': 'ok'}
