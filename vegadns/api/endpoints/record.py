@@ -18,6 +18,18 @@ class Record(AbstractEndpoint):
             abort(404, message="record does not exist")
         return {'status': 'ok', 'record': recordtype.to_dict()}
 
+    def delete(self, record_id):
+        try:
+            record = self.get_record(record_id)
+        except:
+            abort(404, message="record does not exist")
+
+        # check authorization
+        domain = self.get_delete_domain(record.domain_id)
+        record.delete_instance()
+
+        return {'status': 'ok'}
+
     def get_record(self, record_id):
         # FIXME authorization
         return ModelRecord.get(ModelRecord.record_id == record_id)
