@@ -1,6 +1,7 @@
 from peewee import CharField, IntegerField, PrimaryKeyField
 
 from vegadns.api.models import database, BaseModel
+from vegadns.api.models.record import Record
 from vegadns.validate.dns import ValidateDNS
 
 
@@ -25,3 +26,11 @@ class Domain(BaseModel):
 
         if not ValidateDNS.record_hostname(self.domain):
             raise ValueError("domain is invalid: " + self.domain)
+
+    def get_records(self):
+        if not self.domain_id:
+            raise Exception("Cannot get records, domain_id is not set")
+
+        return Record.select(Record).where(
+            Record.domain_id == self.domain_id
+        )

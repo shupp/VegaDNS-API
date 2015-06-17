@@ -4,6 +4,7 @@ from mock import MagicMock
 
 import vegadns.api.endpoints.records
 import vegadns.api.models.record
+import vegadns.api.models.domain
 from vegadns.api import app
 from tests.endpoints import AbstractEndpointTest
 
@@ -34,8 +35,13 @@ class TestRecords(AbstractEndpointTest):
         record_two.val = "16384:2048:1048576:2560"
         record_two.weight = None
 
-        vegadns.api.endpoints.records.Records.get_record_list = MagicMock(
+        vegadns.api.models.domain.Domain.get_records = MagicMock(
             return_value=[record_one, record_two]
+        )
+        domain = vegadns.api.models.domain.Domain()
+
+        vegadns.api.endpoints.records.Records.get_read_domain = MagicMock(
+            return_value=domain
         )
 
         self.mock_auth('test@test.com', 'test')
