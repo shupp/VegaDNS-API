@@ -1,9 +1,11 @@
-from flask import Flask, abort, redirect, url_for
+from flask import Flask, abort, request
 from flask.ext.restful import Resource, Api, abort
+import peewee
 
 from vegadns.api import endpoint
 from vegadns.api.endpoints import AbstractEndpoint
 from vegadns.api.models.domain import Domain as ModelDomain
+from vegadns.api.models.account import Account as ModelAccount
 
 
 @endpoint
@@ -12,11 +14,88 @@ class Domain(AbstractEndpoint):
 
     def get(self, domain_id):
         try:
-            domain = self.get_domain(domain_id)
-        except:
+            domain = self.get_read_domain(domain_id)
+        except peewee.DoesNotExist:
             abort(404, message="domain does not exist")
-        return {'status': 'ok', 'domain': domain.to_dict()}
+        return {'status': 'ok', 'domain': domain.to_clean_dict()}
 
-    def get_domain(self, domain_id):
-        # FIXME authorization
-        return ModelDomain.get(ModelDomain.domain_id == domain_id)
+    def put(self, domain_id):
+        try:
+            domain = self.get_write_domain(domain_id)
+        except peewee.DoesNotExist:
+            abort(404, message="domain does not exist")
+
+        # get params
+        owner_id = request.form.get('owner_id')
+        status = request.form.get('status')
+
+        if owner_id is None and status is None:
+            abort(400, message="no parameters provided")
+
+        if owner_id is not None:
+            if owner_id == 0:
+                domain.owner_id = 0
+            else:
+                try:
+                    new_owner = self.get_account(owner_id)
+                    domain.owner_id = owner_id
+                except peewee.DoesNotExist:
+                    abort(400, message="owner_id does not exist")
+
+        if status is not None:
+            if self.auth.account.account_type != 'senior_admin':
+                abort(
+                    401,
+                    message="Only senior_admins can change status"
+                )
+            if status != "active" and status != "inactive":
+                abort(
+                    400,
+                    message="status must be either 'active' or 'inactive'"
+                )
+            domain.status = status
+
+        domain.save()
+
+        return {'status': 'ok', 'domain': domain.to_clean_dict()}
+
+    def delete(self, domain_id):
+        try:
+            domain = self.get_delete_domain(domain_id)
+        except peewee.DoesNotExist:
+            abort(404, message="domain does not exist")
+
+        # FIXME delete records first
+        domain.delete_instance()
+
+        return {'status': 'ok'}
+
+    def get_read_domain(self, domain_id):
+        if self.auth.account.account_type == 'senior_admin':
+            return ModelDomain.get(ModelDomain.domain_id == domain_id)
+
+        if self.auth.account.can_read_domain(domain_id):
+            return self.auth.account.domains[domain_id]["domain"]
+
+        abort(401, message="Not authorized to access this domain")
+
+    def get_write_domain(self, domain_id):
+        if self.auth.account.account_type == 'senior_admin':
+            return ModelDomain.get(ModelDomain.domain_id == domain_id)
+
+        if self.auth.account.can_write_domain(domain_id):
+            return self.auth.account.domains[domain_id]["domain"]
+
+        abort(401, message="Not authorized to edit this domain")
+
+    def get_delete_domain(self, domain_id):
+        if self.auth.account.account_type == 'senior_admin':
+            return ModelDomain.get(ModelDomain.domain_id == domain_id)
+
+        if self.auth.account.can_delete_domain(domain_id):
+            return self.auth.account.domains[domain_id]["domain"]
+
+        abort(401, message="Not authorized to delete this domain")
+
+    def get_account(self, account_id):
+        return ModelAccount.get(ModelAccount.account_id == account_id)

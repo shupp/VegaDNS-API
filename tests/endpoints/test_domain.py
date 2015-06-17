@@ -22,8 +22,8 @@ class TestDomain(AbstractEndpointTest):
             'domain_id': 1
         }
         mock_model = MagicMock()
-        mock_model.to_dict = MagicMock(return_value=mock_value)
-        vegadns.api.endpoints.domain.Domain.get_domain = MagicMock(
+        mock_model.to_clean_dict = MagicMock(return_value=mock_value)
+        vegadns.api.endpoints.domain.Domain.get_read_domain = MagicMock(
             return_value=mock_model
         )
 
