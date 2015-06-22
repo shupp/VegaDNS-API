@@ -16,4 +16,4 @@ if profile:
 
 
 if __name__ == '__main__':
-    app.run(debug=debug)
+    app.run(debug=debug, host='0.0.0.0')
