@@ -104,15 +104,16 @@ class ExportTinydnsData(object):
         return output + formatted_records
 
     def export_domains(self, domains):
-        output = "\n"
+        output = ""
         for domain in domains:
+            output += "\n"
             formatted = self.export_domain(
                 domain['domain_name'],
                 domain['records']
             )
-            output = output + formatted + "\n"
+            output = output + formatted
 
-        return output
+        return output.rstrip("\n")
 
     def dec_to_oct_tinydns(self, decimal):
         padded_octal = oct(int(decimal)).lstrip('0').zfill(3)
