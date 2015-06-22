@@ -59,7 +59,7 @@ class Records(AbstractEndpoint):
 
         record_type = request.form.get('record_type')
         try:
-            RecordType().set(record_type)
+            readable_type = RecordType().set(record_type)
         except RecordTypeException:
             abort(400, message="Invalid record_type: " + record_type)
 
@@ -68,10 +68,11 @@ class Records(AbstractEndpoint):
         if not name or not ModelRecord.hostname_in_domain(name, domain.domain):
             abort(400, message="Name does not end in domain name: " + name)
 
-        TypeModel = RecordType().get_class(record_type)()
+        TypeModel = RecordType().get_class(RecordType().set(record_type))()
 
         # switch on type for now
-        if TypeModel.record_type == "A":
+        common_types = ["A", "CNAME", "NS", "TXT", "PTR"]
+        if TypeModel.record_type in common_types:
             TypeModel.values["name"] = request.form.get("name")
             TypeModel.values["value"] = request.form.get("value")
             TypeModel.values["ttl"] = request.form.get("ttl", 3600)

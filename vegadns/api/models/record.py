@@ -119,6 +119,16 @@ class CommonRecord(AbstractRecordType):
 
         return model
 
+    def validate_domain_id(self):
+        domain_id = self.values.get("domain_id")
+        if not domain_id:
+            raise RecordValueException("domain_id is not set")
+
+    def validate_record_hostname(self):
+        name = str(self.values.get("name"))
+        if not ValidateDNS.record_hostname(name):
+            raise RecordValueException("Invalide name: " + name)
+
 
 class SOARecord(AbstractRecordType):
     def __init__(self, defaults=None):
@@ -186,18 +196,28 @@ class SOARecord(AbstractRecordType):
 class NSRecord(CommonRecord):
     record_type = 'NS'
 
+    def validate(self):
+        self.validate_domain_id()
+        self.validate_record_hostname()
+
+        if ValidateIPAddress.ipv4(name):
+            raise RecordValueException(
+                "NS record names cannot be an IP address"
+            )
+
+        value = str(self.values.get("value"))
+        if not ValidateDNS.record_hostname(value):
+            raise RecordValueException(
+                "Invalide value for NS record: " + value
+            )
+
 
 class ARecord(CommonRecord):
     record_type = 'A'
 
     def validate(self):
-        domain_id = self.values.get("domain_id")
-        if not domain_id:
-            raise RecordValueException("domain_id is not set")
-
-        name = str(self.values.get("name"))
-        if not ValidateDNS.record_hostname(name):
-            raise RecordValueException("Invalide name: " + name)
+        self.validate_domain_id()
+        self.validate_record_hostname()
 
         ip = str(self.values.get("value"))
         if not ValidateIPAddress.ipv4(ip):
@@ -219,13 +239,38 @@ class MXRecord(CommonRecord):
 class CNAMERecord(CommonRecord):
     record_type = 'CNAME'
 
+    def validate(self):
+        self.validate_domain_id()
+        self.validate_record_hostname()
+
+        value = str(self.values.get("value"))
+        if ValidateIPAddress.ipv4(value):
+            raise RecordValueException(
+                "CNAME records cannot point to an IP address"
+            )
+
 
 class TXTRecord(CommonRecord):
     record_type = 'TXT'
 
+    def validate(self):
+        self.validate_domain_id()
+        self.validate_record_hostname()
+
 
 class PTRRecord(CommonRecord):
     record_type = 'PTR'
+
+    def validate(self):
+        self.validate_domain_id()
+
+        p = re.compile('^.*\.in-addr.arpa[.]?$', re.IGNORECASE)
+        name = str(self.values.get("name"))
+        m = p.match(name)
+        if not m:
+            raise RecordValueException(
+                "PTR records must end in in-addr.arpa: " + name
+            )
 
 
 class AAAARecord(CommonRecord):
