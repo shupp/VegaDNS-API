@@ -68,17 +68,19 @@ class Records(AbstractEndpoint):
         # switch on type for now
         common_types = ["A", "CNAME", "NS", "TXT", "PTR", "AAAA"]
         if TypeModel.record_type in common_types:
-            # make sure hostname ends in domain name
-            name = request.form.get("name")
-            if not name or not ModelRecord.hostname_in_domain(
-                name,
-                domain.domain
-            ):
-
-                abort(400, message="Name does not end in domain name: " + name)
+            self.check_domain_suffix(domain.domain)
 
             TypeModel.values["name"] = request.form.get("name")
             TypeModel.values["value"] = request.form.get("value")
+            TypeModel.values["ttl"] = request.form.get("ttl", 3600)
+            TypeModel.values["domain_id"] = domain.domain_id
+            model = TypeModel.to_model()
+        elif TypeModel.record_type == "MX":
+            self.check_domain_suffix(domain.domain)
+
+            TypeModel.values["name"] = request.form.get("name")
+            TypeModel.values["value"] = request.form.get("value")
+            TypeModel.values["distance"] = request.form.get("distance", 0)
             TypeModel.values["ttl"] = request.form.get("ttl", 3600)
             TypeModel.values["domain_id"] = domain.domain_id
             model = TypeModel.to_model()
@@ -108,6 +110,12 @@ class Records(AbstractEndpoint):
         model.save()
 
         return {'status': 'ok', 'record': model.to_recordtype().to_dict()}, 201
+
+    def check_domain_suffix(self, domain):
+        # make sure hostname ends in domain name
+        name = request.form.get("name")
+        if not name or not ModelRecord.hostname_in_domain(name, domain):
+            abort(400, message="Name does not end in domain name: " + name)
 
     def get_domain(self, domain_id):
         return ModelDomain.get(ModelDomain.domain_id == domain_id)

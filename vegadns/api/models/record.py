@@ -9,7 +9,7 @@ from vegadns.validate import Validate
 
 
 class Record(BaseModel):
-    distance = IntegerField(null=True)
+    distance = IntegerField(null=True, default=0)
     domain_id = IntegerField(db_column='domain_id')
     host = CharField()
     port = IntegerField(null=True)
@@ -54,6 +54,14 @@ class AbstractRecordType(object):
     def __init__(self, defaults=None):
         self.defaults = {}
         self.values = {}
+
+        self.set_defaults(defaults)
+
+    def set_defaults(self, defaults):
+        if defaults is not None:
+            for key in self.defaults.keys():
+                if key in defaults:
+                    self.defaults[key] = defaults[key]
 
     @ensure_validation
     def save():
@@ -150,11 +158,7 @@ class SOARecord(AbstractRecordType):
             "serial": ""
         }
 
-        # add validation here?
-        if defaults is not None:
-            for key in self.defaults.keys():
-                if key in defaults:
-                    self.defaults[key] = defaults[key]
+        self.set_defaults(defaults)
 
     def from_model(self, model):
         if model.type != 'S':
@@ -258,11 +262,35 @@ class ARecord(CommonRecord):
 class MXRecord(CommonRecord):
     record_type = 'MX'
 
+    def __init__(self, defaults=None):
+        if defaults is None:
+            defaults = {"distance": 0}
+
+        super(MXRecord, self).__init__(defaults)
+
     def from_model(self, model):
         super(MXRecord, self).from_model(model)
 
         # add additional values
         self.values['distance'] = model.distance
+
+    def to_model(self):
+        model = super(MXRecord, self).to_model()
+        model.distance = self.values.get("distance", 0)
+
+        return model
+
+    def validate(self):
+        self.validate_domain_id()
+        self.validate_record_hostname()
+
+        ip = str(self.values.get("value"))
+        if ValidateIPAddress.ipv4(ip):
+            raise RecordValueException("MX records cannot be an IP address")
+
+        distance = str(self.values.get("distance"))
+        if not distance.isdigit():
+            raise RecordValueException("Invalid MX distance: " + distance)
 
 
 class CNAMERecord(CommonRecord):
