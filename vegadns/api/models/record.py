@@ -344,7 +344,7 @@ class AAAARecord(CommonRecord):
             )
 
 
-class AAAAPTRRecord(CommonRecord):
+class AAAAPTRRecord(AAAARecord):
     record_type = 'AAAA+PTR'
 
 
