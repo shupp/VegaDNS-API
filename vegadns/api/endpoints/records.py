@@ -66,7 +66,7 @@ class Records(AbstractEndpoint):
         TypeModel = RecordType().get_class(RecordType().set(record_type))()
 
         # switch on type for now
-        common_types = ["A", "CNAME", "NS", "TXT", "PTR"]
+        common_types = ["A", "CNAME", "NS", "TXT", "PTR", "AAAA"]
         if TypeModel.record_type in common_types:
             # make sure hostname ends in domain name
             name = request.form.get("name")
