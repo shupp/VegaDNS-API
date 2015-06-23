@@ -359,6 +359,42 @@ class SRVRecord(CommonRecord):
         self.values['weight'] = model.weight
         self.values['port'] = model.port
 
+    def to_model(self):
+        model = super(SRVRecord, self).to_model()
+        model.distance = self.values.get("distance", 0)
+        model.weight = self.values.get("weight")
+        model.port = self.values.get("port")
+
+        return model
+
+    def validate(self):
+        self.validate_domain_id()
+        self.validate_record_hostname()
+
+        # check _service._protocol format
+        name = str(self.values.get("name"))
+        p = re.compile('^_.*\._.*$', re.IGNORECASE)
+        if not p.match(name):
+            raise RecordValueException(
+                "SRV record be in the format _service._protocol: " + name
+            )
+
+        # check range for distance/weight/port
+        mydict = {
+            "distance": self.values.get("distance"),
+            "weight": self.values.get("weight"),
+            "port": self.values.get("port")
+        }
+
+        for k, v in mydict.items():
+            if not self.check_number_range(v):
+                raise RecordValueException(
+                    "SRV " + k + " must be a numeric value between 0 and 65535"
+                )
+
+    def check_number_range(self, number):
+        return (str(number).isdigit() and 0 <= int(number) <= 65535)
+
 
 class SPFRecord(CommonRecord):
     record_type = 'SPF'

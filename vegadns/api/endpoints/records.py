@@ -86,6 +86,17 @@ class Records(AbstractEndpoint):
             TypeModel.values["ttl"] = request.form.get("ttl", 3600)
             TypeModel.values["domain_id"] = domain.domain_id
             model = TypeModel.to_model()
+        elif TypeModel.record_type == "SRV":
+            self.check_domain_suffix(domain.domain)
+
+            TypeModel.values["name"] = request.form.get("name")
+            TypeModel.values["value"] = request.form.get("value")
+            TypeModel.values["distance"] = request.form.get("distance", 0)
+            TypeModel.values["weight"] = request.form.get("weight")
+            TypeModel.values["port"] = request.form.get("port")
+            TypeModel.values["ttl"] = request.form.get("ttl", 3600)
+            TypeModel.values["domain_id"] = domain.domain_id
+            model = TypeModel.to_model()
         elif TypeModel.record_type == "SOA":
             # make sure this record type doesn't yet exist
             try:
