@@ -67,7 +67,7 @@ class Records(AbstractEndpoint):
 
         # switch on type for now
         common_types = [
-            "A", "CNAME", "NS", "TXT", "PTR", "AAAA", "AAAA+PTR"
+            "A", "CNAME", "NS", "TXT", "PTR", "AAAA", "AAAA+PTR", "SPF"
         ]
         if TypeModel.record_type in common_types:
             self.check_domain_suffix(domain.domain)

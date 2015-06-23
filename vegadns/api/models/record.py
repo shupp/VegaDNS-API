@@ -363,6 +363,10 @@ class SRVRecord(CommonRecord):
 class SPFRecord(CommonRecord):
     record_type = 'SPF'
 
+    def validate(self):
+        self.validate_domain_id()
+        self.validate_record_hostname()
+
 
 class RecordType(object):
     record_types = {
