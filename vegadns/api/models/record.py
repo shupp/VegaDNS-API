@@ -77,6 +77,15 @@ class AbstractRecordType(object):
             'Method not defined'
         )
 
+    def to_model(self):
+        model = Record()
+        if self.values.get("record_id") is not None:
+            model.record_id = self.values["record_id"]
+        model.domain_id = self.values["domain_id"]
+        model.type = RecordType().set(self.record_type)
+
+        return model
+
     def from_form_data(self, form):
         raise RecordException(
             'Method not defined'
@@ -84,6 +93,11 @@ class AbstractRecordType(object):
 
     def to_dict(self):
         return self.values
+
+    def validate_domain_id(self):
+        domain_id = self.values.get("domain_id")
+        if not domain_id:
+            raise RecordValueException("domain_id is not set")
 
     @staticmethod
     def singleton(model):
@@ -108,21 +122,12 @@ class CommonRecord(AbstractRecordType):
         self.values['ttl'] = model.ttl
 
     def to_model(self):
-        model = Record()
-        if self.values.get("record_id") is not None:
-            model.record_id = self.values["record_id"]
-        model.domain_id = self.values["domain_id"]
-        model.type = RecordType().set(self.record_type)
+        model = super(SOARecord, self).to_model()
         model.host = self.values["name"]
         model.val = self.values["value"]
         model.ttl = self.values["ttl"]
 
         return model
-
-    def validate_domain_id(self):
-        domain_id = self.values.get("domain_id")
-        if not domain_id:
-            raise RecordValueException("domain_id is not set")
 
     def validate_record_hostname(self):
         name = str(self.values.get("name"))
@@ -131,6 +136,8 @@ class CommonRecord(AbstractRecordType):
 
 
 class SOARecord(AbstractRecordType):
+    record_type = "SOA"
+
     def __init__(self, defaults=None):
         self.values = {}
         self.defaults = {
@@ -152,8 +159,8 @@ class SOARecord(AbstractRecordType):
         if model.type != 'S':
             raise RecordTypeException('Model type is not S')
 
-        host_split = model.host.split(":")
-        val_split = model.val.split(":")
+        host_split = str(model.host).split(":")
+        val_split = str(model.val).split(":")
 
         self.values['domain_id'] = model.domain_id
         self.values['record_id'] = model.record_id
@@ -191,6 +198,27 @@ class SOARecord(AbstractRecordType):
             self.values['serial'] = val_split[4]
         else:
             self.values['serial'] = self.defaults['serial']
+
+    def to_model(self):
+        model = super(SOARecord, self).to_model()
+        model.host = ":".join(str(i) for i in [
+            self.values["email"],
+            self.values["nameserver"]
+        ])
+        model.val = ":".join(str(i) for i in [
+            self.values["refresh"],
+            self.values["retry"],
+            self.values["expire"],
+            self.values["minimum"],
+            self.values["serial"]
+        ])
+
+        return model
+
+    def validate(self):
+        # Defaults are good here, might want to come up with more
+        # validation though
+        self.validate_domain_id()
 
 
 class NSRecord(CommonRecord):

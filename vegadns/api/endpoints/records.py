@@ -63,19 +63,34 @@ class Records(AbstractEndpoint):
         except RecordTypeException:
             abort(400, message="Invalid record_type: " + record_type)
 
-        # make sure hostname ends in domain name
-        name = request.form.get("name")
-        if not name or not ModelRecord.hostname_in_domain(name, domain.domain):
-            abort(400, message="Name does not end in domain name: " + name)
-
         TypeModel = RecordType().get_class(RecordType().set(record_type))()
 
         # switch on type for now
         common_types = ["A", "CNAME", "NS", "TXT", "PTR"]
         if TypeModel.record_type in common_types:
+            # make sure hostname ends in domain name
+            name = request.form.get("name")
+            if not name or not ModelRecord.hostname_in_domain(
+                name,
+                domain.domain
+            ):
+
+                abort(400, message="Name does not end in domain name: " + name)
+
             TypeModel.values["name"] = request.form.get("name")
             TypeModel.values["value"] = request.form.get("value")
             TypeModel.values["ttl"] = request.form.get("ttl", 3600)
+            TypeModel.values["domain_id"] = domain.domain_id
+            model = TypeModel.to_model()
+        if TypeModel.record_type == "SOA":
+            TypeModel.values["email"] = request.form.get("email")
+            TypeModel.values["nameserver"] = request.form.get("nameserver")
+            TypeModel.values["ttl"] = request.form.get("ttl", 86400)
+            TypeModel.values["refresh"] = request.form.get("refresh", 16374)
+            TypeModel.values["retry"] = request.form.get("retry", 2048)
+            TypeModel.values["expire"] = request.form.get("expire", 1048576)
+            TypeModel.values["minimum"] = request.form.get("minimum", 2560)
+            TypeModel.values["serial"] = request.form.get("serial", "")
             TypeModel.values["domain_id"] = domain.domain_id
             model = TypeModel.to_model()
         else:
