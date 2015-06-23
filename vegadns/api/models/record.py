@@ -5,6 +5,7 @@ from peewee import IntegerField, CharField, PrimaryKeyField
 from vegadns.api.models import database, BaseModel, ensure_validation
 from vegadns.validate.dns import ValidateDNS
 from vegadns.validate.ip import ValidateIPAddress
+from vegadns.validate import Validate
 
 
 class Record(BaseModel):
@@ -122,7 +123,7 @@ class CommonRecord(AbstractRecordType):
         self.values['ttl'] = model.ttl
 
     def to_model(self):
-        model = super(SOARecord, self).to_model()
+        model = super(CommonRecord, self).to_model()
         model.host = self.values["name"]
         model.val = self.values["value"]
         model.ttl = self.values["ttl"]
@@ -132,7 +133,7 @@ class CommonRecord(AbstractRecordType):
     def validate_record_hostname(self):
         name = str(self.values.get("name"))
         if not ValidateDNS.record_hostname(name):
-            raise RecordValueException("Invalide name: " + name)
+            raise RecordValueException("Invalid name: " + name)
 
 
 class SOARecord(AbstractRecordType):
@@ -236,7 +237,7 @@ class NSRecord(CommonRecord):
         value = str(self.values.get("value"))
         if not ValidateDNS.record_hostname(value):
             raise RecordValueException(
-                "Invalide value for NS record: " + value
+                "Invalid value for NS record: " + value
             )
 
 
@@ -250,7 +251,7 @@ class ARecord(CommonRecord):
         ip = str(self.values.get("value"))
         if not ValidateIPAddress.ipv4(ip):
             raise RecordValueException(
-                "Invalide IP address: " + ip
+                "Invalid IP address: " + ip
             )
 
 
@@ -303,6 +304,16 @@ class PTRRecord(CommonRecord):
 
 class AAAARecord(CommonRecord):
     record_type = 'AAAA'
+
+    def validate(self):
+        self.validate_domain_id()
+        self.validate_record_hostname()
+
+        ip = str(self.values.get("value"))
+        if not Validate().ipv6(ip):
+            raise RecordValueException(
+                "Invalid IPv6 address: " + ip
+            )
 
 
 class AAAAPTRRecord(CommonRecord):

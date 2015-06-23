@@ -82,7 +82,16 @@ class Records(AbstractEndpoint):
             TypeModel.values["ttl"] = request.form.get("ttl", 3600)
             TypeModel.values["domain_id"] = domain.domain_id
             model = TypeModel.to_model()
-        if TypeModel.record_type == "SOA":
+        elif TypeModel.record_type == "SOA":
+            # make sure this record type doesn't yet exist
+            try:
+                ModelRecord.get(
+                    ModelRecord.type == RecordType().set(record_type)
+                )
+                abort(400, message="SOA record already exists for this domain")
+            except peewee.DoesNotExist:
+                pass
+
             TypeModel.values["email"] = request.form.get("email")
             TypeModel.values["nameserver"] = request.form.get("nameserver")
             TypeModel.values["ttl"] = request.form.get("ttl", 86400)
