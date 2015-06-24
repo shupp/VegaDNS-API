@@ -13,6 +13,9 @@ class Export(AbstractEndpoint):
     # Future proofing other exports, but tinydns_data only for now
     route = '/export/<format>'
 
+    # allow for ip auth here
+    auth_types = ["basic", "oauth", "ip"]
+
     def get(self, format):
         if format != 'tinydns':
             abort(400, message="invalid format: " + format)

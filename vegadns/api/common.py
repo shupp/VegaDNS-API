@@ -4,6 +4,7 @@ import time
 
 import peewee
 
+from vegadns.api.config import config
 from vegadns.api.models.account import Account
 from vegadns.api.models.oauth_access_token import OauthAccessToken
 
@@ -22,14 +23,22 @@ class Auth(object):
         # determine auth
         auth_header = self.request.headers.get('Authorization', None)
         if auth_header is None:
+            # check if ip auth is allowed
+            if "ip" in self.endpoint.auth_types:
+                return self.ip_authenticate()
+
             raise AuthException
 
         p = re.compile('^Bearer[ ]+(.*$)')
         match = p.findall(auth_header)
         if match:
-            return self.oauth_authenticate(match[0])
+            if "oauth" in self.endpoint.auth_types:
+                return self.oauth_authenticate(match[0])
         else:
-            return self.basic_authenticate()
+            if "basic" in self.endpoint.auth_types:
+                return self.basic_authenticate()
+
+        raise AuthException
 
     def oauth_authenticate(self, token):
         account = self.get_account_by_oauth_token(token)
@@ -77,6 +86,15 @@ class Auth(object):
             )
         except peewee.DoesNotExist:
             raise AuthException('Account not found')
+
+    def ip_authenticate(self):
+        ip = self.request.remote_addr
+        trusted = config.get('ip_auth', 'trusted_ips')
+        if not trusted:
+            raise AuthException('IP not authorized: ' + ip)
+
+        if ip != trusted and ip not in ",".split(trusted):
+            raise AuthException('IP not authorized: ' + ip)
 
 
 class AuthException(Exception):

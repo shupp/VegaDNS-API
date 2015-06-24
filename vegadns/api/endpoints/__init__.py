@@ -6,6 +6,7 @@ from vegadns.api.models.domain import Domain as ModelDomain
 
 class AbstractEndpoint(Resource):
     auth_required = True
+    auth_types = ["basic", "oauth"]
 
     def __init__(self):
         self.auth = Auth(request, self)
