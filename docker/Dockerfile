@@ -8,6 +8,8 @@ RUN apt-get install -y build-essential python-dev python-virtualenv
 RUN apt-get install -y uwsgi-plugin-python
 RUN apt-get install -y daemontools daemontools-run ucspi-tcp djbdns
 RUN apt-get install -y nginx supervisor
+# for local exports during integration testing
+RUN apt-get install -y curl
 
 # Configuration script dependencies
 RUN apt-get install -y python-pip
@@ -35,5 +37,6 @@ RUN ln -s /etc/tinydns /service
 RUN ln -s /service /etc/service/tinydns
 
 # start all the moving pieces
+RUN chmod +x /var/www/vegadns2/bin/update-data.sh
 RUN chmod +x /var/www/vegadns2/docker/start.sh
 CMD ["/var/www/vegadns2/docker/start.sh"]

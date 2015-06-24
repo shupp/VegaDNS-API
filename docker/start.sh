@@ -21,6 +21,8 @@ echo "Setting up config files for supervisor, nginx, VegaDNS2"
 cp /var/www/vegadns2/docker/templates/supervisor-vegadns2.conf /etc/supervisor/conf.d/vegadns2.conf
 cp /var/www/vegadns2/docker/templates/nginx-vegadns2.conf /etc/nginx/sites-enabled/vegadns2
 cp /var/www/vegadns2/docker/templates/local.ini /var/www/vegadns2/vegadns/api/config/local.ini
+cp /var/www/vegadns2/docker/templates/sudoers.www-data /etc/sudoers.d/vegadns2-www-data
+chmod 660 /etc/sudoers.d/vegadns2-www-data
 
 echo "Starting supervisor"
 /etc/init.d/supervisor start
