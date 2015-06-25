@@ -233,12 +233,12 @@ class NSRecord(CommonRecord):
         self.validate_domain_id()
         self.validate_record_hostname()
 
-        if ValidateIPAddress.ipv4(name):
+        value = str(self.values.get("value"))
+        if ValidateIPAddress.ipv4(value):
             raise RecordValueException(
                 "NS record names cannot be an IP address"
             )
 
-        value = str(self.values.get("value"))
         if not ValidateDNS.record_hostname(value):
             raise RecordValueException(
                 "Invalid value for NS record: " + value
