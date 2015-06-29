@@ -1,5 +1,4 @@
-from flask import Flask, abort, redirect, url_for
-from flask.ext.restful import Resource, Api, abort
+from flask.ext.restful import abort
 
 from vegadns.api import endpoint
 from vegadns.api.endpoints import AbstractEndpoint
@@ -33,9 +32,3 @@ class Record(AbstractEndpoint):
     def get_record(self, record_id):
         # FIXME authorization
         return ModelRecord.get(ModelRecord.record_id == record_id)
-
-    def to_record_type():
-        if self.type is None:
-            raise Exception('Record type is not set')
-
-        return AbstractRecordType.from_model(self)
