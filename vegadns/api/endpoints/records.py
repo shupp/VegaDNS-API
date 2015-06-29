@@ -51,9 +51,6 @@ class Records(AbstractEndpoint):
         except peewee.DoesNotExist:
             abort(404, message="domain_id does not exist: " + domain_id)
 
-        if domain_id is None:
-            abort(400, message="'domain_id' parameter is required")
-
         # get domain and check authorization
         domain = self.get_write_domain(domain_id)
 
