@@ -1,14 +1,14 @@
-from flask.ext.restful import abort
+from flask.ext.restful import request, abort
 
 import peewee
 
 from vegadns.api import endpoint
-from vegadns.api.endpoints import AbstractEndpoint
+from vegadns.api.endpoints.records_common import RecordsCommon
 from vegadns.api.models.record import Record as ModelRecord
 
 
 @endpoint
-class Record(AbstractEndpoint):
+class Record(RecordsCommon):
     route = '/records/<int:record_id>'
 
     def get(self, record_id):
@@ -22,6 +22,24 @@ class Record(AbstractEndpoint):
 
         recordtype = record.to_recordtype()
         return {'status': 'ok', 'record': recordtype.to_dict()}
+
+    def put(self, record_id):
+        try:
+            record = self.get_record(record_id)
+        except peewee.DoesNotExist:
+            abort(404, message="record does not exist")
+
+        # get domain and check authorization
+        domain = self.get_write_domain(record.domain_id)
+
+        TypeModel = record.to_recordtype()
+
+        self.request_form_to_type_model(request.form, TypeModel, domain)
+
+        model = TypeModel.to_model()
+        model.save()
+
+        return {'status': 'ok', 'record': model.to_recordtype().to_dict()}
 
     def delete(self, record_id):
         try:
@@ -37,3 +55,9 @@ class Record(AbstractEndpoint):
 
     def get_record(self, record_id):
         return ModelRecord.get(ModelRecord.record_id == record_id)
+
+    def check_domain_suffix(self, domain):
+        # make sure hostname ends in domain name
+        name = request.form.get("name")
+        if not name or not ModelRecord.hostname_in_domain(name, domain):
+            abort(400, message="Name does not end in domain name: " + name)
