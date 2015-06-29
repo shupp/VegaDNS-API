@@ -24,6 +24,9 @@ class TestRecord(AbstractEndpointTest):
         vegadns.api.endpoints.record.Record.get_record = MagicMock(
             return_value=model
         )
+        vegadns.api.endpoints.record.Record.get_read_domain = MagicMock(
+            return_value=True
+        )
 
         self.mock_auth('test@test.com', 'test')
 

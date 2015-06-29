@@ -1,4 +1,4 @@
-from flask.ext.restful import Resource, request
+from flask.ext.restful import Resource, request, abort
 
 from vegadns.api.common import Auth
 from vegadns.api.models.domain import Domain as ModelDomain
