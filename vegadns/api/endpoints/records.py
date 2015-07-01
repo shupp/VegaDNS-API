@@ -4,8 +4,8 @@ import peewee
 
 from vegadns.api import endpoint
 from vegadns.api.endpoints.records_common import RecordsCommon
-from vegadns.api.models.record import Record as ModelRecord, RecordType
-from vegadns.api.models.record import RecordTypeException
+from vegadns.api.models.record import Record as ModelRecord
+from vegadns.api.models.recordtypes import RecordTypeException, RecordType
 from vegadns.api.models.domain import Domain as ModelDomain
 
 

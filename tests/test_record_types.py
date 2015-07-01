@@ -1,6 +1,6 @@
 import unittest
 
-from vegadns.api.models.record import RecordType, RecordTypeException
+from vegadns.api.models.recordtypes import RecordType, RecordTypeException
 
 
 class TestRecordTypes(unittest.TestCase):
