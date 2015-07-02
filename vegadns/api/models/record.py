@@ -3,7 +3,7 @@ import re
 from peewee import IntegerField, CharField, PrimaryKeyField
 
 from vegadns.api.models import database, BaseModel, ensure_validation
-from vegadns.api.models.recordtypes import AbstractRecordType
+import vegadns.api.models.recordtypes
 
 
 class Record(BaseModel):
@@ -18,7 +18,9 @@ class Record(BaseModel):
     weight = IntegerField(null=True)
 
     def to_recordtype(self):
-        instance = AbstractRecordType.singleton(self)
+        instance = vegadns.api.models.recordtypes.AbstractRecordType.singleton(
+            self
+        )
         instance.from_model(self)
         return instance
 

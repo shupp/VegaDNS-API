@@ -15,20 +15,23 @@ class RecordsCommon(AbstractEndpoint):
             "A", "CNAME", "NS", "TXT", "PTR", "AAAA", "AAAA+PTR", "SPF"
         ]
         if TypeModel.record_type in common_types:
-            self.check_domain_suffix(domain.domain)
+            if domain is not None:
+                self.check_domain_suffix(domain.domain)
 
             TypeModel.values["name"] = request_form.get("name")
             TypeModel.values["value"] = request_form.get("value")
             TypeModel.values["ttl"] = request_form.get("ttl", 3600)
         elif TypeModel.record_type == "MX":
-            self.check_domain_suffix(domain.domain)
+            if domain is not None:
+                self.check_domain_suffix(domain.domain)
 
             TypeModel.values["name"] = request_form.get("name")
             TypeModel.values["value"] = request_form.get("value")
             TypeModel.values["distance"] = request_form.get("distance", 0)
             TypeModel.values["ttl"] = request_form.get("ttl", 3600)
         elif TypeModel.record_type == "SRV":
-            self.check_domain_suffix(domain.domain)
+            if domain is not None:
+                self.check_domain_suffix(domain.domain)
 
             TypeModel.values["name"] = request_form.get("name")
             TypeModel.values["value"] = request_form.get("value")

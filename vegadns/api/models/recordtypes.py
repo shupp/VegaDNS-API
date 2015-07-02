@@ -2,6 +2,7 @@ import re
 
 from vegadns.api.models import ensure_validation
 import vegadns.api.models.record
+import vegadns.api.models.default_record
 from vegadns.validate.dns import ValidateDNS
 from vegadns.validate.ip import ValidateIPAddress
 from vegadns.validate import Validate
@@ -55,11 +56,14 @@ class AbstractRecordType(object):
             'Method not defined'
         )
 
-    def to_model(self):
-        model = vegadns.api.models.record.Record()
+    def to_model(self, default_record=False):
+        if default_record:
+            model = vegadns.api.models.default_record.DefaultRecord()
+        else:
+            model = vegadns.api.models.record.Record()
+            model.domain_id = self.values["domain_id"]
         if self.values.get("record_id") is not None:
             model.record_id = self.values["record_id"]
-        model.domain_id = self.values["domain_id"]
         model.type = RecordType().set(self.record_type)
 
         return model
@@ -93,23 +97,29 @@ class CommonRecord(AbstractRecordType):
             raise RecordTypeException('Model type is not ' + self.record_type)
 
         self.values['record_id'] = model.record_id
-        self.values['domain_id'] = model.domain_id
+        if type(model) is vegadns.api.models.record.Record:
+            self.values['domain_id'] = model.domain_id
         self.values['record_type'] = RecordType().get(model.type)
         self.values['name'] = model.host
         self.values['value'] = model.val
         self.values['ttl'] = model.ttl
 
-    def to_model(self):
-        model = super(CommonRecord, self).to_model()
+    def to_model(self, default_record=False):
+        model = super(CommonRecord, self).to_model(default_record)
         model.host = self.values["name"]
         model.val = self.values["value"]
         model.ttl = self.values["ttl"]
 
         return model
 
-    def validate_record_hostname(self):
+    def validate_record_hostname(self, default_record=False):
         name = str(self.values.get("name"))
-        if not ValidateDNS.record_hostname(name):
+        if default_record:
+            test_name = name.replace("DOMAIN", "example.com")
+        else:
+            test_name = name
+
+        if not ValidateDNS.record_hostname(test_name):
             raise RecordValueException("Invalid name: " + name)
 
 
@@ -136,7 +146,8 @@ class SOARecord(AbstractRecordType):
         host_split = str(model.host).split(":")
         val_split = str(model.val).split(":")
 
-        self.values['domain_id'] = model.domain_id
+        if type(model) is vegadns.api.models.record.Record:
+            self.values['domain_id'] = model.domain_id
         self.values['record_id'] = model.record_id
         self.values['record_type'] = 'SOA'
 
@@ -173,8 +184,8 @@ class SOARecord(AbstractRecordType):
         else:
             self.values['serial'] = self.defaults['serial']
 
-    def to_model(self):
-        model = super(SOARecord, self).to_model()
+    def to_model(self, default_record=False):
+        model = super(SOARecord, self).to_model(default_record)
         model.host = ":".join(str(i) for i in [
             self.values["email"],
             self.values["nameserver"]
@@ -189,18 +200,20 @@ class SOARecord(AbstractRecordType):
 
         return model
 
-    def validate(self):
+    def validate(self, default_record=False):
         # Defaults are good here, might want to come up with more
         # validation though
-        self.validate_domain_id()
+        if not default_record:
+            self.validate_domain_id()
 
 
 class NSRecord(CommonRecord):
     record_type = 'NS'
 
-    def validate(self):
-        self.validate_domain_id()
-        self.validate_record_hostname()
+    def validate(self, default_record=False):
+        if not default_record:
+            self.validate_domain_id()
+        self.validate_record_hostname(default_record)
 
         value = str(self.values.get("value"))
         if ValidateIPAddress.ipv4(value):
@@ -217,9 +230,10 @@ class NSRecord(CommonRecord):
 class ARecord(CommonRecord):
     record_type = 'A'
 
-    def validate(self):
-        self.validate_domain_id()
-        self.validate_record_hostname()
+    def validate(self, default_record=False):
+        if not default_record:
+            self.validate_domain_id()
+        self.validate_record_hostname(default_record)
 
         ip = str(self.values.get("value"))
         if not ValidateIPAddress.ipv4(ip):
@@ -243,15 +257,16 @@ class MXRecord(CommonRecord):
         # add additional values
         self.values['distance'] = model.distance
 
-    def to_model(self):
-        model = super(MXRecord, self).to_model()
+    def to_model(self, default_record=False):
+        model = super(MXRecord, self).to_model(default_record)
         model.distance = self.values.get("distance", 0)
 
         return model
 
-    def validate(self):
-        self.validate_domain_id()
-        self.validate_record_hostname()
+    def validate(self, default_record=False):
+        if not default_record:
+            self.validate_domain_id()
+        self.validate_record_hostname(default_record)
 
         ip = str(self.values.get("value"))
         if ValidateIPAddress.ipv4(ip):
@@ -265,9 +280,10 @@ class MXRecord(CommonRecord):
 class CNAMERecord(CommonRecord):
     record_type = 'CNAME'
 
-    def validate(self):
-        self.validate_domain_id()
-        self.validate_record_hostname()
+    def validate(self, default_record=False):
+        if not default_record:
+            self.validate_domain_id()
+        self.validate_record_hostname(default_record)
 
         value = str(self.values.get("value"))
         if ValidateIPAddress.ipv4(value):
@@ -279,16 +295,18 @@ class CNAMERecord(CommonRecord):
 class TXTRecord(CommonRecord):
     record_type = 'TXT'
 
-    def validate(self):
-        self.validate_domain_id()
-        self.validate_record_hostname()
+    def validate(self, default_record=False):
+        if not default_record:
+            self.validate_domain_id()
+        self.validate_record_hostname(default_record)
 
 
 class PTRRecord(CommonRecord):
     record_type = 'PTR'
 
-    def validate(self):
-        self.validate_domain_id()
+    def validate(self, default_record=False):
+        if not default_record:
+            self.validate_domain_id()
 
         p = re.compile('^.*\.in-addr.arpa[.]?$', re.IGNORECASE)
         name = str(self.values.get("name"))
@@ -302,9 +320,10 @@ class PTRRecord(CommonRecord):
 class AAAARecord(CommonRecord):
     record_type = 'AAAA'
 
-    def validate(self):
-        self.validate_domain_id()
-        self.validate_record_hostname()
+    def validate(self, default_record=False):
+        if not default_record:
+            self.validate_domain_id()
+        self.validate_record_hostname(default_record)
 
         ip = str(self.values.get("value"))
         if not Validate().ipv6(ip):
@@ -328,17 +347,18 @@ class SRVRecord(CommonRecord):
         self.values['weight'] = model.weight
         self.values['port'] = model.port
 
-    def to_model(self):
-        model = super(SRVRecord, self).to_model()
+    def to_model(self, default_record=False):
+        model = super(SRVRecord, self).to_model(default_record)
         model.distance = self.values.get("distance", 0)
         model.weight = self.values.get("weight")
         model.port = self.values.get("port")
 
         return model
 
-    def validate(self):
-        self.validate_domain_id()
-        self.validate_record_hostname()
+    def validate(self, default_record=False):
+        if not default_record:
+            self.validate_domain_id()
+        self.validate_record_hostname(default_record)
 
         # check _service._protocol format
         name = str(self.values.get("name"))
@@ -368,9 +388,10 @@ class SRVRecord(CommonRecord):
 class SPFRecord(CommonRecord):
     record_type = 'SPF'
 
-    def validate(self):
-        self.validate_domain_id()
-        self.validate_record_hostname()
+    def validate(self, default_record=False):
+        if not default_record:
+            self.validate_domain_id()
+        self.validate_record_hostname(default_record)
 
 
 class RecordType(object):
