@@ -40,6 +40,9 @@ class TestRecords(AbstractEndpointTest):
         )
         domain = vegadns.api.models.domain.Domain()
 
+        vegadns.api.endpoints.records.Records.get_domain = MagicMock(
+            return_value=domain
+        )
         vegadns.api.endpoints.records.Records.get_read_domain = MagicMock(
             return_value=domain
         )
