@@ -48,14 +48,22 @@ class Domains(AbstractEndpoint):
             # race condition, unique constraint will catch it
             abort(400, message="Domain already exists")
 
-        # add records
-            # model.add_default_records()
+        # add default records
+        model.add_default_records()
+        default_records = model.get_records()
+        records = []
+        for record in default_records:
+            records.append(record.to_dict())
 
         if self.auth.account.account_type != 'senior_admin':
-            # send email to admins
+            # FIXME send email to admins
             pass
 
-        return {'status': 'ok', 'domain': model.to_clean_dict()}, 201
+        return {
+            'status': 'ok',
+            'domain': model.to_clean_dict(),
+            'records': records
+        }, 201
 
     def get_domain_list(self):
         if self.auth.account.account_type == 'senior_admin':

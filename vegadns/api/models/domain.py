@@ -1,7 +1,9 @@
-from peewee import CharField, IntegerField, PrimaryKeyField
+from peewee import CharField, IntegerField, PrimaryKeyField, DoesNotExist
 
 from vegadns.api.models import database, BaseModel
 from vegadns.api.models.record import Record
+from vegadns.api.models.default_record import DefaultRecord
+from vegadns.api.models.recordtypes import RecordType
 from vegadns.api.models.domain_group_map import DomainGroupMap
 from vegadns.validate.dns import ValidateDNS
 
@@ -35,6 +37,58 @@ class Domain(BaseModel):
         return Record.select(Record).where(
             Record.domain_id == self.domain_id
         )
+
+    def add_default_records(self):
+        # sanity check
+        if not self.domain_id:
+            raise Exception(
+                "Cannot add default records when domain_id is not set"
+            )
+
+        # don't duplicate SOA record
+        try:
+            existing_soa = Record.get(
+                Record.domain_id == self.domain_id,
+                Record.type == RecordType().set("SOA")
+            )
+        except DoesNotExist:
+            # create SOA record
+            try:
+                default_soa = DefaultRecord.get(
+                    DefaultRecord.type == RecordType().set("SOA")
+                )
+                soa = Record()
+                soa.domain_id = self.domain_id
+                soa.host = default_soa.host.replace("DOMAIN", self.domain)
+                soa.val = default_soa.val
+                soa.ttl = default_soa.ttl
+                soa.type = default_soa.type
+
+                # replace uses of DOMAIN
+                soa.save()
+            except DoesNotExist:
+                # no default SOA record set!
+                pass
+
+        # create all other records
+        default_records = DefaultRecord.select().where(
+            DefaultRecord.type != RecordType().set("SOA")
+        )
+
+        for record in default_records:
+            new = Record()
+
+            new.domain_id = self.domain_id
+            new.distance = record.distance
+            new.host = record.host.replace("DOMAIN", self.domain)
+            new.val = record.val.replace("DOMAIN", self.domain)
+            new.distance = record.distance
+            new.port = record.port
+            new.ttl = record.ttl
+            new.type = record.type
+            new.weight = record.weight
+
+            new.save()
 
     def get_domain_group_maps(self):
         if not self.domain_id:
