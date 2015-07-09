@@ -19,3 +19,12 @@ class ValidateString(object):
             return True
         except ValueError:
             return False
+
+    def email(self, email=None):
+        regex = re.compile(
+            '^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*$'
+        )
+        if regex.match(email):
+            return True
+        else:
+            return False

@@ -1,9 +1,12 @@
-from peewee import CharField, IntegerField
+import hashlib
+
+from peewee import CharField, IntegerField, PrimaryKeyField
 
 from vegadns.api.models import database, BaseModel
 from vegadns.api.models.domain import Domain
 from vegadns.api.models.account_group_map import AccountGroupMap
 from vegadns.api.models.domain_group_map import DomainGroupMap
+from vegadns.validate import Validate
 
 
 class Account(BaseModel):
@@ -14,8 +17,11 @@ class Account(BaseModel):
     password = CharField(db_column='Password')
     phone = CharField(db_column='Phone')
     status = CharField(db_column='Status')
-    account_id = IntegerField(primary_key=True, db_column='cid')
+    account_id = PrimaryKeyField(db_column='cid')
     gid = IntegerField(null=True)
+
+    # For removing password and gid fields via self.to_clean_dict()
+    clean_keys = ["gid", "password"]
 
     class Meta:
         db_table = 'accounts'
@@ -25,8 +31,27 @@ class Account(BaseModel):
         # a dictionary of domain ids to a list of domain group map permissions
         self.domains = {}
 
-    # For removing password and gid fields via self.to_clean_dict()
-    clean_keys = ["gid", "password"]
+    def validate(self):
+        if not Validate().email(self.email):
+            raise Exception("Invalid email: " + self.email)
+
+        if not self.first_name:
+            raise Exception("first_name must not be empty")
+
+        if not self.last_name:
+            raise Exception("last_name must not be empty")
+
+        if self.account_type not in ["senior_admin", "group_admin", "user"]:
+            raise Exception("Invalid account_type: " + self.account_type)
+
+        if self.status not in ["active", "active"]:
+            raise Exception("Invalid status: " + self.status)
+
+    def set_password(self, clear_text):
+        self.password = self.hash_password(clear_text)
+
+    def hash_password(self, clear_text):
+        return hashlib.md5(clear_text).hexdigest()
 
     # helper methods for domain permissions
     def load_domains(self):

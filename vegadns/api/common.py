@@ -1,4 +1,3 @@
-import hashlib
 import re
 import time
 
@@ -53,7 +52,7 @@ class Auth(object):
         password = self.request.authorization.password
 
         account = self.get_account_by_email(email)
-        hashed_pass = hashlib.md5(password).hexdigest()
+        hashed_pass = account.hash_password(password)
 
         if account.password != hashed_pass:
             raise AuthException('Invalid email or password')

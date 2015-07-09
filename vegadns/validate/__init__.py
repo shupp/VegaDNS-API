@@ -19,3 +19,6 @@ class Validate(object):
 
     def uuid(self, string):
         return ValidateString().uuid(string)
+
+    def email(self, email):
+        return ValidateString().email(email)
