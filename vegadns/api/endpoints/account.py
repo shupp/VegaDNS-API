@@ -100,7 +100,7 @@ class Account(AbstractEndpoint):
         account.status = status
         # only set password if it was provided
         if password is not None:
-            account.password = account.set(password)
+            account.set_password(password)
 
         account.save()
 
