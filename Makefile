@@ -1,4 +1,5 @@
 # You'll need to source venv/bin/activate before running this file
+SHELL := /bin/bash
 .PHONY: coverage
 
 default: check test
