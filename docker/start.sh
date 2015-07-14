@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 if [ "$1" == "test" ]; then
     echo "In integration test mode"
     TEST=1
@@ -47,10 +49,6 @@ if [ $TEST -eq 1 ]; then
     cd /var/www/vegadns2
     source venv/bin/activate
     make
-    RESULT=$?
-    if [ $RESULT -ne 0 ]; then
-        exit $RESULT
-    fi
 
     # Integration tests
     echo "Running integration tests"

@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 # Change to the parent directory of this script
 DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 cd ${DIR}/../
