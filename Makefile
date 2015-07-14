@@ -19,3 +19,5 @@ clean-coverage:
 	rm -rf coverage .coverage
 clean-python:
 	find vegadns tests -name "*.pyc" -exec rm {} \;
+test-integration:
+	docker/build_docker_image_integration_tests.sh && docker/run_docker_integration_tests.sh
