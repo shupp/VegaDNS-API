@@ -1,9 +1,17 @@
 #!/bin/bash
 
+if [ ! "$1" == "test" ]; then
+    TEST=1
+else
+    TEST=0
+fi
 
-echo "Configuring tinydns IP"
-IP=`ifconfig | grep -A 1 eth0 | sed -ne '2p' | awk '{ print $2 }' | sed -e 's/^addr://'`
-echo ${IP} > /etc/tinydns/env/IP
+
+if [ $TEST -eq 0 ]; then
+    echo "Configuring tinydns IP"
+    IP=`ifconfig | grep -A 1 eth0 | sed -ne '2p' | awk '{ print $2 }' | sed -e 's/^addr://'`
+    echo ${IP} > /etc/tinydns/env/IP
+fi
 
 echo "Starting daemontools for tinydns"
 sh -cf '/usr/bin/svscanboot &'
@@ -30,6 +38,24 @@ echo "Starting supervisor"
 echo "Starting nginx"
 /etc/init.d/nginx start
 
-echo "Ready!"
+echo "Sleeping 4 to wait for supervisor"
+/bin/sleep 4
 
-/bin/sleep infinity
+if [ $TEST -eq 1 ]; then
+    echo "Running unit tests"
+    cd /var/www/vegadns2
+    source venv/bin/activate
+    make
+    RESULT=$?
+    if [ $RESULT -ne 0 ]; then
+        exit $RESULT
+    fi
+
+    # Integration tests
+    echo "Running integration tests"
+    deactivate
+    nosetests vegadns-cli/integration_tests
+else
+    echo "Ready!"
+    /bin/sleep infinity
+fi

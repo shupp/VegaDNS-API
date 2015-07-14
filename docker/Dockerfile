@@ -26,6 +26,9 @@ ADD . /var/www/vegadns2
 RUN chmod +x /var/www/vegadns2/docker/buildenv.sh
 RUN /var/www/vegadns2/docker/buildenv.sh
 
+# Add install cli deps
+RUN pip install --upgrade /var/www/vegadns2/vegadns-cli
+
 RUN chown -R www-data:www-data /var/www/vegadns2
 
 # remove default nginx config
