@@ -1,6 +1,7 @@
 #!/bin/bash
 
 if [ ! "$1" == "test" ]; then
+    echo "In integration test mode"
     TEST=1
 else
     TEST=0
