@@ -3,16 +3,15 @@ FROM ubuntu:trusty
 ENV DEBIAN_FRONTEND noninteractive
 
 # VegaDNS2 dependencies
-RUN apt-get update -y
-RUN apt-get install -y build-essential python-dev python-virtualenv
-RUN apt-get install -y uwsgi-plugin-python
-RUN apt-get install -y daemontools daemontools-run ucspi-tcp djbdns
-RUN apt-get install -y nginx supervisor
+RUN apt-get update && apt-get install -y build-essential python-dev python-virtualenv
+RUN apt-get update && apt-get install -y uwsgi-plugin-python
+RUN apt-get update && apt-get install -y daemontools daemontools-run ucspi-tcp djbdns
+RUN apt-get update && apt-get install -y nginx supervisor
 # for local exports during integration testing
-RUN apt-get install -y curl
+RUN apt-get update && apt-get install -y curl
 
 # Configuration script dependencies
-RUN apt-get install -y python-pip
+RUN apt-get update && apt-get install -y python-pip
 RUN pip install pystache
 
 # create djbdns accounts Gtinydns, Gdnslog
@@ -20,7 +19,7 @@ RUN adduser --force-badname --no-create-home --disabled-login --shell /bin/false
 RUN adduser --force-badname --no-create-home --disabled-login --shell /bin/false Gtinydns
 
 # For testing
-RUN apt-get install -y mysql-server
+RUN apt-get update && apt-get install -y mysql-server
 
 # Add software files and templates
 ADD . /var/www/vegadns2
