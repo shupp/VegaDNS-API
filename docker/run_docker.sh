@@ -1,18 +1,17 @@
 #!/bin/bash
 
-COMMAND=""
-ARG=""
+DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 
 if [ "$1" == "test" ]; then
-    COMMAND="/var/www/vegadns2/docker/start.sh"
-    ARG="/var/www/vegadns2/docker/start.sh"
+    docker run \
+        -v ${DIR}/../sql:/mnt \
+        vegadns2-public \
+        /var/www/vegadns2/docker/start.sh \
+        test
+else
+    docker run \
+        -p 80:80 \
+        -p 53:53/udp \
+        -v ${DIR}/../sql:/mnt \
+        vegadns2-public
 fi
-
-DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
-docker run \
-    -p 80:80 \
-    -p 53:53/udp \
-    -v ${DIR}/../sql:/mnt \
-    vegadns2-public \
-    $COMMAND \
-    $ARG
