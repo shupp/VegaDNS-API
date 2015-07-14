@@ -1,5 +1,4 @@
 # You'll need to source venv/bin/activate before running this file
-SHELL := /bin/bash
 .PHONY: coverage
 
 default: check test
@@ -20,5 +19,7 @@ clean-coverage:
 	rm -rf coverage .coverage
 clean-python:
 	find vegadns tests -name "*.pyc" -exec rm {} \;
-test-integration:
-	docker/build_docker_image.sh && docker/run_docker.sh test
+build-image:
+	docker/build_docker_image.sh
+test-integration: build-image
+	docker/run_docker.sh test
