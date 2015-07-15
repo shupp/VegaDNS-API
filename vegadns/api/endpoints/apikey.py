@@ -48,8 +48,14 @@ class ApiKey(AbstractEndpoint):
         return {'status': 'ok'}
 
     def get_apikey(self, apikey_id):
-        return ModelApiKey.get(
-            ModelApiKey.apikey_id == apikey_id,
-            ModelApiKey.account_id == self.auth.account.account_id,
-            ModelApiKey.deleted == 0
-        )
+        if self.auth.account.account_type == "senior_admin":
+            return ModelApiKey.get(
+                ModelApiKey.apikey_id == apikey_id,
+                ModelApiKey.deleted == 0
+            )
+        else:
+            return ModelApiKey.get(
+                ModelApiKey.apikey_id == apikey_id,
+                ModelApiKey.account_id == self.auth.account.account_id,
+                ModelApiKey.deleted == 0
+            )
