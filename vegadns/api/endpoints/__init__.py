@@ -1,8 +1,11 @@
+import time
+
 from flask.ext.restful import Resource, request, abort
 
 from vegadns.api.common import Auth
 from vegadns.api.models.account import Account as ModelAccount
 from vegadns.api.models.domain import Domain as ModelDomain
+from vegadns.api.models.audit_log import AuditLog as ModelAuditLog
 
 
 class AbstractEndpoint(Resource):
@@ -42,3 +45,21 @@ class AbstractEndpoint(Resource):
 
     def get_account(self, account_id):
         return ModelAccount.get(ModelAccount.account_id == account_id)
+
+    def dns_log(self, domain_id, entry):
+        log = ModelAuditLog()
+        log.name = (self.auth.account.first_name +
+                    " " +
+                    self.auth.account.last_name)
+        log.email = self.auth.account.email
+        log.domain_id = domain_id
+        log.account_id = self.auth.account.account_id
+        log.entry = entry
+        log.time = int(time.time())
+
+        try:
+            log.save()
+            return log
+        except:
+            # FIXME log error
+            pass

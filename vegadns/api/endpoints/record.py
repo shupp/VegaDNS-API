@@ -5,6 +5,7 @@ import peewee
 from vegadns.api import endpoint
 from vegadns.api.endpoints.records_common import RecordsCommon
 from vegadns.api.models.record import Record as ModelRecord
+from vegadns.api.models.recordtypes import RecordType
 
 
 @endpoint
@@ -39,6 +40,16 @@ class Record(RecordsCommon):
         model = TypeModel.to_model()
         model.save()
 
+        self.dns_log(
+            domain.domain_id,
+            (
+                "updated record " + str(model.record_id) +
+                "of type " + RecordType().get(model.type) +
+                " with host " + model.host +
+                " and value " + model.val
+            )
+        )
+
         return {'status': 'ok', 'record': model.to_recordtype().to_dict()}
 
     def delete(self, record_id):
@@ -51,6 +62,15 @@ class Record(RecordsCommon):
         domain = self.get_delete_domain(record.domain_id)
         record.delete_instance()
 
+        self.dns_log(
+            domain.domain_id,
+            (
+                "deleted " + RecordType().get(record.type) +
+                " with host " + record.host +
+                " and value " + record.val
+            )
+        )
+
         return {'status': 'ok'}
 
     def get_record(self, record_id):
@@ -60,4 +80,7 @@ class Record(RecordsCommon):
         # make sure hostname ends in domain name
         name = request.form.get("name")
         if not name or not ModelRecord.hostname_in_domain(name, domain):
-            abort(400, message="Name does not end in domain name: " + name)
+            abort(
+                400,
+                message="Name does not end in domain name: " + str(name)
+            )

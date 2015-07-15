@@ -79,4 +79,13 @@ class Records(RecordsCommon):
         model = TypeModel.to_model()
         model.save()
 
+        self.dns_log(
+            domain.domain_id,
+            (
+                "added " + record_type +
+                " with host " + model.host +
+                " and value " + model.val
+            )
+        )
+
         return {'status': 'ok', 'record': model.to_recordtype().to_dict()}, 201

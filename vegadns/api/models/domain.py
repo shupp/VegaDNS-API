@@ -38,7 +38,7 @@ class Domain(BaseModel):
             Record.domain_id == self.domain_id
         )
 
-    def add_default_records(self):
+    def add_default_records(self, endpoint=None):
         # sanity check
         if not self.domain_id:
             raise Exception(
@@ -66,6 +66,8 @@ class Domain(BaseModel):
 
                 # replace uses of DOMAIN
                 soa.save()
+                if endpoint is not None:
+                    endpoint.dns_log(soa.domain_id, "added soa")
             except DoesNotExist:
                 # no default SOA record set!
                 pass
@@ -89,6 +91,15 @@ class Domain(BaseModel):
             new.weight = record.weight
 
             new.save()
+            if endpoint is not None:
+                endpoint.dns_log(
+                    new.domain_id,
+                    (
+                        "added " + RecordType().get(new.type) +
+                        " with host " + new.host +
+                        " and value " + new.val
+                    )
+                )
 
     def get_domain_group_maps(self):
         if not self.domain_id:

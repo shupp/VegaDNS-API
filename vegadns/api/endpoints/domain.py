@@ -57,6 +57,14 @@ class Domain(AbstractEndpoint):
 
         domain.save()
 
+        # logging
+        log_msgs = []
+        if owner_id is not None:
+            log_msgs.append("owner id set to " + owner_id)
+        if status is not None:
+            log_msgs.append("status set to " + status)
+        self.dns_log(domain.domain_id, ", ".join(log_msgs))
+
         return {'status': 'ok', 'domain': domain.to_clean_dict()}
 
     def delete(self, domain_id):
@@ -65,8 +73,13 @@ class Domain(AbstractEndpoint):
         except peewee.DoesNotExist:
             abort(404, message="domain does not exist")
 
+        log_domain_id = domain.domain_id
+        log_msg = "deleted domain " + domain.domain
+
         domain.delete_domain_group_maps()
         domain.delete_records()
         domain.delete_instance()
+
+        self.dns_log(log_domain_id, log_msg)
 
         return {'status': 'ok'}

@@ -42,6 +42,11 @@ class Domains(AbstractEndpoint):
 
         try:
             model.save()
+
+            self.dns_log(
+                model.domain_id,
+                "Added domain " + model.domain + " with status " + model.status
+            )
         except ValueError:
             abort(400, message="Invalid parameters")
         except peewee.IntegrityError:
@@ -49,7 +54,7 @@ class Domains(AbstractEndpoint):
             abort(400, message="Domain already exists")
 
         # add default records
-        model.add_default_records()
+        model.add_default_records(self)
         default_records = model.get_records()
         records = []
         for record in default_records:
