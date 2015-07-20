@@ -45,7 +45,7 @@ class Domain(AbstractEndpoint):
         if status is not None:
             if self.auth.account.account_type != 'senior_admin':
                 abort(
-                    401,
+                    403,
                     message="Only senior_admins can change status"
                 )
             if status != "active" and status != "inactive":

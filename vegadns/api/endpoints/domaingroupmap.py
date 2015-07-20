@@ -26,7 +26,7 @@ class DomainGroupMap(AbstractEndpoint):
 
     def put(self, map_id):
         if self.auth.account.account_type != 'senior_admin':
-            abort(401)
+            abort(403)
 
         try:
             map = self.get_map(map_id)
@@ -62,7 +62,7 @@ class DomainGroupMap(AbstractEndpoint):
 
     def delete(self, map_id):
         if self.auth.account.account_type != 'senior_admin':
-            abort(401)
+            abort(403)
         try:
             map = self.get_map(map_id)
         except peewee.DoesNotExist:

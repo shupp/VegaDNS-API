@@ -44,9 +44,9 @@ class GroupMember(AbstractEndpoint):
                     ModelMap.account_id == self.auth.account.account_id
                 )
                 if mymap.is_admin != 1:
-                    abort(401)
+                    abort(403)
             except peewee.DoesNotExist:
-                abort(401)
+                abort(403)
 
         # make change
         map.is_admin = int(is_admin)
@@ -72,9 +72,9 @@ class GroupMember(AbstractEndpoint):
                     ModelMap.account_id == self.auth.account.account_id
                 )
                 if mymap.is_admin != 1:
-                    abort(401)
+                    abort(403)
             except peewee.DoesNotExist:
-                abort(401)
+                abort(403)
 
         try:
             # FIXME need to delete domain maps when in place

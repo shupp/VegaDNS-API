@@ -33,7 +33,7 @@ class DomainGroupMaps(AbstractEndpoint):
 
     def post(self):
         if self.auth.account.account_type != 'senior_admin':
-            abort(401)
+            abort(403)
 
         group_id = request.form.get('group_id')
         domain_id = request.form.get('domain_id')

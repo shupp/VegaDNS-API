@@ -66,9 +66,9 @@ class GroupMembers(AbstractEndpoint):
                     group_id
                 )
                 if mymap.is_admin != 1:
-                    abort(401)
+                    abort(403)
             except peewee.DoesNotExist:
-                abort(401)
+                abort(403)
 
         # Add map
         newmap = self.create_map(account_id, group_id, is_admin)
