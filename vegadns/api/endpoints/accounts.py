@@ -48,7 +48,7 @@ class Accounts(AbstractEndpoint):
                 message="account_type must be either system_admin or user"
             )
 
-        phone = request.form.get("phone", None)
+        phone = request.form.get("phone", "")
         # Configurable password regex?
         password = request.form.get("password", None)
 
