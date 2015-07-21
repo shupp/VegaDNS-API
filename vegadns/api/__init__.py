@@ -1,9 +1,33 @@
-from flask import Flask, abort, redirect, url_for, jsonify
+import logging
+import uuid
+import os
+
+from flask import Flask
 from flask.ext.restful import Resource, Api
 
 
 app = Flask(__name__)
-api = Api(app)
+
+
+if not bool(os.environ.get('DEBUG', None)):
+    app.logger.addHandler(logging.StreamHandler())
+
+
+class VegaDNSApi(Api):
+    def handle_error(self, e):
+        # Bubble up exceptions with a code set
+        if hasattr(e, 'code'):
+            return super(VegaDNSApi, self).handle_error(e)
+
+        # Handle unexpected exceptions
+        app.logger.exception(e)
+        return self.make_response({
+            "code": 500,
+            "message": "An unexpected error occured"
+        }, 500)
+
+
+api = VegaDNSApi(app)
 
 
 def endpoint(cls):
@@ -22,3 +46,8 @@ def output_text(data, code, headers=None):
     resp = make_response(data, code)
     resp.headers.extend(headers or {})
     return resp
+
+
+@app.before_request
+def before_request():
+    app.request_id = uuid.uuid4()
