@@ -36,6 +36,7 @@ echo "Setting up config files for supervisor, nginx, VegaDNS2"
 cp /var/www/vegadns2/docker/templates/supervisor-vegadns2.conf /etc/supervisor/conf.d/vegadns2.conf
 cp /var/www/vegadns2/docker/templates/nginx-vegadns2.conf /etc/nginx/sites-enabled/vegadns2
 cp /var/www/vegadns2/docker/templates/sudoers.www-data /etc/sudoers.d/vegadns2-www-data
+cp /var/www/vegadns2/docker/templates/crontab /etc/cron.d/vegadns
 
 python /var/www/vegadns2/docker/templates/config.py > /var/www/vegadns2/vegadns/api/config/local.ini
 chmod 660 /etc/sudoers.d/vegadns2-www-data
@@ -45,6 +46,9 @@ echo "Starting supervisor"
 
 echo "Starting nginx"
 /etc/init.d/nginx start
+
+echo "Starting cron"
+cron
 
 echo "Sleeping 4 to wait for supervisor"
 /bin/sleep 4
