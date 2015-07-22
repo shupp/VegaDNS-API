@@ -1,0 +1,8 @@
+[mysql]
+user = {{db_user}}
+password = {{db_pass}}
+database = {{db_db}}
+host = {{db_host}}
+
+[monitoring]
+vegadns_generation_txt_record = {{vegadns_generation}}
