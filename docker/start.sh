@@ -12,7 +12,9 @@ fi
 
 if [ $TEST -eq 0 ]; then
     echo "Configuring tinydns IP"
-    IP=`ifconfig | grep -A 1 eth0 | sed -ne '2p' | awk '{ print $2 }' | sed -e 's/^addr://'`
+    if [ -z "$IP" ] ; then
+        IP=`ifconfig | grep -A 1 eth0 | sed -ne '2p' | awk '{ print $2 }' | sed -e 's/^addr://'`
+    fi
     echo ${IP} > /etc/tinydns/env/IP
 fi
 
