@@ -242,6 +242,10 @@ class ARecord(CommonRecord):
             )
 
 
+class APTRRecord(ARecord):
+    record_type = 'A+PTR'
+
+
 class MXRecord(CommonRecord):
     record_type = 'MX'
 
@@ -399,6 +403,7 @@ class RecordType(object):
         'S': {'name': 'SOA', 'record_class': SOARecord},
         'N': {'name': 'NS', 'record_class': NSRecord},
         'A': {'name': 'A', 'record_class': ARecord},
+        '=': {'name': 'A+PTR', 'record_class': APTRRecord},
         '3': {'name': 'AAAA', 'record_class': AAAARecord},
         '6': {'name': 'AAAA+PTR', 'record_class': AAAAPTRRecord},
         'M': {'name': 'MX', 'record_class': MXRecord},

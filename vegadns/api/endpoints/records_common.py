@@ -12,7 +12,8 @@ class RecordsCommon(AbstractEndpoint):
     def request_form_to_type_model(self, request_form, TypeModel, domain):
         # switch on type for now
         common_types = [
-            "A", "CNAME", "NS", "TXT", "PTR", "AAAA", "AAAA+PTR", "SPF"
+            "A", "A+PTR", "CNAME", "NS",
+            "TXT", "PTR", "AAAA", "AAAA+PTR", "SPF"
         ]
         if TypeModel.record_type in common_types:
             if domain is not None:

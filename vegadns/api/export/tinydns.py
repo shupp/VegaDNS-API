@@ -12,6 +12,10 @@ class ExportTinydnsData(object):
         if model.type == "A":
             return "+" + model.host + ":" + model.val + \
                 ":" + str(model.ttl) + "\n"
+        # A+PTR record
+        if model.type == "=":
+            return "=" + model.host + ":" + model.val + \
+                ":" + str(model.ttl) + "\n"
         # MX record
         elif model.type == "M":
             return "@" + model.host + "::" + model.val + ":" + \
