@@ -22,6 +22,10 @@ class Auth(object):
         # determine auth
         auth_header = self.request.headers.get('Authorization', None)
         if auth_header is None:
+            # check if cookie auth is allowed
+            if self.request.cookies.get("vegadns") is not None:
+                return self.cookie_authenticate()
+
             # check if ip auth is allowed
             if "ip" in self.endpoint.auth_types:
                 return self.ip_authenticate()
@@ -94,6 +98,29 @@ class Auth(object):
 
         if ip != trusted and ip not in ",".split(trusted):
             raise AuthException('IP not authorized: ' + ip)
+
+    def cookie_authenticate(self):
+        supplied_cookie = self.request.cookies.get("vegadns")
+        split = supplied_cookie.split("-")
+        if len(split) is not 2:
+            raise AuthException('Invalid cookie supplied')
+        account_id = split[0]
+
+        try:
+            account = Account.get(
+                Account.account_id == account_id,
+                Account.status == 'active'
+            )
+        except peewee.DoesNotExist:
+            raise AuthException("Invalid cookie supplied")
+
+        user_agent = self.request.headers.get('User-Agent')
+        generated_cookie = account.generate_cookie_value(account, user_agent)
+
+        if supplied_cookie != generated_cookie:
+            raise AuthException("Invalid cookie supplied")
+
+        self.account = account
 
 
 class AuthException(Exception):

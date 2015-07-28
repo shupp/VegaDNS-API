@@ -11,7 +11,7 @@ from vegadns.api.models.audit_log import AuditLog as ModelAuditLog
 class AbstractEndpoint(Resource):
     version = 1.0
     auth_required = True
-    auth_types = ["basic", "oauth"]
+    auth_types = ["basic", "oauth", "cookie"]
 
     def __init__(self):
         self.auth = Auth(request, self)

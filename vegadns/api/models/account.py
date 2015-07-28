@@ -2,6 +2,7 @@ import hashlib
 
 from peewee import CharField, IntegerField, PrimaryKeyField
 
+from vegadns.api.config import config
 from vegadns.api.models import database, BaseModel
 from vegadns.api.models.domain import Domain
 from vegadns.api.models.account_group_map import AccountGroupMap
@@ -130,3 +131,11 @@ class Account(BaseModel):
                 return True
 
         return False
+
+    def generate_cookie_value(self, account, agent):
+        cookie_secret = config.get("auth", "cookie_secret")
+        account_id = str(account.account_id)
+        string = (account_id + account.password + cookie_secret + agent)
+        hash = hashlib.md5(string).hexdigest()
+
+        return account_id + "-" + hash
