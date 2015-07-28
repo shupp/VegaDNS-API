@@ -28,6 +28,8 @@ class AbstractEndpointTest(unittest.TestCase):
 
     def open_with_basic_auth(self, url, method, email, password, data=None):
         encoded = base64.b64encode(email + ":" + password).decode("ascii")
+        url = "/1.0" + url
+        print url
         return self.test_app.open(
             url,
             method=method,

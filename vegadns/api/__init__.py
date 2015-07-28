@@ -33,11 +33,16 @@ api = VegaDNSApi(app)
 def endpoint(cls):
     """A shorthand decorator to create an endpoint out of a class."""
     cls_route = getattr(cls, 'route', None)
+    cls_version = getattr(cls, 'version', None)
 
     if cls_route is None:
         raise Exception('A class field "route" is required')
 
-    api.add_resource(cls, cls_route)
+    if cls_version is None:
+        raise Exception('A class field "version" is required')
+
+    path = "/" + str(cls_version) + cls_route
+    api.add_resource(cls, path)
     return cls
 
 

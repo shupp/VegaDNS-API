@@ -2,7 +2,7 @@
 
 # The VegaDNS2 tinydns export endpoint
 # Can be a space delimited list of VegaDNS2 servers
-VEGADNS='http://127.0.0.1/export/tinydns'
+VEGADNS='http://127.0.0.1/1.0/export/tinydns'
 
 # Path to the tinydns directory
 TINYDNSDIR=/etc/tinydns
