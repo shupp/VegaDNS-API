@@ -35,8 +35,7 @@ RUN chown -R www-data:www-data /var/www/vegadns2
 RUN rm -f /etc/nginx/sites-enabled/default
 
 RUN tinydns-conf Gtinydns Gdnslog /etc/tinydns 127.0.0.1
-RUN ln -s /etc/tinydns /service
-RUN ln -s /service /etc/service/tinydns
+RUN ln -s /etc/tinydns /etc/service
 
 # start all the moving pieces
 RUN chmod +x /var/www/vegadns2/bin/update-data.sh
