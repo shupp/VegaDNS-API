@@ -39,9 +39,10 @@ def endpoint(cls):
         raise Exception('A class field "route" is required')
 
     if cls_version is None:
-        raise Exception('A class field "version" is required')
+        path = cls_route
+    else:
+        path = "/" + str(cls_version) + cls_route
 
-    path = "/" + str(cls_version) + cls_route
     api.add_resource(cls, path)
     return cls
 
