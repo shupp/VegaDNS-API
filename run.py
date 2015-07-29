@@ -7,6 +7,7 @@ from vegadns.api.endpoints import token, groupmember, groupmembers, accounts
 from vegadns.api.endpoints import domaingroupmap, domaingroupmaps
 from vegadns.api.endpoints import default_record, default_records
 from vegadns.api.endpoints import updatedata, account, login, logout
+from vegadns.api.endpoints import healthcheck
 
 profile = os.environ.get('PROFILE', None)
 debug = bool(os.environ.get('DEBUG', None))
