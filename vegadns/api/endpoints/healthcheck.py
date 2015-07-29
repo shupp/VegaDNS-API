@@ -8,7 +8,7 @@ from vegadns.api.endpoints import AbstractEndpoint
 class HealthCheck(AbstractEndpoint):
     version = None
     auth_required = False
-    route = '/'
+    route = '/healthcheck'
 
     def get(self):
         return "{'status': 'ok'}"
