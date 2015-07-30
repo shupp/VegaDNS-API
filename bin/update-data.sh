@@ -23,7 +23,7 @@ fi
 A=$[0]
 for VD in $VEGADNS ; do
     A=$[$A+1]
-    if curl -s -o "$TINYDNSDIR/root/data.srv-$A" $VD ; then
+    if wget -q -O "$TINYDNSDIR/root/data.srv-$A" $VD ; then
         if [ -s "$TINYDNSDIR/root/data.srv-$A" ] ; then
             cat "$TINYDNSDIR/root/data.srv-$A" >>$NEW
         else
