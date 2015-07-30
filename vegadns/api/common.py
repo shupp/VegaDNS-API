@@ -1,6 +1,7 @@
 import re
 import time
 
+from flask import request
 import peewee
 
 from vegadns.api.config import config
@@ -91,7 +92,11 @@ class Auth(object):
             raise AuthException('Account not found')
 
     def ip_authenticate(self):
-        ip = self.request.remote_addr
+        if len(request.access_route):
+            ip = request.access_route[0]
+        else:
+            raise AuthException('No remote IP set')
+
         trusted = config.get('ip_auth', 'trusted_ips')
         if not trusted:
             raise AuthException('IP not authorized: ' + ip)
