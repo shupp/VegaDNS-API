@@ -101,7 +101,7 @@ class Auth(object):
         if not trusted:
             raise AuthException('IP not authorized: ' + ip)
 
-        if ip != trusted and ip not in ",".split(trusted):
+        if ip != trusted and ip not in trusted.split(','):
             raise AuthException('IP not authorized: ' + ip)
 
     def cookie_authenticate(self):
