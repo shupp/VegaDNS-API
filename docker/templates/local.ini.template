@@ -6,3 +6,6 @@ host = {{db_host}}
 
 [monitoring]
 vegadns_generation_txt_record = {{vegadns_generation}}
+
+[ip_auth]
+trusted_ips = {{trusted_ips}}
