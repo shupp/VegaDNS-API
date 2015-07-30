@@ -31,7 +31,7 @@ for VD in $VEGADNS ; do
             exit 1
         fi
     else
-        echo "ERROR: curl did not return 0 when accessing $VD" 1>&2
+        echo "ERROR: wget did not return 0 when accessing $VD" 1>&2
         exit 1
     fi
     if [ -f "$TINYDNSDIR/root/data.srv-$A" ] ; then
