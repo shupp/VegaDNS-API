@@ -8,7 +8,7 @@ RUN apt-get update && apt-get install -y uwsgi-plugin-python
 RUN apt-get update && apt-get install -y daemontools daemontools-run ucspi-tcp djbdns
 RUN apt-get update && apt-get install -y nginx supervisor
 # for local exports during integration testing
-RUN apt-get update && apt-get install -y curl
+RUN apt-get update && apt-get install -y curl wget
 
 # Configuration script dependencies
 RUN apt-get update && apt-get install -y python-pip
