@@ -34,7 +34,8 @@ class AbstractEndpointTest(unittest.TestCase):
             url,
             method=method,
             headers={
-                'Authorization': 'Basic ' + encoded
+                'Authorization': 'Basic ' + encoded,
+                'Origin': 'test_client'
             },
             data=data
         )
