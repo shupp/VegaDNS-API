@@ -13,6 +13,7 @@ cors = CORS(app, supports_credentials=True)
 
 if not bool(os.environ.get('DEBUG', None)):
     app.logger.addHandler(logging.StreamHandler())
+    app.logger.setLevel('INFO')
 
 
 class VegaDNSApi(Api):
