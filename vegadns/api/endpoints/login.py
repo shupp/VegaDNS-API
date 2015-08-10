@@ -38,7 +38,7 @@ class Login(AbstractEndpoint):
         user_agent = request.headers.get('User-Agent')
         generated_cookie = account.generate_cookie_value(account, user_agent)
 
-        response = make_response("{'status': 'ok'}")
+        response = make_response('{"status": "ok"}')
         response.mimetype = 'application/json'
         response.set_cookie('vegadns', generated_cookie)
 
@@ -47,9 +47,9 @@ class Login(AbstractEndpoint):
     def send_error_response(self, code, message):
         if request.form.get("suppress_response_codes") == "true":
             response = {
-                'status': 'error',
-                'response_code': code,
-                'message': message
+                "status": "error",
+                "response_code": code,
+                "message": message
             }
             return response
 
