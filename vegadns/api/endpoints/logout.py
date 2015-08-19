@@ -14,7 +14,8 @@ class Logout(AbstractEndpoint):
     route = '/logout'
 
     def post(self):
-        response = make_response("{'status': 'ok'}")
+        response = make_response('{"status": "ok"}')
+        response.mimetype = 'application/json'
         response.set_cookie('vegadns', "", expires=0)
 
         return response
