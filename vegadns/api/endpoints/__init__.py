@@ -15,7 +15,6 @@ class AbstractEndpoint(Resource):
 
     def __init__(self):
         self.auth = Auth(request, self)
-        pass
 
     def get_read_domain(self, domain_id):
         if self.auth.account.account_type == 'senior_admin':
