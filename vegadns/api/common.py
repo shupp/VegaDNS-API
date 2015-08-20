@@ -106,6 +106,9 @@ class Auth(object):
 
     def cookie_authenticate(self):
         supplied_cookie = self.request.cookies.get("vegadns")
+        if supplied_cookie is None:
+            raise AuthException('Invalid cookie supplied')
+
         split = supplied_cookie.split("-")
         if len(split) is not 2:
             raise AuthException('Invalid cookie supplied')
