@@ -3,6 +3,7 @@ from flask_restful import abort, request
 import peewee
 
 from vegadns.api import endpoint
+from vegadns.api.common import Auth, AuthException
 from vegadns.api.endpoints import AbstractEndpoint
 from vegadns.api.models.account import Account as ModelAccount
 from vegadns.validate import Validate
@@ -12,6 +13,14 @@ from vegadns.validate import Validate
 class Login(AbstractEndpoint):
     auth_required = False
     route = '/login'
+
+    def get(self):
+        auth = Auth(request, self)
+        try:
+            auth.cookie_authenticate()
+            return '{"status": "ok"}'
+        except AuthException:
+            return self.send_error_response(401, "not logged in")
 
     def post(self):
         email = request.form.get("email", None)
@@ -45,7 +54,10 @@ class Login(AbstractEndpoint):
         return response
 
     def send_error_response(self, code, message):
-        if request.form.get("suppress_response_codes") == "true":
+        request.args
+        if request.args.get("suppress_response_codes") == "true" \
+           or request.form.get("suppress_response_codes") == "true":
+
             response = {
                 "status": "error",
                 "response_code": code,
