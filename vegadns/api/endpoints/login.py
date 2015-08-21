@@ -18,7 +18,7 @@ class Login(AbstractEndpoint):
         auth = Auth(request, self)
         try:
             auth.cookie_authenticate()
-            return '{"status": "ok"}'
+            return {"status": "ok"}
         except AuthException:
             return self.send_error_response(401, "not logged in")
 
