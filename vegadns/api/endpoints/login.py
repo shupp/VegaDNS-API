@@ -20,17 +20,17 @@ class Login(AbstractEndpoint):
             auth.cookie_authenticate()
             return {"status": "ok"}
         except AuthException:
-            return self.send_error_response(401, "not logged in")
+            return abort(401, message="not logged in")
 
     def post(self):
         email = request.form.get("email", None)
         password = request.form.get("password", None)
 
         if email is None or password is None:
-            return self.send_error_response(400, "email and password required")
+            return abort(401, message="email and password required")
 
         if not Validate().email(email):
-            return self.send_error_response(400, "invalid email")
+            return abort(401, message="invalid email")
 
         try:
             account = ModelAccount.get(
@@ -38,11 +38,11 @@ class Login(AbstractEndpoint):
                 ModelAccount.status == 'active'
             )
         except peewee.DoesNotExist:
-            return self.send_error_response(401, "invalid email or password")
+            return abort(401, message="invalid email or password")
 
         # check password!
         if account.hash_password(password) != account.password:
-            return self.send_error_response(401, "invalid email or password")
+            return abort(401, message="invalid email or password")
 
         user_agent = request.headers.get('User-Agent')
         generated_cookie = account.generate_cookie_value(account, user_agent)
@@ -52,17 +52,3 @@ class Login(AbstractEndpoint):
         response.set_cookie('vegadns', generated_cookie)
 
         return response
-
-    def send_error_response(self, code, message):
-        request.args
-        if request.args.get("suppress_response_codes") == "true" \
-           or request.form.get("suppress_response_codes") == "true":
-
-            response = {
-                "status": "error",
-                "response_code": code,
-                "message": message
-            }
-            return response
-
-        abort(code, message=message)
