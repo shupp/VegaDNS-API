@@ -1,4 +1,5 @@
 import time
+import json
 
 from flask.ext.restful import Resource, request, abort
 
@@ -63,3 +64,6 @@ class AbstractEndpoint(Resource):
         except:
             # FIXME log error
             pass
+
+    def serialize(self, content):
+        return json.dumps(content)

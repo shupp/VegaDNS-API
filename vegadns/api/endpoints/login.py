@@ -18,7 +18,10 @@ class Login(AbstractEndpoint):
         auth = Auth(request, self)
         try:
             auth.cookie_authenticate()
-            return {"status": "ok"}
+            return {
+                "status": "ok",
+                "account": auth.account.to_clean_dict()
+            }
         except AuthException:
             return abort(401, message="not logged in")
 
@@ -47,7 +50,11 @@ class Login(AbstractEndpoint):
         user_agent = request.headers.get('User-Agent')
         generated_cookie = account.generate_cookie_value(account, user_agent)
 
-        response = make_response('{"status": "ok"}')
+        data = {
+            "status": "ok",
+            "account": account.to_clean_dict()
+        }
+        response = make_response(self.serialize(data))
         response.mimetype = 'application/json'
         response.set_cookie('vegadns', generated_cookie)
 
