@@ -38,6 +38,9 @@ class TestRecords(AbstractEndpointTest):
         vegadns.api.models.domain.Domain.get_records = MagicMock(
             return_value=[record_one, record_two]
         )
+        vegadns.api.models.domain.Domain.count_records = MagicMock(
+            return_value=2
+        )
         domain = vegadns.api.models.domain.Domain()
 
         vegadns.api.endpoints.records.Records.get_domain = MagicMock(
@@ -59,6 +62,7 @@ class TestRecords(AbstractEndpointTest):
 
         decoded = json.loads(response.data)
         self.assertEqual(decoded['status'], "ok")
+        self.assertEqual(decoded['total_records'], 2)
         self.assertEqual(decoded['records'][0]['record_id'], 8)
         self.assertEqual(decoded['records'][0]['record_type'], 'A')
         self.assertEqual(decoded['records'][1]['record_id'], 9)

@@ -30,14 +30,22 @@ class Records(RecordsCommon):
 
         # get domain and check authorization
         domain = self.get_read_domain(domain_id)
-        record_collection = domain.get_records()
+        # get pagination
+        page = request.args.get('page', None)
+        perpage = request.args.get('perpage', None)
+        record_collection = domain.get_records(page, perpage)
+        total_records = domain.count_records()
 
         records = []
         for record in record_collection:
             recordtype = record.to_recordtype()
             records.append(recordtype.to_dict())
 
-        return {'status': 'ok', 'records': records}
+        return {
+            'status': 'ok',
+            'total_records': total_records,
+            'records': records
+        }
 
     def post(self):
         domain_id = request.form.get('domain_id')

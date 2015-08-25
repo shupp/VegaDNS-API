@@ -30,13 +30,32 @@ class Domain(BaseModel):
         if not ValidateDNS.record_hostname(self.domain):
             raise ValueError("domain is invalid: " + self.domain)
 
-    def get_records(self):
+    def get_records(self, page=None, perpage=None):
+        if not self.domain_id:
+            raise Exception("Cannot get records, domain_id is not set")
+
+        if perpage is None:
+            return Record.select(Record).where(
+                Record.domain_id == self.domain_id
+            )
+        else:
+            perpage = abs(int(perpage))
+            if page is None:
+                page = 1
+            else:
+                page = abs(int(page))
+
+            return Record.select(Record).where(
+                Record.domain_id == self.domain_id
+            ).paginate(page, perpage)
+
+    def count_records(self):
         if not self.domain_id:
             raise Exception("Cannot get records, domain_id is not set")
 
         return Record.select(Record).where(
             Record.domain_id == self.domain_id
-        )
+        ).count()
 
     def add_default_records(self, endpoint=None):
         # sanity check
