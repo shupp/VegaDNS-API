@@ -30,9 +30,22 @@ class Records(RecordsCommon):
 
         # get domain and check authorization
         domain = self.get_read_domain(domain_id)
+
         # get pagination
         page = request.args.get('page', None)
+        if (page is not None):
+            try:
+                page = int(page)
+            except:
+                abort(400, message="Invalid value for page: " + page)
+
         perpage = request.args.get('perpage', None)
+        if (perpage is not None):
+            try:
+                perpage = int(perpage)
+            except:
+                abort(400, message="Invalid value for page: " + perpage)
+
         record_collection = domain.get_records(page, perpage)
         total_records = domain.count_records()
 
@@ -44,7 +57,8 @@ class Records(RecordsCommon):
         return {
             'status': 'ok',
             'total_records': total_records,
-            'records': records
+            'records': records,
+            'domain': domain.to_clean_dict()
         }
 
     def post(self):
