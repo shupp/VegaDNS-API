@@ -10,6 +10,10 @@ RUN apt-get update && apt-get install -y nginx supervisor
 # for local exports during integration testing
 RUN apt-get update && apt-get install -y curl wget
 
+# for npm
+RUN curl -sL https://deb.nodesource.com/setup_0.12 | bash -
+RUN apt-get -q update && apt-get install -yf nodejs
+
 # Configuration script dependencies
 RUN apt-get update && apt-get install -y python-pip
 RUN pip install pystache
@@ -28,6 +32,10 @@ RUN /var/www/vegadns2/docker/buildenv.sh
 
 # Add install cli deps
 RUN pip install --upgrade /var/www/vegadns2/vegadns-cli
+
+# Set up ui deps
+RUN chmod +x /var/www/vegadns2/vegadns-ui/build.sh
+RUN /var/www/vegadns2/vegadns-ui/build.sh
 
 RUN chown -R www-data:www-data /var/www/vegadns2
 

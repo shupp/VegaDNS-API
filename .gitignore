@@ -4,3 +4,4 @@ vegadns/api/config/local.ini
 coverage
 .coverage
 vegadns-cli
+vegadns-ui

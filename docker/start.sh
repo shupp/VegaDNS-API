@@ -10,11 +10,12 @@ else
 fi
 
 
+if [ -z "$IP" ] ; then
+    IP=`ifconfig | grep -A 1 eth0 | sed -ne '2p' | awk '{ print $2 }' | sed -e 's/^addr://'`
+fi
+
 if [ $TEST -eq 0 ]; then
     echo "Configuring tinydns IP"
-    if [ -z "$IP" ] ; then
-        IP=`ifconfig | grep -A 1 eth0 | sed -ne '2p' | awk '{ print $2 }' | sed -e 's/^addr://'`
-    fi
     echo ${IP} > /etc/tinydns/env/IP
 fi
 
@@ -31,6 +32,17 @@ if [ $TEST -eq 1 ] && [ -z "$SKIP_LOCAL_MYSQL" ]; then
     mysql -u root vegadns < /mnt/create_tables.sql
     mysql -u root vegadns < /mnt/data.sql
 fi
+
+# Set up API_URL config for UI
+if [ -z "$API_URL" ] ; then
+    API_URL="http://${IP}/"
+fi
+# Use correct sed syntax below
+case $(sed --help 2>&1) in
+    *GNU*) set sed -i;;
+    *) set sed -i '';;
+esac
+"$@" -e "s@// var VegaDNSHost = \"http://localhost:5000\";@var VegaDNSHost = \"${API_URL}\";@" /var/www/vegadns2/vegadns-ui/public/index.html
 
 echo "Setting up config files for supervisor, nginx, VegaDNS2"
 cp /var/www/vegadns2/docker/templates/supervisor-vegadns2.conf /etc/supervisor/conf.d/vegadns2.conf
