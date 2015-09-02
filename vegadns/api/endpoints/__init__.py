@@ -67,3 +67,24 @@ class AbstractEndpoint(Resource):
 
     def serialize(self, content):
         return json.dumps(content)
+
+    def paginate_query(self, query, params):
+        perpage = params.get('perpage', None)
+        if perpage is None:
+            return query
+
+        try:
+            perpage = abs(int(perpage))
+        except:
+            abort(400, message="Invalid value for perpage: " + perpage)
+
+        page = params.get('page', None)
+        if page is None:
+            page = 1
+        else:
+            try:
+                page = abs(int(page))
+            except:
+                abort(400, message="Invalid value for page: " + page)
+
+        return query.paginate(page, perpage)

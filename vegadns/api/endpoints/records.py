@@ -31,22 +31,10 @@ class Records(RecordsCommon):
         # get domain and check authorization
         domain = self.get_read_domain(domain_id)
 
-        # get pagination
-        page = request.args.get('page', None)
-        if (page is not None):
-            try:
-                page = int(page)
-            except:
-                abort(400, message="Invalid value for page: " + page)
-
-        perpage = request.args.get('perpage', None)
-        if (perpage is not None):
-            try:
-                perpage = int(perpage)
-            except:
-                abort(400, message="Invalid value for page: " + perpage)
-
-        record_collection = domain.get_records(page, perpage)
+        record_collection = self.paginate_query(
+            domain.get_records(),
+            request.args
+        )
         total_records = domain.count_records()
 
         records = []
