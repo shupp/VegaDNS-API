@@ -12,6 +12,13 @@ from vegadns.api.models.domain import Domain as ModelDomain
 @endpoint
 class Records(RecordsCommon):
     route = '/records'
+    sort_fields = {
+        'name': ModelRecord.host,
+        'value': ModelRecord.val,
+        'ttl': ModelRecord.ttl,
+        'type': ModelRecord.type,
+        'distance': ModelRecord.ttl
+    }
 
     def get(self):
         domain_id = request.args.get('domain_id')
@@ -35,6 +42,7 @@ class Records(RecordsCommon):
             domain.get_records(),
             request.args
         )
+        record_collection = self.sort_query(record_collection, request.args)
         total_records = domain.count_records()
 
         records = []

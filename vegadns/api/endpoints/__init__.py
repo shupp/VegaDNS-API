@@ -68,6 +68,22 @@ class AbstractEndpoint(Resource):
     def serialize(self, content):
         return json.dumps(content)
 
+    def sort_query(self, query, params):
+        if not hasattr(self, 'sort_fields'):
+            return query
+
+        sort_fields = self.sort_fields.keys()
+        sort = params.get('sort', None)
+        if sort is not None and sort in sort_fields:
+            sort_field = self.sort_fields[sort]
+            # get direction
+            order = params.get('order', None)
+            if order is not None and str(order).lower() == 'desc':
+                sort_field = sort_field.desc()
+            return query.order_by(sort_field)
+        else:
+            return query
+
     def paginate_query(self, query, params):
         perpage = params.get('perpage', None)
         if perpage is None:
