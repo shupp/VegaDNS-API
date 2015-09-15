@@ -17,7 +17,7 @@ class ApiKeys(AbstractEndpoint):
             account_ids = request.args.get(
                 "account_ids",
                 str(self.auth.account.account_id)
-            ).split(",")
+            ).replace(" ", "").split(",")
         else:
             account_ids = [self.auth.account.account_id]
 
@@ -54,7 +54,7 @@ class ApiKeys(AbstractEndpoint):
     def get_apikey_list(self, account_ids):
         return ModelApiKey.select().where(
             ModelApiKey.account_id << account_ids
-        )
+        ).where(ModelApiKey.deleted != 1)
 
     def create_api_key(self, description, account_id):
         apikey = ModelApiKey()
