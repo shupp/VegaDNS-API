@@ -9,23 +9,11 @@ cd ${DIR}/../
 # Update CLI
 echo "Updating client ..."
 rm -rf vegadns-cli
-mkdir vegadns-cli
-cd vegadns-cli
-git init
-git remote add -t vegadns-cli origin https://github.com/shupp/VegaDNS.git
-git fetch
-git checkout -b vegadns-cli origin/vegadns-cli
-cd ..
+git clone https://github.com/shupp/VegaDNS-CLI.git vegadns-cli
 
 # Update UI
 echo "Updating ui ..."
 rm -rf vegadns-ui
-mkdir vegadns-ui
-cd vegadns-ui
-git init
-git remote add -t vegadns-ui origin https://github.com/shupp/VegaDNS.git
-git fetch
-git checkout -b vegadns-ui origin/vegadns-ui
-cd ..
+git clone https://github.com/shupp/VegaDNS-UI.git vegadns-ui
 
 docker build -f docker/Dockerfile --no-cache=false -t vegadns2-public .
