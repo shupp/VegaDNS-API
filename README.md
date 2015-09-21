@@ -4,6 +4,7 @@ VegaDNS API, the successor to [VegaDNS](https://github.com/shupp/VegaDNS),  is a
 
 ## Supported Clients
 There are two supported API clients at this time:
+
 * [VegaDNS-UI](https://github.com/shupp/VegaDNS-UI) - a JavaScript only UI, similar to the old VegaDNS.
 * [VegaDNS-CLI](https://github.com/shupp/VegaDNS-CLI) - a command line interface that includes a reusable client library written in python.
 
@@ -50,12 +51,18 @@ $ DEBUG=true python run.py
   * Restarting with stat
   ```
 
-## Install via docker
+## Setup using docker
 If you have [docker](http://docker.com) setup, you can build a docker container with the cli and ui built in.  There are scripts in the docker directory to help with this, [build_docker_image.sh](https://github.com/shupp/VegaDNS-API/blob/master/docker/build_docker_image.sh) and [run_docker.sh](https://github.com/shupp/VegaDNS-API/blob/master/docker/run_docker.sh)
 
 
 ## Using
-Once installation is complete, you'll probably want to use one of the supported clients above for accessing the api.
+Once installation is complete, you'll probably want to use one of the supported clients above for accessing the api.  If this is a clean install, the test account is test@test.com with a password of "test".  If you're using existing accounts, they should work as well.
+
+# Changes from legacy [VegaDNS](http://github.com/shupp/VegaDNS)
+
+* **New permissions structure**.  Instead of 3 tiers (_senior_admin, group_admin, user_), there is only _senior_admin_ and _user_ tiers (type).  Users can own domains and privileges can now be granted to groups.  This should be a much more flexible architecture.  Currently there is no migration tool for people using the legacy group_admin tier.  If there is much of a need, I can put one together.
+* **REST API only**, a JavaScript only UI is available separately [here](https://github.com/shupp/VegaDNS-UI)
+* API is written in **python** rather than PHP
 
 # Support
-For comments or support, please use the [issue tracker](https://github.com/shupp/VegaDNS-API/issues) on Github.  You may also still use the [Google Group](https://groups.google.com/forum/#!forum/vegadns) as well for discussions.
+For comments or support, please use the [issue tracker](https://github.com/shupp/VegaDNS-API/issues) on Github.  You may use the [Google Group](https://groups.google.com/forum/#!forum/vegadns) as well for discussions.
