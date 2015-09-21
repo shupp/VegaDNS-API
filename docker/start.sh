@@ -22,7 +22,7 @@ fi
 echo "Starting daemontools for tinydns"
 sh -cf '/usr/bin/svscanboot &'
 
-if [ $TEST -eq 1 ] && [ -z "$SKIP_LOCAL_MYSQL" ]; then
+if [ $TEST -eq 1 ] || [ -z "$SKIP_LOCAL_MYSQL" ]; then
     echo "Starting MySQL"
     service mysql start
 
