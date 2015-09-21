@@ -51,7 +51,7 @@ $ DEBUG=true python run.py
   ```
 
 ## Install via docker
-If you have docker setup, you can build a docker container with the cli and ui built in.  There are scripts in the docker directory to help with this, [build_docker_image.sh](https://github.com/shupp/VegaDNS-API/blob/master/docker/build_docker_image.sh) and [run_docker.sh](https://github.com/shupp/VegaDNS-API/blob/master/docker/run_docker.sh)
+If you have [docker](http://docker.com) setup, you can build a docker container with the cli and ui built in.  There are scripts in the docker directory to help with this, [build_docker_image.sh](https://github.com/shupp/VegaDNS-API/blob/master/docker/build_docker_image.sh) and [run_docker.sh](https://github.com/shupp/VegaDNS-API/blob/master/docker/run_docker.sh)
 
 
 ## Using
