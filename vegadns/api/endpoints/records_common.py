@@ -56,7 +56,10 @@ class RecordsCommon(AbstractEndpoint):
         # make sure hostname ends in domain name
         name = request.form.get("name")
         if not name or not ModelRecord.hostname_in_domain(name, domain):
-            abort(400, message="Name does not end in domain name: " + name)
+            abort(
+                400,
+                message="Name does not end in domain name: " + str(name)
+            )
 
     def get_domain(self, domain_id):
         return ModelDomain.get(ModelDomain.domain_id == domain_id)
