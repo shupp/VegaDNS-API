@@ -33,6 +33,6 @@ class Record(BaseModel):
 
     @staticmethod
     def hostname_in_domain(hostname, domain):
-        p = re.compile(".*" + domain + "([.])?$", re.IGNORECASE)
+        p = re.compile("(.*[.])?" + domain + "([.])?$", re.IGNORECASE)
         m = p.match(hostname)
         return bool(m)
