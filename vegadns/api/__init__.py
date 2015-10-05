@@ -11,7 +11,7 @@ app = Flask(__name__)
 cors = CORS(app, supports_credentials=True)
 
 
-if not bool(os.environ.get('DEBUG', None)):
+if os.environ.get('DEBUG', None) is not "true":
     app.logger.addHandler(logging.StreamHandler())
     app.logger.setLevel('INFO')
 
