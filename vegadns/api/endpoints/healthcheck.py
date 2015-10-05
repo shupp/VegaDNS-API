@@ -11,4 +11,4 @@ class HealthCheck(AbstractEndpoint):
     route = '/healthcheck'
 
     def get(self):
-        return '{"status": "ok"}'
+        return {"status": "ok"}
