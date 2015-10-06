@@ -44,7 +44,6 @@ class Token(AbstractEndpoint):
         try:
             apikey = self.get_apikey(key, secret)
         except peewee.DoesNotExist:
-            print 'here'
             abort(400, message="invalid_client")
 
         try:
