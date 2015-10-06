@@ -1,17 +1,11 @@
-# need logger
-from vegadns.api.config import config
-from peewee import MySQLDatabase, Model
+import logging
+from peewee import Model
 from lib.shortcuts import model_to_dict
 
+from vegadns.api.db import database
 
-database = MySQLDatabase(
-    config.get('mysql', 'database'),
-    **{
-        'host': config.get('mysql', 'host'),
-        'password': config.get('mysql', 'password'),
-        'user': config.get('mysql', 'user')
-      }
-)
+
+logger = logging.getLogger(__name__)
 
 
 def ensure_validation(func):

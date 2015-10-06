@@ -1,10 +1,13 @@
 import logging
 import uuid
 import os
+import time
 
 from flask import Flask
 from flask.ext.restful import request, Resource, Api
 from flask.ext.cors import CORS
+
+from vegadns.api.db import database
 
 
 app = Flask(__name__)
@@ -85,5 +88,33 @@ def output_text(data, code, headers=None):
 
 
 @app.before_request
-def before_request():
+def set_request_id():
     app.request_id = uuid.uuid4()
+
+
+@app.before_request
+def db_connect():
+    """ create DB connection """
+    attempts = 5
+    while attempts > 0:
+        try:
+            database.connect()
+            return
+        except OperationalError:
+            attempts -= 1
+            app.logger.info(
+                "MySQL connect failure, attempts left %d" % attempts
+            )
+            if attempts == 0:
+                # we ran out of attempts, raise the exception
+                raise
+            # let's sleep for a second, we need
+            # this to carry on. let's wait a second
+            time.sleep(1)
+
+
+@app.teardown_request
+def db_disconnect(exception=None):
+    """ close DB connection """
+    _ = exception
+    database.close()
