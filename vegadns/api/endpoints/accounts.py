@@ -45,7 +45,7 @@ class Accounts(AbstractEndpoint):
         if account_type not in ["senior_admin", "user"]:
             abort(
                 400,
-                message="account_type must be either system_admin or user"
+                message="account_type must be either senior_admin or user"
             )
 
         phone = request.form.get("phone", "")
