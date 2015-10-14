@@ -45,7 +45,7 @@ class Account(BaseModel):
         if self.account_type not in ["senior_admin", "group_admin", "user"]:
             raise Exception("Invalid account_type: " + self.account_type)
 
-        if self.status not in ["active", "active"]:
+        if self.status not in ["active", "inactive"]:
             raise Exception("Invalid status: " + self.status)
 
     def set_password(self, clear_text):
