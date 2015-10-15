@@ -5,7 +5,7 @@ import peewee
 from vegadns.api import endpoint
 from vegadns.api.endpoints.records_common import RecordsCommon
 from vegadns.api.models.record import Record as ModelRecord
-from vegadns.api.models.recordtypes import RecordType
+from vegadns.api.models.recordtypes import RecordType, RecordValueException
 
 
 @endpoint
@@ -37,8 +37,11 @@ class Record(RecordsCommon):
 
         self.request_form_to_type_model(request.form, TypeModel, domain)
 
-        model = TypeModel.to_model()
-        model.save()
+        try:
+            model = TypeModel.to_model()
+            model.save()
+        except RecordValueException as e:
+            abort(400, message=str(e))
 
         self.dns_log(
             domain.domain_id,
