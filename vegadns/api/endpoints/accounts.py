@@ -66,5 +66,13 @@ class Accounts(AbstractEndpoint):
         return {'status': 'ok', 'account': account.to_clean_dict()}, 201
 
     def get_account_list(self):
-        # FIXME need filtering
-        return ModelAccount.select()
+        query = ModelAccount.select()
+        search = request.args.get('search', None)
+        if (search is not None):
+            query = query.where(
+                (ModelAccount.first_name ** search + '%') |
+                (ModelAccount.last_name ** search + '%') |
+                (ModelAccount.email ** '%' + search + '%')
+            )
+
+        return query
