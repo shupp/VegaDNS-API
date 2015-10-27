@@ -8,10 +8,6 @@ from vegadns.api import app
 
 
 class TestDomain(AbstractEndpointTest):
-    def setUp(self):
-        # Use Flask's test client
-        self.test_app = app.test_client()
-
     def test_get_success(self):
         # mock get_domain and to_dict
         mock_value = {

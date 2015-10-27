@@ -11,6 +11,7 @@ from vegadns.api.models.account import Account
 class AbstractEndpointTest(unittest.TestCase):
     def setUp(self):
         # Use Flask's test client
+        app.testing = True
         self.test_app = app.test_client()
 
     def mock_auth(email, password, active=True):

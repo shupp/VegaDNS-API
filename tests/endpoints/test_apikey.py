@@ -10,10 +10,6 @@ from vegadns.api import app
 
 
 class TestApiKey(AbstractEndpointTest):
-    def setUp(self):
-        # Use Flask's test client
-        self.test_app = app.test_client()
-
     def test_get_success(self):
         k1 = '7084f356f7ca2761ee6af2b884037c4cda1233c7f6548566f9049e904acfa82a'
         s1 = 'bc4a5565e685d76961db39af80c1f398cd4856fbf06c4c3ffae8c86aef0504fc'

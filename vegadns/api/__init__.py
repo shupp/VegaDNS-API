@@ -3,8 +3,9 @@ import uuid
 import os
 import time
 
+from peewee import OperationalError
 from flask import Flask
-from flask.ext.restful import request, Resource, Api
+from flask.ext.restful import request, Resource, Api, abort
 from flask.ext.cors import CORS
 
 from vegadns.api.db import database
@@ -12,6 +13,8 @@ from vegadns.api.db import database
 
 app = Flask(__name__)
 cors = CORS(app, supports_credentials=True)
+
+dbConnected = False
 
 
 if os.environ.get('DEBUG', None) is not "true":
@@ -98,7 +101,12 @@ def db_connect():
     attempts = 5
     while attempts > 0:
         try:
+            # don't open the connection when unit testing
+            if app.testing is True:
+                return
+
             database.connect()
+            dbConnected = True
             return
         except OperationalError:
             attempts -= 1
@@ -106,8 +114,9 @@ def db_connect():
                 "MySQL connect failure, attempts left %d" % attempts
             )
             if attempts == 0:
-                # we ran out of attempts, raise the exception
-                raise
+                # we ran out of attempts, abort with message
+                # raise
+                abort(500, message='Unable to connect to database')
             # let's sleep for a second, we need
             # this to carry on. let's wait a second
             time.sleep(1)
@@ -116,5 +125,5 @@ def db_connect():
 @app.teardown_request
 def db_disconnect(exception=None):
     """ close DB connection """
-    _ = exception
-    database.close()
+    if dbConnected:
+        database.close()
