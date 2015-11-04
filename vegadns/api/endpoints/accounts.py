@@ -70,9 +70,9 @@ class Accounts(AbstractEndpoint):
         search = request.args.get('search', None)
         if (search is not None):
             query = query.where(
-                (ModelAccount.first_name ** search + '%') |
-                (ModelAccount.last_name ** search + '%') |
-                (ModelAccount.email ** '%' + search + '%')
+                (ModelAccount.first_name ** (search + '%')) |
+                (ModelAccount.last_name ** (search + '%')) |
+                (ModelAccount.email ** ('%' + search + '%'))
             )
 
         return query
