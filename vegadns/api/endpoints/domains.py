@@ -1,3 +1,5 @@
+import re
+
 from flask import Flask, abort, request
 from flask.ext.restful import Resource, Api, abort
 
@@ -71,15 +73,30 @@ class Domains(AbstractEndpoint):
         }, 201
 
     def get_domain_list(self):
+        search = request.args.get('search', None)
+
         if self.auth.account.account_type == 'senior_admin':
-            return ModelDomain.select()
+            query = ModelDomain.select()
+            if (search is not None):
+                query = query.where((ModelDomain.domain ** (search + '%')))
+            return query
+
+        # FIXME - more complex query needed to support search and
+        # load_domains/permission needs rather than post filter
 
         domains = []
         self.auth.account.load_domains()
         for domain_id in self.auth.account.domains:
             if self.auth.account.can_read_domain(domain_id):
-                domains.append(
-                    self.auth.account.domains[domain_id]["domain"]
-                )
+                if search is not None:
+                    p = re.compile("^" + domain + ".*$", re.IGNORECASE)
+                    if p.match(search):
+                        domains.append(
+                            self.auth.account.domains[domain_id]["domain"]
+                        )
+                else:
+                    domains.append(
+                        self.auth.account.domains[domain_id]["domain"]
+                    )
 
         return domains
