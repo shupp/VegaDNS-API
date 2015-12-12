@@ -43,6 +43,19 @@ class Records(RecordsCommon):
             request.args
         )
         record_collection = self.sort_query(record_collection, request.args)
+        filter_record_type = request.args.get('filter_record_type')
+        if (filter_record_type is not None):
+            try:
+                query_record_type = RecordType().set(filter_record_type)
+                record_collection = record_collection.where(
+                    ModelRecord.type == query_record_type
+                )
+            except RecordTypeException:
+                abort(
+                    400,
+                    message="Invalid filter_record_type: " + filter_record_type
+                )
+
         total_records = domain.count_records()
 
         records = []
