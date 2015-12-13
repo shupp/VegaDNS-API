@@ -21,6 +21,19 @@ class DefaultRecords(RecordsCommon):
 
         record_collection = self.get_default_records()
 
+        filter_record_type = request.args.get('filter_record_type')
+        if (filter_record_type is not None):
+            try:
+                query_record_type = RecordType().set(filter_record_type)
+                record_collection = record_collection.where(
+                    ModelDefaultRecord.type == query_record_type
+                )
+            except RecordTypeException:
+                abort(
+                    400,
+                    message="Invalid filter_record_type: " + filter_record_type
+                )
+
         records = []
         for record in record_collection:
             recordtype = record.to_recordtype()
