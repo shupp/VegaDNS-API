@@ -56,7 +56,7 @@ class Records(RecordsCommon):
                     message="Invalid filter_record_type: " + filter_record_type
                 )
 
-        total_records = domain.count_records()
+        total_records = domain.count_records(filter_record_type)
 
         records = []
         for record in record_collection:

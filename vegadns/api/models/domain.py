@@ -38,13 +38,17 @@ class Domain(BaseModel):
             Record.domain_id == self.domain_id
         )
 
-    def count_records(self):
+    def count_records(self, filter_record_type):
         if not self.domain_id:
             raise Exception("Cannot get records, domain_id is not set")
 
-        return Record.select(Record).where(
-            Record.domain_id == self.domain_id
-        ).count()
+        query = Record.select(Record).where(Record.domain_id == self.domain_id)
+        if filter_record_type is not None:
+            query = query.where(
+                Record.type == RecordType().set(filter_record_type)
+            )
+
+        return query.count()
 
     def add_default_records(self, endpoint=None):
         # sanity check
