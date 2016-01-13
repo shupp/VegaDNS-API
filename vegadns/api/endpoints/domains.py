@@ -5,6 +5,8 @@ from flask.ext.restful import Resource, Api, abort
 
 import peewee
 
+import vegadns.api.email
+import vegadns.api.email.common
 from vegadns.api import endpoint
 from vegadns.api.endpoints import AbstractEndpoint
 from vegadns.api.models.domain import Domain as ModelDomain
@@ -63,8 +65,14 @@ class Domains(AbstractEndpoint):
             records.append(record.to_dict())
 
         if self.auth.account.account_type != 'senior_admin':
-            # FIXME send email to admins
-            pass
+            common = vegadns.api.email.common.Common()
+            to = common.get_support_email()
+            subject = "New Inactive Domain Created"
+            msg_body = "Inactive domain \"" + model.domain + \
+                "\" added by " + self.auth.account.email + ".\n\n" + \
+                "Thanks,\n\nVegaDNS"
+
+            vegadns.api.email.send(to, subject, msg_body)
 
         return {
             'status': 'ok',
