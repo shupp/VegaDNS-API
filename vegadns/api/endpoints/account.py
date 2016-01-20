@@ -46,7 +46,7 @@ class Account(AbstractEndpoint):
 
     def put(self, account_id):
         if self.auth.account.account_type != 'senior_admin':
-            if self.account.account_id != account_id:
+            if self.auth.account.account_id != account_id:
                 abort(
                     403,
                     message="Insufficient privileges to edit this account"
