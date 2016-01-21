@@ -14,6 +14,7 @@ class Domain(AbstractEndpoint):
 
     def get(self, domain_id):
         try:
+            self.auth.account.load_domains()
             domain = self.get_read_domain(domain_id)
         except peewee.DoesNotExist:
             abort(404, message="domain does not exist")
@@ -21,6 +22,7 @@ class Domain(AbstractEndpoint):
 
     def put(self, domain_id):
         try:
+            self.auth.account.load_domains()
             domain = self.get_write_domain(domain_id)
         except peewee.DoesNotExist:
             abort(404, message="domain does not exist")
@@ -69,6 +71,7 @@ class Domain(AbstractEndpoint):
 
     def delete(self, domain_id):
         try:
+            self.auth.account.load_domains()
             domain = self.get_delete_domain(domain_id)
         except peewee.DoesNotExist:
             abort(404, message="domain does not exist")

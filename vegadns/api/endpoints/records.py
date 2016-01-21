@@ -26,6 +26,8 @@ class Records(RecordsCommon):
         if domain_id is None:
             abort(400, message="domain_id parameter is required")
 
+        domain_id = int(domain_id)
+
         # check if the domain exists
         try:
             self.get_domain(domain_id)
@@ -36,6 +38,7 @@ class Records(RecordsCommon):
             abort(400, message="'domain_id' parameter is required")
 
         # get domain and check authorization
+        self.auth.account.load_domains()
         domain = self.get_read_domain(domain_id)
 
         record_collection = self.paginate_query(
@@ -76,6 +79,8 @@ class Records(RecordsCommon):
         if domain_id is None:
             abort(400, message="domain_id parameter is required")
 
+        domain_id = int(domain_id)
+
         # check if the domain exists
         try:
             self.get_domain(domain_id)
@@ -83,6 +88,7 @@ class Records(RecordsCommon):
             abort(404, message="domain_id does not exist: " + domain_id)
 
         # get domain and check authorization
+        self.auth.account.load_domains()
         domain = self.get_write_domain(domain_id)
 
         record_type = request.form.get('record_type')

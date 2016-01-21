@@ -19,6 +19,7 @@ class Record(RecordsCommon):
             abort(404, message="record does not exist")
 
         # check authorization
+        self.auth.account.load_domains()
         domain = self.get_read_domain(record.domain_id)
 
         recordtype = record.to_recordtype()
@@ -31,6 +32,7 @@ class Record(RecordsCommon):
             abort(404, message="record does not exist")
 
         # get domain and check authorization
+        self.auth.account.load_domains()
         domain = self.get_write_domain(record.domain_id)
 
         TypeModel = record.to_recordtype()
@@ -62,6 +64,7 @@ class Record(RecordsCommon):
             abort(404, message="record does not exist")
 
         # check authorization
+        self.auth.account.load_domains()
         domain = self.get_delete_domain(record.domain_id)
         record.delete_instance()
 
