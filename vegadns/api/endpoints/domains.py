@@ -18,12 +18,13 @@ class Domains(AbstractEndpoint):
     route = '/domains'
 
     def get(self):
+        domains = []
         try:
-            domains = []
             for domain in self.get_domain_list():
                 domains.append(domain.to_dict())
-        except:
-            abort(404, message="no domains found")
+        except peewee.DoesNotExist:
+            pass
+
         return {'status': 'ok', 'domains': domains}
 
     def post(self):
