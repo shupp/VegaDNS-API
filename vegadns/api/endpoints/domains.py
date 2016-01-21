@@ -98,7 +98,7 @@ class Domains(AbstractEndpoint):
         for domain_id in self.auth.account.domains:
             if self.auth.account.can_read_domain(domain_id):
                 if search is not None:
-                    p = re.compile("^" + domain + ".*$", re.IGNORECASE)
+                    p = re.compile("^" + search + ".*$", re.IGNORECASE)
                     if p.match(search):
                         domains.append(
                             self.auth.account.domains[domain_id]["domain"]
