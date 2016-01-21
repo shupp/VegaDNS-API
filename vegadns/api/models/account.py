@@ -70,24 +70,25 @@ class Account(BaseModel):
             group_ids.append(map.group_id)
 
         # get domain group maps
-        domaingroupmaps = DomainGroupMap.select(
-            DomainGroupMap, Domain
-        ).where(
-            DomainGroupMap.group_id << group_ids
-        ).join(
-            Domain,
-            on=Domain.domain_id == DomainGroupMap.domain_id
-        )
+        if group_ids:
+            domaingroupmaps = DomainGroupMap.select(
+                DomainGroupMap, Domain
+            ).where(
+                DomainGroupMap.group_id << group_ids
+            ).join(
+                Domain,
+                on=Domain.domain_id == DomainGroupMap.domain_id
+            )
 
-        # store the maps by domain id for the can_* methods below
-        for map in domaingroupmaps:
-            did = map.domain_id.domain_id
-            if map.domain_id.domain_id not in self.domains:
-                self.domains[did] = {
-                    'domain': map.domain_id,
-                    'maps': []
-                }
-            self.domains[did]["maps"].append(map)
+            # store the maps by domain id for the can_* methods below
+            for map in domaingroupmaps:
+                did = map.domain_id.domain_id
+                if map.domain_id.domain_id not in self.domains:
+                    self.domains[did] = {
+                        'domain': map.domain_id,
+                        'maps': []
+                    }
+                self.domains[did]["maps"].append(map)
 
         # grab domains this user owns
         domains = Domain.select(
@@ -98,7 +99,7 @@ class Account(BaseModel):
 
         for domain in domains:
             if domain.domain_id not in self.domains:
-                self.domains[domain_id] = {
+                self.domains[domain.domain_id] = {
                     'domain': domain,
                     'maps': []
                 }
