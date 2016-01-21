@@ -53,4 +53,4 @@ class Groups(AbstractEndpoint):
             ids = []
             for group_map in group_maps:
                 ids.append(group_map.group_id)
-            return ModelGroup.select(ModelGroup.group_id << ids)
+            return ModelGroup.select().where(ModelGroup.group_id << ids)
