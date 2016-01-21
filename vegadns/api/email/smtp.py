@@ -35,7 +35,7 @@ class SMTP(Common):
             if config.get("email", "smtp_tls") in ["True", "true"]:
                 server.starttls(smtp_keyfile, smtp_certfile)
 
-        if smtp_auth in ["True", "true"]:
+        if config.get("email", "smtp_auth") in ["True", "true"]:
             server.login(
                 config.get('email', 'smtp_user'),
                 config.get('email', 'smtp_password')
