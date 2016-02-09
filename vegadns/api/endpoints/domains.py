@@ -20,10 +20,15 @@ class Domains(AbstractEndpoint):
     def get(self):
         domains = []
         try:
-            for domain in self.get_domain_list():
-                domains.append(domain.to_dict())
+            domain_list = self.get_domain_list()
         except peewee.DoesNotExist:
-            pass
+            domain_list = []
+
+        for d in domain_list:
+            domain = d.to_clean_dict()
+            if request.args.get('include_permissions', None):
+                domain["permissions"] = self.get_permissions(d.domain_id)
+            domains.append(domain)
 
         return {'status': 'ok', 'domains': domains}
 
@@ -63,7 +68,7 @@ class Domains(AbstractEndpoint):
         default_records = model.get_records()
         records = []
         for record in default_records:
-            records.append(record.to_dict())
+            records.append(record.to_clean_dict())
 
         if self.auth.account.account_type != 'senior_admin':
             common = vegadns.api.email.common.Common()
@@ -99,7 +104,9 @@ class Domains(AbstractEndpoint):
             if self.auth.account.can_read_domain(domain_id):
                 if search is not None:
                     p = re.compile("^" + search + ".*$", re.IGNORECASE)
-                    if p.match(search):
+                    if p.match(
+                        self.auth.account.domains[domain_id]["domain"].domain
+                    ):
                         domains.append(
                             self.auth.account.domains[domain_id]["domain"]
                         )

@@ -18,7 +18,10 @@ class Domain(AbstractEndpoint):
             domain = self.get_read_domain(domain_id)
         except peewee.DoesNotExist:
             abort(404, message="domain does not exist")
-        return {'status': 'ok', 'domain': domain.to_clean_dict()}
+        domain = domain.to_clean_dict()
+        if request.args.get('include_permissions', None):
+            domain["permissions"] = self.get_permissions(domain["domain_id"])
+        return {'status': 'ok', 'domain': domain}
 
     def put(self, domain_id):
         try:

@@ -12,22 +12,20 @@ class TestDomains(AbstractEndpointTest):
         mock_domain_one = {
             'owner': 0,
             'status': 'active',
-            'group_owner': 0,
             'domain': 'vegadns.org',
             'domain_id': 1
         }
         mock_model_one = MagicMock()
-        mock_model_one.to_dict = MagicMock(return_value=mock_domain_one)
+        mock_model_one.to_clean_dict = MagicMock(return_value=mock_domain_one)
 
         mock_domain_two = {
             'owner': 0,
             'status': 'active',
-            'group_owner': 0,
             'domain': 'vegadns.net',
             'domain_id': 2
         }
         mock_model_two = MagicMock()
-        mock_model_two.to_dict = MagicMock(return_value=mock_domain_two)
+        mock_model_two.to_clean_dict = MagicMock(return_value=mock_domain_two)
 
         vegadns.api.endpoints.domains.Domains.get_domain_list = MagicMock(
             return_value=[mock_model_one, mock_model_two]

@@ -47,6 +47,20 @@ class AbstractEndpoint(Resource):
     def get_account(self, account_id):
         return ModelAccount.get(ModelAccount.account_id == account_id)
 
+    def get_permissions(self, domain_id):
+        if self.auth.account.account_type == "senior_admin":
+            return {
+                "can_read": True,
+                "can_write": True,
+                "can_delete": True
+            }
+
+        return {
+            "can_read": bool(self.auth.account.can_read_domain(domain_id)),
+            "can_write": bool(self.auth.account.can_write_domain(domain_id)),
+            "can_delete": bool(self.auth.account.can_delete_domain(domain_id))
+        }
+
     def dns_log(self, domain_id, entry):
         log = ModelAuditLog()
         log.name = (self.auth.account.first_name +
