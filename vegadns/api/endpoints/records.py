@@ -67,11 +67,16 @@ class Records(RecordsCommon):
             recordtype = record.to_recordtype()
             records.append(recordtype.to_dict())
 
+        clean_domain = domain.to_clean_dict()
+        if request.args.get('include_permissions', None):
+            clean_domain["permissions"] = self.get_permissions(
+                domain.domain_id
+            )
         return {
             'status': 'ok',
             'total_records': total_records,
             'records': records,
-            'domain': domain.to_clean_dict()
+            'domain': clean_domain
         }
 
     def post(self):
