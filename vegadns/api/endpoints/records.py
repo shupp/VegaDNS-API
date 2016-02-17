@@ -47,6 +47,22 @@ class Records(RecordsCommon):
             request.args
         )
         record_collection = self.sort_query(record_collection, request.args)
+
+        # Optional search of record name, value, or both
+        search_name = request.args.get('search_name')
+        if search_name is not None:
+            search_name = search_name.replace('*', '%')
+            record_collection = record_collection.where(
+                (ModelRecord.host ** (search_name + '%'))
+            )
+
+        search_value = request.args.get('search_value')
+        if search_value is not None:
+            search_value = search_value.replace('*', '%')
+            record_collection = record_collection.where(
+                (ModelRecord.val ** (search_value + '%'))
+            )
+
         filter_record_type = request.args.get('filter_record_type')
         if (filter_record_type is not None):
             try:
@@ -60,7 +76,11 @@ class Records(RecordsCommon):
                     message="Invalid filter_record_type: " + filter_record_type
                 )
 
-        total_records = domain.count_records(filter_record_type)
+        total_records = domain.count_records(
+            filter_record_type,
+            search_name,
+            search_value
+        )
 
         records = []
         for record in record_collection:
