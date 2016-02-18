@@ -92,6 +92,7 @@ class Domains(AbstractEndpoint):
         if self.auth.account.account_type == 'senior_admin':
             query = ModelDomain.select()
             if (search is not None):
+                search = search.replace('*', '%')
                 query = query.where((ModelDomain.domain ** (search + '%')))
             return query
 
@@ -103,6 +104,7 @@ class Domains(AbstractEndpoint):
         for domain_id in self.auth.account.domains:
             if self.auth.account.can_read_domain(domain_id):
                 if search is not None:
+                    search = search.replace('*', '.*')
                     p = re.compile("^" + search + ".*$", re.IGNORECASE)
                     if p.match(
                         self.auth.account.domains[domain_id]["domain"].domain
