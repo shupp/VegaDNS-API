@@ -58,11 +58,11 @@ If you have [docker](http://docker.com) setup, you can build a docker container 
 ## Using
 Once installation is complete, you'll probably want to use one of the supported clients above for accessing the api.  If this is a clean install, the test account is test@test.com with a password of "test".  If you're using existing accounts, they should work as well.
 
-# Changes from legacy [VegaDNS](http://github.com/shupp/VegaDNS)
+## Changes from legacy [VegaDNS](http://github.com/shupp/VegaDNS)
 
 * **New permissions structure**.  Instead of 3 tiers (_senior_admin, group_admin, user_), there is only _senior_admin_ and _user_ tiers (type).  Users can own domains and privileges can now be granted to groups.  This should be a much more flexible architecture.  Currently there is no migration tool for people using the legacy group_admin tier.  If there is much of a need, I can put one together.
 * **REST API only**, a JavaScript only UI is available separately [here](https://github.com/shupp/VegaDNS-UI)
 * API is written in **python** rather than PHP
 
-# Support
+## Support
 For comments or support, please use the [issue tracker](https://github.com/shupp/VegaDNS-API/issues) on Github.  You may use the [Google Group](https://groups.google.com/forum/#!forum/vegadns) as well for discussions.
