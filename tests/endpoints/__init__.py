@@ -15,9 +15,15 @@ class AbstractEndpointTest(unittest.TestCase):
         self.test_app = app.test_client()
 
     def mock_auth(email, password, active=True):
+        h = "$2b$12$lqzxUnknwA/BYMJo2hFq5OBkkxsXP/7bupeNhizTFVa9WHaMOY6de"
+        ph = "bcrypt||" + h
+
         account = Account()
+        account.first_name = "Example"
+        account.last_name = "User"
         account.email = 'test@test.com'
-        account.password = hashlib.md5('test').hexdigest()
+        account.account_type = "senior_admin"
+        account.password = ph
         if active is True:
             account.status = 'active'
         else:

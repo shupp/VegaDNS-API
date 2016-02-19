@@ -44,8 +44,13 @@ class Login(AbstractEndpoint):
             return abort(401, message="invalid email or password")
 
         # check password!
-        if account.hash_password(password) != account.password:
+        if not account.check_password(password):
             return abort(401, message="invalid email or password")
+
+        # update to bcrypt
+        if account.get_password_algo() != "bcrypt":
+            account.set_password(password)
+            account.save()
 
         user_agent = request.headers.get('User-Agent')
         generated_cookie = account.generate_cookie_value(account, user_agent)

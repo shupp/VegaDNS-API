@@ -1,0 +1,1 @@
+ALTER TABLE `accounts` MODIFY `Password` VARCHAR(100) NOT NULL DEFAULT '';

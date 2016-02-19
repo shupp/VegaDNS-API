@@ -1,4 +1,5 @@
 import hashlib
+import bcrypt
 
 from peewee import CharField, IntegerField, PrimaryKeyField
 
@@ -48,11 +49,44 @@ class Account(BaseModel):
         if self.status not in ["active", "inactive"]:
             raise Exception("Invalid status: " + self.status)
 
-    def set_password(self, clear_text):
-        self.password = self.hash_password(clear_text)
+    def get_password_algo(self):
+        exploded = self.password.split("|")
+        if len(exploded) == 1:
+            return "md5"
 
-    def hash_password(self, clear_text):
-        return hashlib.md5(clear_text).hexdigest()
+        # format: algo|salt|hash
+        # e.g. bcrypt||hash_which_includes_salt
+        if len(exploded) == 3:
+            return exploded[0]
+
+    def get_password_hash(self):
+        exploded = self.password.split("|")
+        if len(exploded) < 3:
+            return exploded[0]
+
+        return exploded[2]
+
+    def check_password(self, clear_text):
+        if self.get_password_algo() == "md5":
+            return self.check_password_md5(clear_text)
+        else:
+            # just bcrypt for now
+            return self.check_password_bcrypt(clear_text)
+
+    def check_password_md5(self, clear_text):
+        return self.get_password_hash() == hashlib.md5(clear_text).hexdigest()
+
+    def check_password_bcrypt(self, clear_text):
+        hashed = self.get_password_hash()
+        return hashed == bcrypt.hashpw(
+            clear_text.encode('utf-8'),
+            hashed.encode('utf-8')
+        )
+
+    def set_password(self, clear_text):
+        # use bcrypt
+        hashed = bcrypt.hashpw(clear_text.encode('utf-8'), bcrypt.gensalt())
+        self.password = "bcrypt||" + hashed
 
     # helper methods for domain permissions
     def load_domains(self):

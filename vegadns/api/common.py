@@ -57,10 +57,13 @@ class Auth(object):
         password = self.request.authorization.password
 
         account = self.get_account_by_email(email)
-        hashed_pass = account.hash_password(password)
-
-        if account.password != hashed_pass:
+        if not account.check_password(password):
             raise AuthException('Invalid email or password')
+
+        # update to bcrypt
+        if account.get_password_algo() != "bcrypt":
+            account.set_password(password)
+            account.save()
 
         self.account = account
 
