@@ -7,6 +7,7 @@ RUN apt-get update && apt-get install -y build-essential python-dev python-virtu
 RUN apt-get update && apt-get install -y uwsgi-plugin-python
 RUN apt-get update && apt-get install -y daemontools daemontools-run ucspi-tcp djbdns
 RUN apt-get update && apt-get install -y nginx supervisor
+RUN apt-get update && apt-get install -y libffi-dev
 # for local exports during integration testing
 RUN apt-get update && apt-get install -y curl wget
 
