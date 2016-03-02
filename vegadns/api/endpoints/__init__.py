@@ -93,8 +93,16 @@ class AbstractEndpoint(Resource):
             # get direction
             order = params.get('order', None)
             if order is not None and str(order).lower() == 'desc':
-                sort_field = sort_field.desc()
-            return query.order_by(sort_field)
+                # allow for lists of fields
+                if type(sort_field) is list:
+                    sort_field[0] = sort_field[0].desc()
+                else:
+                    sort_field = sort_field.desc()
+
+            if type(sort_field) is list:
+                return query.order_by(*sort_field)
+            else:
+                return query.order_by(sort_field)
         else:
             return query
 

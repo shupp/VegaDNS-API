@@ -27,8 +27,14 @@ class TestDomains(AbstractEndpointTest):
         mock_model_two = MagicMock()
         mock_model_two.to_clean_dict = MagicMock(return_value=mock_domain_two)
 
+        domain_list = MagicMock()
+        domain_list.__iter__ = MagicMock(
+            return_value=iter([mock_model_one, mock_model_two])
+        )
+        domain_list.count = lambda: 2
+
         vegadns.api.endpoints.domains.Domains.get_domain_list = MagicMock(
-            return_value=[mock_model_one, mock_model_two]
+            return_value=domain_list
         )
 
         self.mock_auth('test@test.com', 'test')

@@ -11,11 +11,17 @@ from vegadns.api import endpoint
 from vegadns.api.endpoints import AbstractEndpoint
 from vegadns.api.models.domain import Domain as ModelDomain
 from vegadns.api.models.group import Group as ModelGroup
+from vegadns.api.models.account_group_map import AccountGroupMap
+from vegadns.api.models.domain_group_map import DomainGroupMap
 
 
 @endpoint
 class Domains(AbstractEndpoint):
     route = '/domains'
+    sort_fields = {
+        'name': ModelDomain.domain,
+        'status': [ModelDomain.status, ModelDomain.domain]
+    }
 
     def get(self):
         domains = []
@@ -24,13 +30,57 @@ class Domains(AbstractEndpoint):
         except peewee.DoesNotExist:
             domain_list = []
 
+        # load up permissions if needed
+        dgmaps = None
+        include_permissions = request.args.get('include_permissions', None)
+        if include_permissions:
+            # domain group maps query
+            dgmaps = DomainGroupMap.select().where(
+                DomainGroupMap.group_id << self.get_group_maps()
+            )
+
+        total_domains = domain_list.count()
+
+        domain_list = self.paginate_query(
+            domain_list,
+            request.args
+        )
+        domain_list = self.sort_query(domain_list, request.args)
+
         for d in domain_list:
             domain = d.to_clean_dict()
-            if request.args.get('include_permissions', None):
-                domain["permissions"] = self.get_permissions(d.domain_id)
+            if include_permissions:
+                domain["permissions"] = self.get_permissions(d, dgmaps)
             domains.append(domain)
 
-        return {'status': 'ok', 'domains': domains}
+        return {
+            'status': 'ok',
+            'domains': domains,
+            'total_domains': total_domains
+        }
+
+    def get_permissions(self, domain, dgmaps):
+        allperms = {
+            "can_read": True,
+            "can_write": True,
+            "can_delete": True
+        }
+        if self.auth.account.account_type == "senior_admin":
+            return allperms
+
+        if domain.owner_id == self.auth.account.account_id:
+            return allperms
+
+        for map in dgmaps:
+            if map.domain_id == domain.domain_id:
+                return {
+                    "can_read": map.has_perm(DomainGroupMap.READ_PERM),
+                    "can_write": map.has_perm(DomainGroupMap.WRITE_PERM),
+                    "can_delete": map.has_perm(DomainGroupMap.DELETE_PERM),
+                }
+
+        # should not get here
+        raise abort(500, message="Unable to determine domain permissions")
 
     def post(self):
         domain = request.form.get("domain")
@@ -96,25 +146,28 @@ class Domains(AbstractEndpoint):
                 query = query.where((ModelDomain.domain ** (search + '%')))
             return query
 
-        # FIXME - more complex query needed to support search and
-        # load_domains/permission needs rather than post filter
+        # domain group maps query
+        dgmq = DomainGroupMap.select(DomainGroupMap.domain_id).where(
+            DomainGroupMap.group_id << self.get_group_maps()
+        )
 
-        domains = []
-        self.auth.account.load_domains()
-        for domain_id in self.auth.account.domains:
-            if self.auth.account.can_read_domain(domain_id):
-                if search is not None:
-                    search = search.replace('*', '.*')
-                    p = re.compile("^" + search + ".*$", re.IGNORECASE)
-                    if p.match(
-                        self.auth.account.domains[domain_id]["domain"].domain
-                    ):
-                        domains.append(
-                            self.auth.account.domains[domain_id]["domain"]
-                        )
-                else:
-                    domains.append(
-                        self.auth.account.domains[domain_id]["domain"]
-                    )
+        # domains query
+        domainQuery = ModelDomain.select().where(
+            (
+                (ModelDomain.owner_id == self.auth.account.account_id) |
+                (ModelDomain.domain_id << dgmq)
+            )
+        )
 
-        return domains
+        if (search is not None):
+            search = search.replace('*', '%')
+            domainQuery = domainQuery.where(
+                (ModelDomain.domain ** (search + '%'))
+            )
+
+        return domainQuery
+
+    def get_group_maps(self):
+        return AccountGroupMap.select(AccountGroupMap.group_id).where(
+            AccountGroupMap.account_id == self.auth.account.account_id
+        )
