@@ -1,10 +1,11 @@
-from peewee import CharField, IntegerField
+from peewee import CharField, IntegerField, PrimaryKeyField
 
 from vegadns.api.models import database, BaseModel
 from vegadns.validate import Validate
 
 
 class AuditLog(BaseModel):
+    log_id = PrimaryKeyField()
     email = CharField(db_column='Email')
     name = CharField(db_column='Name')
     account_id = IntegerField(db_column='cid')
