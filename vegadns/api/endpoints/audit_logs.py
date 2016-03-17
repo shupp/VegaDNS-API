@@ -11,6 +11,8 @@ from vegadns.api.models.audit_log import AuditLog as ModelAuditLog
 class AuditLogs(AbstractEndpoint):
     route = '/audit_logs'
     sort_fields = {
+        'time': ModelAuditLog.time,
+        'log_id': ModelAuditLog.log_id,
         'domain_id': ModelAuditLog.domain_id
     }
 
