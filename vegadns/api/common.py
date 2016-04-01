@@ -14,6 +14,7 @@ class Auth(object):
         self.account = None
         self.request = request
         self.endpoint = endpoint
+        self.authUsed = None
         self.authenticate()
 
     def authenticate(self):
@@ -47,6 +48,7 @@ class Auth(object):
     def oauth_authenticate(self, token):
         account = self.get_account_by_oauth_token(token)
         self.account = account
+        self.authUsed = "oauth"
 
     def basic_authenticate(self):
         # basic auth for now
@@ -59,6 +61,8 @@ class Auth(object):
         account = self.get_account_by_email(email)
         if not account.check_password(password):
             raise AuthException('Invalid email or password')
+
+        self.authUsed = "basic"
 
         # update to bcrypt
         if account.get_password_algo() != "bcrypt":
@@ -107,6 +111,8 @@ class Auth(object):
         if ip != trusted and ip not in trusted.split(','):
             raise AuthException('IP not authorized: ' + ip)
 
+        self.authUsed = "ip"
+
     def cookie_authenticate(self):
         supplied_cookie = self.request.cookies.get("vegadns")
         if supplied_cookie is None:
@@ -132,6 +138,7 @@ class Auth(object):
             raise AuthException("Invalid cookie supplied")
 
         self.account = account
+        self.authUsed = "cookie"
 
 
 class AuthException(Exception):

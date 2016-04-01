@@ -1,4 +1,5 @@
 from flask.ext.restful import abort, request
+from flask import make_response
 import peewee
 
 from vegadns.api import endpoint
@@ -104,4 +105,21 @@ class Account(AbstractEndpoint):
 
         account.save()
 
-        return {'status': 'ok', 'account': account.to_clean_dict()}
+        data = {
+            "status": "ok",
+            "account": account.to_clean_dict()
+        }
+        response = make_response(self.serialize(data))
+        response.mimetype = 'application/json'
+
+        if (password is not None and
+           account.account_id == self.auth.account.account_id):
+
+            user_agent = request.headers.get('User-Agent')
+            generated_cookie = account.generate_cookie_value(
+                account,
+                user_agent
+            )
+            response.set_cookie('vegadns', generated_cookie)
+
+        return response
