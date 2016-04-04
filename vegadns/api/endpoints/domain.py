@@ -38,7 +38,7 @@ class Domain(AbstractEndpoint):
             abort(400, message="no parameters provided")
 
         if owner_id is not None:
-            if owner_id == 0:
+            if int(owner_id) == 0:
                 domain.owner_id = 0
             else:
                 try:
