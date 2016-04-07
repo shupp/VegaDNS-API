@@ -54,7 +54,7 @@ class PasswordResetTokens(AbstractEndpoint):
         # prep email data
         name = account.first_name + " " + account.last_name
         url = config.get(
-            'ui_server', 'base_url'
+            'ui_server', 'ui_url'
         ) + "#passwordReset?token=" + token.token_value
         data = {
             'name': name,

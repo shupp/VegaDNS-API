@@ -9,3 +9,6 @@ vegadns_generation_txt_record = {{vegadns_generation}}
 
 [ip_auth]
 trusted_ips = {{trusted_ips}}
+
+[ui_server]
+ui_url = {{ui_url}}
