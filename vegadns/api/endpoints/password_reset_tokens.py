@@ -55,7 +55,7 @@ class PasswordResetTokens(AbstractEndpoint):
         name = account.first_name + " " + account.last_name
         url = config.get(
             'ui_server', 'base_url'
-        ) + "#resetPassword?token=" + token.token_value
+        ) + "#passwordReset?token=" + token.token_value
         data = {
             'name': name,
             'url': url,

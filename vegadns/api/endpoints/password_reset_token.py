@@ -16,13 +16,12 @@ from vegadns.api.models.password_reset_token import \
 
 @endpoint
 class PasswordResetToken(AbstractEndpoint):
-    route = '/password_reset_token'
+    route = '/password_reset_tokens/<token>'
 
     auth_types = []
     auth_required = False
 
-    def get(self):
-        token = request.args.get("token", None)
+    def get(self, token):
         storedToken = self.fetchToken(token)
 
         return {
@@ -30,10 +29,9 @@ class PasswordResetToken(AbstractEndpoint):
             'token': storedToken.to_clean_dict()
         }
 
-    def put(self):
+    def put(self, token):
         """Resets the password and deletes token"""
 
-        token = request.form.get("token", None)
         storedToken = self.fetchToken(token)
         password = request.form.get("password", None)
         if password is None:
