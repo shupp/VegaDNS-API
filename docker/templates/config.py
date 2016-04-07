@@ -20,7 +20,7 @@ def main():
             "vegadns_generation": os.getenv("VEGADNS_GENERATION", default=""),
             "vegadns": os.getenv("VEGADNS", default="http://127.0.0.1/1.0/export/tinydns"),
             "trusted_ips": os.getenv("TRUSTED_IPS", default="127.0.0.1"),
-            "ui_url": os.getenv("BASE_URL", default="http://localhost:8080"),
+            "ui_url": os.getenv("UI_URL", default="http://localhost:8080"),
             "email_method": os.getenv("EMAIL_METHOD", default="smtp"),
             "smtp_host": os.getenv("SMTP_HOST", default="localhost"),
             "smtp_port": os.getenv("SMTP_PORT", default="25"),
