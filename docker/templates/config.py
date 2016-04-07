@@ -21,6 +21,14 @@ def main():
             "vegadns": os.getenv("VEGADNS", default="http://127.0.0.1/1.0/export/tinydns"),
             "trusted_ips": os.getenv("TRUSTED_IPS", default="127.0.0.1"),
             "ui_url": os.getenv("BASE_URL", default="http://localhost:8080"),
+            "email_method": os.getenv("EMAIL_METHOD", default="smtp"),
+            "smtp_host": os.getenv("SMTP_HOST", default="localhost"),
+            "smtp_port": os.getenv("SMTP_PORT", default="25"),
+            "smtp_auth": os.getenv("SMTP_AUTH", default="false"),
+            "smtp_user": os.getenv("SMTP_USER", default=""),
+            "smtp_password": os.getenv("SMTP_PASSWORD", default=""),
+            "support_name": os.getenv("SUPPORT_NAME", default="The VegaDNS Team"),
+            "support_email": os.getenv("SUPPORT_EMAIL", default="support@example.com"),
         }
     except Exception as err:
         print "Problem reading environment", err

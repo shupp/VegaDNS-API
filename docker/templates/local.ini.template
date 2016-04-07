@@ -12,3 +12,14 @@ trusted_ips = {{trusted_ips}}
 
 [ui_server]
 ui_url = {{ui_url}}
+
+[email]
+# smtp or sendmail
+email_method = {{email_method}}
+smtp_host = {{smtp_host}}
+smtp_port = {{smtp_port}}
+smtp_auth = {{smtp_auth}}
+smtp_user = {{smtp_user}}
+smtp_password = {{smtp_password}}
+support_name = {{support_name}}
+support_email = {{support_email}}
