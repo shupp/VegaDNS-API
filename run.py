@@ -9,6 +9,7 @@ from vegadns.api.endpoints import default_record, default_records
 from vegadns.api.endpoints import updatedata, account, login, logout
 from vegadns.api.endpoints import healthcheck, audit_logs
 from vegadns.api.endpoints import password_reset_token, password_reset_tokens
+from vegadns.api.endpoints import swagger
 
 profile = os.environ.get('PROFILE', None)
 debug = bool(os.environ.get('DEBUG', None))

@@ -1,0 +1,1579 @@
+{
+    "basePath": "/1.0",
+    "consumes": [
+        "application/x-www-form-urlencoded"
+    ],
+    "host": "localhost:5000",
+    "info": {
+        "description": "Manage your DNS records with the VegaDNS API",
+        "title": "VegaDNS API",
+        "version": "1.0.0"
+    },
+    "parameters": {
+        "distanceParam": {
+            "description": "Record distance, only for MX and SRV record types, defaults to 0",
+            "in": "formData",
+            "name": "distance",
+            "required": false,
+            "type": "integer"
+        },
+        "emailSOAParam": {
+            "description": "Contact address, used only for SOA record type",
+            "in": "formData",
+            "name": "email",
+            "required": false,
+            "type": "string"
+        },
+        "expireParam": {
+            "description": "Expire in seconds, used only for SOA record type.  Defaults to 1048576",
+            "in": "formData",
+            "name": "expire",
+            "required": false,
+            "type": "integer"
+        },
+        "minimumParam": {
+            "description": "Minimum in seconds, used only for SOA record type.  Defaults to 2560.",
+            "in": "formData",
+            "name": "minimum",
+            "required": false,
+            "type": "integer"
+        },
+        "nameserverParam": {
+            "description": "Primary nameserver, e.g. ns1.example.com, used only for SOA record type",
+            "in": "formData",
+            "name": "nameserver",
+            "required": false,
+            "type": "string"
+        },
+        "orderParam": {
+            "description": "Order the results, can be 'asc' or 'desc', defaults to 'asc'",
+            "in": "query",
+            "name": "order",
+            "required": false,
+            "type": "string"
+        },
+        "pageParam": {
+            "description": "Indicates the desired page",
+            "in": "query",
+            "name": "page",
+            "required": false,
+            "type": "number"
+        },
+        "perPageParam": {
+            "description": "Indicates the number of items per page",
+            "in": "query",
+            "name": "perpage",
+            "required": false,
+            "type": "number"
+        },
+        "portParam": {
+            "description": "Record port, only for SRV record type",
+            "in": "formData",
+            "name": "port",
+            "required": false,
+            "type": "integer"
+        },
+        "recordIdParam": {
+            "description": "The record id",
+            "in": "path",
+            "name": "record_id",
+            "required": true,
+            "type": "integer"
+        },
+        "recordNameParam": {
+            "description": "Record name, e.g. \"www.example.com\"",
+            "in": "formData",
+            "name": "name",
+            "required": true,
+            "type": "string"
+        },
+        "recordValueParam": {
+            "description": "Record value, e.g. \"192.168.1.1\"",
+            "in": "formData",
+            "name": "value",
+            "required": true,
+            "type": "string"
+        },
+        "refreshParam": {
+            "description": "Refresh in seconds, used only for SOA record type. Defaults to 16374.",
+            "in": "formData",
+            "name": "refresh",
+            "required": false,
+            "type": "integer"
+        },
+        "retryParam": {
+            "description": "Retry in seconds, used only for SOA record type.  Defaults to 2048.",
+            "in": "formData",
+            "name": "retry",
+            "required": false,
+            "type": "integer"
+        },
+        "serialParam": {
+            "description": "Serial number, used only for SOA record type",
+            "in": "formData",
+            "name": "serial",
+            "required": false,
+            "type": "string"
+        },
+        "ttlParam": {
+            "description": "Time to live, defaults to 3600 for all record types but SOA, which has a default of 86400",
+            "in": "formData",
+            "name": "ttl",
+            "required": false,
+            "type": "string"
+        },
+        "weightParam": {
+            "description": "Record weight, only for MX and SRV record types",
+            "in": "formData",
+            "name": "weight",
+            "required": false,
+            "type": "integer"
+        },
+        "apiKeyIdPathParam": {
+            "description": "API Key ID",
+            "in": "path",
+            "name": "apikey_id",
+            "required": true,
+            "type": "integer"
+        },
+        "accountIdPathParam": {
+            "name": "account_id",
+            "in": "path",
+            "type": "integer",
+            "description": "The account id",
+            "required": true
+        },
+        "accountFirstNameParam": {
+            "description": "First name",
+            "in": "formData",
+            "name": "first_name",
+            "required": true,
+            "type": "string"
+        },
+        "accountLastNameParam": {
+            "description": "Last name",
+            "in": "formData",
+            "name": "last_name",
+            "required": true,
+            "type": "string"
+        },
+        "accountEmailParam": {
+            "description": "Email account",
+            "in": "formData",
+            "name": "email",
+            "required": true,
+            "type": "string"
+        },
+        "accountTypeParam": {
+            "description": "Account type, one of 'senior_admin' or 'user'",
+            "in": "formData",
+            "name": "account_type",
+            "required": true,
+            "type": "string"
+        },
+        "accountPhoneParam": {
+            "description": "Phone number",
+            "in": "formData",
+            "name": "phone",
+            "required": false,
+            "type": "string"
+        },
+        "accountStatusParam": {
+            "description": "Account status, either 'active' or 'inactive'",
+            "in": "formData",
+            "name": "status",
+            "required": true,
+            "type": "string"
+        },
+        "accountPasswordParam": {
+            "description": "Account password",
+            "in": "formData",
+            "name": "password",
+            "required": false,
+            "type": "string"
+        },
+        "groupIdPathParam": {
+            "name": "group_id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "description": "The group id"
+        },
+        "groupNameParam": {
+            "name": "name",
+            "description": "Group name",
+            "required": false,
+            "type": "string",
+            "in": "formData"
+        },
+        "groupIdParam": {
+            "name": "group_id",
+            "in": "formData",
+            "required": true,
+            "description": "The group id",
+            "type": "integer"
+        },
+        "domainIdParam": {
+            "name": "domain_id",
+            "in": "formData",
+            "required": true,
+            "description": "The domain id",
+            "type": "integer"
+        },
+        "canReadParam": {
+            "name": "can_read",
+            "in": "formData",
+            "required": true,
+            "type": "integer",
+            "description": "Whether a group has read access to a domain.  1 for true, 0 for false."
+        },
+        "canWriteParam": {
+            "name": "can_write",
+            "in": "formData",
+            "required": true,
+            "type": "integer",
+            "description": "Whether a group has write access to a domain.  1 for true, 0 for false."
+        },
+        "canDeleteParam": {
+            "name": "can_delete",
+            "in": "formData",
+            "required": true,
+            "type": "integer",
+            "description": "Whether a group has delete access to a domain.  1 for true, 0 for false."
+        },
+        "domainGroupMapIdPathParam": {
+            "name": "map_id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "description": "The domain group map id"
+        },
+        "groupMemberIdPathParam": {
+            "name": "member_id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "description": "The member id"
+        },
+        "passwordResetTokenInPathParam": {
+            "name": "token",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "The password reset token"
+        }
+    },
+    "paths": {
+        "/accounts": {
+            "get": {
+                "parameters": [
+                    {
+                        "description": "Search string to match first name, last name, or email",
+                        "in": "query",
+                        "name": "search",
+                        "required": false,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                },
+                "summary": "List accounts",
+                "tags": [
+                    "Accounts"
+                ]
+            },
+            "post": {
+                "parameters": [
+                    {
+                        "$ref": "#/parameters/accountFirstNameParam"
+                    },
+                    {
+                        "$ref": "#/parameters/accountLastNameParam"
+                    },
+                    {
+                        "$ref": "#/parameters/accountEmailParam"
+                    },
+                    {
+                        "$ref": "#/parameters/accountTypeParam"
+                    },
+                    {
+                        "$ref": "#/parameters/accountPhoneParam"
+                    },
+                    {
+                        "$ref": "#/parameters/accountPasswordParam"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "On invalid or missing parameters"
+                    }
+                },
+                "summary": "Create a new account",
+                "tags": [
+                    "Accounts"
+                ]
+            }
+        },
+        "/accounts/{account_id}": {
+            "get": {
+                "parameters": [
+                    {
+                        "$ref": "#/parameters/accountIdPathParam"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                },
+                "summary": "Get an account by id",
+                "tags": [
+                    "Accounts"
+                ]
+            },
+            "put": {
+                "parameters": [
+                    {
+                        "$ref": "#/parameters/accountIdPathParam"
+                    },
+                    {
+                        "$ref": "#/parameters/accountFirstNameParam"
+                    },
+                    {
+                        "$ref": "#/parameters/accountLastNameParam"
+                    },
+                    {
+                        "$ref": "#/parameters/accountEmailParam"
+                    },
+                    {
+                        "$ref": "#/parameters/accountTypeParam"
+                    },
+                    {
+                        "$ref": "#/parameters/accountPhoneParam"
+                    },
+                    {
+                        "$ref": "#/parameters/accountStatusParam"
+                    },
+                    {
+                        "$ref": "#/parameters/accountPasswordParam"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "On invalid or missing parameters"
+                    }
+                },
+                "summary": "Update an account",
+                "tags": [
+                    "Accounts"
+                ]
+            }
+        },
+        "/domains": {
+            "get": {
+                "parameters": [
+                    {
+                        "$ref": "#/parameters/pageParam"
+                    },
+                    {
+                        "$ref": "#/parameters/perPageParam"
+                    },
+                    {
+                        "description": "Sort the results by either 'name' or 'status'",
+                        "in": "query",
+                        "name": "sort",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "$ref": "#/parameters/orderParam"
+                    },
+                    {
+                        "description": "Search string to match agains domain names",
+                        "in": "query",
+                        "name": "search",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "description": "Whether to include domain permissions in the result",
+                        "in": "query",
+                        "name": "include_permissions",
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                },
+                "summary": "List domains that you have at least read permission on.\n",
+                "tags": [
+                    "Domains"
+                ]
+            },
+            "post": {
+                "parameters": [
+                    {
+                        "description": "The domain name to create",
+                        "in": "formData",
+                        "name": "domain",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "Domain name is in valid or already in use"
+                    }
+                },
+                "summary": "Create a new domain",
+                "tags": [
+                    "Domains"
+                ]
+            }
+        },
+        "/domains/{domain_id}": {
+            "delete": {
+                "parameters": [
+                    {
+                        "description": "Domain id",
+                        "in": "path",
+                        "name": "domain_id",
+                        "required": true,
+                        "type": "integer"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerToken": []
+                    }
+                ],
+                "summary": "Delete domain",
+                "tags": [
+                    "Domains"
+                ]
+            },
+            "get": {
+                "parameters": [
+                    {
+                        "description": "Domain id",
+                        "in": "path",
+                        "name": "domain_id",
+                        "required": true,
+                        "type": "integer"
+                    },
+                    {
+                        "description": "Whether to include domain permissions in the result",
+                        "in": "query",
+                        "name": "include_permissions",
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                },
+                "summary": "Get a single domain",
+                "tags": [
+                    "Domains"
+                ]
+            },
+            "put": {
+                "parameters": [
+                    {
+                        "description": "Domain id",
+                        "in": "path",
+                        "name": "domain_id",
+                        "required": true,
+                        "type": "integer"
+                    },
+                    {
+                        "description": "The account_id of the domain owner",
+                        "in": "formData",
+                        "name": "owner_id",
+                        "required": false,
+                        "type": "integer"
+                    },
+                    {
+                        "description": "Use 'active' or 'inactive' to indicate the domain's status",
+                        "in": "formData",
+                        "name": "status",
+                        "required": false,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                },
+                "summary": "Modify a domain",
+                "tags": [
+                    "Domains"
+                ]
+            }
+        },
+        "/export/tinydns": {
+            "get": {
+                "description": "Log out of cookie authentication.",
+                "produces": [
+                    "text/html"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                },
+                "summary": "Export records in tinydns data file format",
+                "tags": [
+                    "Export"
+                ]
+            }
+        },
+        "/login": {
+            "get": {
+                "security": [],
+                "description": "Allows cookie based clients to check current login status.",
+                "responses": {
+                    "200": {
+                        "description": "OK, logged in"
+                    },
+                    "401": {
+                        "description": "Not logged in"
+                    }
+                },
+                "summary": "Check cookie authentication status",
+                "tags": [
+                    "Cookie Auth"
+                ]
+            },
+            "post": {
+                "security": [],
+                "description": "Log in for cookie authentication via email/password.",
+                "parameters": [
+                    {
+                        "description": "Email address",
+                        "in": "formData",
+                        "name": "email",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "description": "Password",
+                        "in": "formData",
+                        "name": "password",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "Invalid or missing parameters"
+                    },
+                    "401": {
+                        "description": "Authentication failure"
+                    }
+                },
+                "summary": "Log in",
+                "tags": [
+                    "Cookie Auth"
+                ]
+            }
+        },
+        "/logout": {
+            "post": {
+                "description": "Log out of cookie authentication.",
+                "responses": {
+                    "200": {
+                        "description": "OK, logged out"
+                    }
+                },
+                "summary": "Log out",
+                "tags": [
+                    "Cookie Auth"
+                ]
+            }
+        },
+        "/records": {
+            "get": {
+                "parameters": [
+                    {
+                        "description": "The domain id",
+                        "in": "query",
+                        "name": "domain_id",
+                        "required": true,
+                        "type": "integer"
+                    },
+                    {
+                        "description": "Search string for the record name",
+                        "in": "query",
+                        "name": "search_name",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "description": "Search string for the record value",
+                        "in": "query",
+                        "name": "search_value",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "description": "Record type to filter on, can be one of 'A', 'AAAA', 'A+PTR', 'AAAA+PTR', 'NS', 'SOA', 'MX', 'PTR', 'CNAME', 'PTR', 'TXT', 'SPF'",
+                        "in": "query",
+                        "name": "filter_record_type",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "description": "Sort the results by 'name', 'value', 'ttl', 'type', or 'distance'",
+                        "in": "query",
+                        "name": "sort",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "$ref": "#/parameters/orderParam"
+                    },
+                    {
+                        "$ref": "#/parameters/pageParam"
+                    },
+                    {
+                        "$ref": "#/parameters/perPageParam"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                },
+                "summary": "Get a list of records for a domain",
+                "tags": [
+                    "Records"
+                ]
+            },
+            "post": {
+                "parameters": [
+                    {
+                        "description": "The domain id",
+                        "in": "formData",
+                        "name": "domain_id",
+                        "required": true,
+                        "type": "integer"
+                    },
+                    {
+                        "description": "Record type must be one of 'A', 'AAAA', 'A+PTR', 'AAAA+PTR', 'NS', 'SOA', 'MX', 'PTR', 'CNAME', 'PTR', 'TXT', 'SPF'",
+                        "in": "formData",
+                        "name": "record_type",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "$ref": "#/parameters/recordNameParam"
+                    },
+                    {
+                        "$ref": "#/parameters/recordValueParam"
+                    },
+                    {
+                        "$ref": "#/parameters/ttlParam"
+                    },
+                    {
+                        "$ref": "#/parameters/distanceParam"
+                    },
+                    {
+                        "$ref": "#/parameters/weightParam"
+                    },
+                    {
+                        "$ref": "#/parameters/portParam"
+                    },
+                    {
+                        "$ref": "#/parameters/emailSOAParam"
+                    },
+                    {
+                        "$ref": "#/parameters/nameserverParam"
+                    },
+                    {
+                        "$ref": "#/parameters/refreshParam"
+                    },
+                    {
+                        "$ref": "#/parameters/retryParam"
+                    },
+                    {
+                        "$ref": "#/parameters/expireParam"
+                    },
+                    {
+                        "$ref": "#/parameters/minimumParam"
+                    },
+                    {
+                        "$ref": "#/parameters/serialParam"
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "OK"
+                    }
+                },
+                "summary": "Create a new record",
+                "tags": [
+                    "Records"
+                ]
+            }
+        },
+        "/records/{record_id}": {
+            "delete": {
+                "parameters": [
+                    {
+                        "$ref": "#/parameters/recordIdParam"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                },
+                "summary": "Delete record",
+                "tags": [
+                    "Records"
+                ]
+            },
+            "get": {
+                "parameters": [
+                    {
+                        "$ref": "#/parameters/recordIdParam"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                },
+                "summary": "Get record by id",
+                "tags": [
+                    "Records"
+                ]
+            },
+            "put": {
+                "parameters": [
+                    {
+                        "$ref": "#/parameters/recordIdParam"
+                    },
+                    {
+                        "$ref": "#/parameters/ttlParam"
+                    },
+                    {
+                        "$ref": "#/parameters/recordNameParam"
+                    },
+                    {
+                        "$ref": "#/parameters/recordValueParam"
+                    },
+                    {
+                        "$ref": "#/parameters/distanceParam"
+                    },
+                    {
+                        "$ref": "#/parameters/weightParam"
+                    },
+                    {
+                        "$ref": "#/parameters/portParam"
+                    },
+                    {
+                        "$ref": "#/parameters/emailSOAParam"
+                    },
+                    {
+                        "$ref": "#/parameters/nameserverParam"
+                    },
+                    {
+                        "$ref": "#/parameters/refreshParam"
+                    },
+                    {
+                        "$ref": "#/parameters/retryParam"
+                    },
+                    {
+                        "$ref": "#/parameters/expireParam"
+                    },
+                    {
+                        "$ref": "#/parameters/minimumParam"
+                    },
+                    {
+                        "$ref": "#/parameters/serialParam"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                },
+                "summary": "Modify a record",
+                "tags": [
+                    "Records"
+                ]
+            }
+        },
+        "/swagger": {
+            "get": {
+                "security": [],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                },
+                "summary": "API documentation in Swagger format",
+                "tags": [
+                    "Utility"
+                ]
+            }
+        },
+        "/token": {
+            "post": {
+                "parameters": [
+                    {
+                        "description": "OAuth flow, only \"client_credentials\" supported",
+                        "in": "formData",
+                        "name": "grant_type",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                },
+                "summary": "OAuth 2.0 client_credentials token endpoint",
+                "tags": [
+                    "Utility"
+                ]
+            }
+        },
+        "/apikeys": {
+            "get": {
+                "parameters": [
+                    {
+                        "description": "Comma separated list of account ids to filter by",
+                        "in": "query",
+                        "name": "account_ids",
+                        "required": false,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                },
+                "summary": "List API keys.\n",
+                "tags": [
+                    "API Keys"
+                ]
+            },
+            "post": {
+                "parameters": [
+                    {
+                        "description": "API Key Description",
+                        "in": "formData",
+                        "name": "apikey",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "description": "Account ID to create the key for.  Default is the account id of the logged in user.",
+                        "in": "formData",
+                        "name": "account_id",
+                        "required": false,
+                        "type": "integer"
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "OK"
+                    }
+                },
+                "summary": "Create a new API Key and Secret",
+                "tags": [
+                    "API Keys"
+                ]
+            }
+        },
+        "/apikey/{apikey_id}": {
+            "get": {
+                "parameters": [
+                    {
+                        "$ref": "#/parameters/apiKeyIdPathParam"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    }
+                },
+                "summary": "Get a single API Key by ID",
+                "tags": [
+                    "API Keys"
+                ]
+            },
+            "put": {
+                "parameters": [
+                    {
+                        "$ref": "#/parameters/apiKeyIdPathParam"
+                    },
+                    {
+                        "description": "API Key Description",
+                        "name": "description",
+                        "in": "formData",
+                        "required": false,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                },
+                "summary": "Update the description of an API Key",
+                "tags": [
+                    "API Keys"
+                ]
+            },
+            "delete": {
+                "parameters": [
+                    {
+                        "$ref": "#/parameters/apiKeyIdPathParam"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                },
+                "summary": "Delete an API Key",
+                "tags": [
+                    "API Keys"
+                ]
+            }
+        },
+        "/audit_logs": {
+            "get": {
+                "parameters": [
+                    {
+                        "name": "domain_ids",
+                        "description": "Comma delimited list of domain ids to filter by",
+                        "required": false,
+                        "type": "string",
+                        "in": "query"
+                    },
+                    {
+                        "name": "sort",
+                        "description": "Field to sort by, can be one of 'time', 'log_id', or 'domain_id'",
+                        "required": false,
+                        "type": "string",
+                        "in": "query"
+                    },
+                    {
+                        "$ref": "#/parameters/pageParam"
+                    },
+                    {
+                        "$ref": "#/parameters/perPageParam"
+                    },
+                    {
+                        "$ref": "#/parameters/orderParam"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                },
+                "summary": "List audit logs, optionally filterying by domain_ids",
+                "tags": [
+                    "Audit Logs"
+                ]
+            }
+        },
+        "/default_records": {
+            "get": {
+                "parameters": [
+                    {
+                        "description": "Record type to filter on, can be one of 'A', 'AAAA', 'A+PTR', 'AAAA+PTR', 'NS', 'SOA', 'MX', 'PTR', 'CNAME', 'PTR', 'TXT', 'SPF'",
+                        "in": "query",
+                        "name": "filter_record_type",
+                        "required": false,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                },
+                "summary": "Get a list of default records",
+                "tags": [
+                    "Default Records"
+                ]
+            },
+            "post": {
+                "parameters": [
+                    {
+                        "description": "Record type must be one of 'A', 'AAAA', 'A+PTR', 'AAAA+PTR', 'NS', 'SOA', 'MX', 'PTR', 'CNAME', 'PTR', 'TXT', 'SPF'",
+                        "in": "formData",
+                        "name": "record_type",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "$ref": "#/parameters/recordNameParam"
+                    },
+                    {
+                        "$ref": "#/parameters/recordValueParam"
+                    },
+                    {
+                        "$ref": "#/parameters/ttlParam"
+                    },
+                    {
+                        "$ref": "#/parameters/distanceParam"
+                    },
+                    {
+                        "$ref": "#/parameters/weightParam"
+                    },
+                    {
+                        "$ref": "#/parameters/portParam"
+                    },
+                    {
+                        "$ref": "#/parameters/emailSOAParam"
+                    },
+                    {
+                        "$ref": "#/parameters/nameserverParam"
+                    },
+                    {
+                        "$ref": "#/parameters/refreshParam"
+                    },
+                    {
+                        "$ref": "#/parameters/retryParam"
+                    },
+                    {
+                        "$ref": "#/parameters/expireParam"
+                    },
+                    {
+                        "$ref": "#/parameters/minimumParam"
+                    },
+                    {
+                        "$ref": "#/parameters/serialParam"
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "OK"
+                    }
+                },
+                "summary": "Create a new default record.",
+                "description": "You can use the wildcard placeholder DOMAIN in the 'name' parameter for the domain's name later, i.e. www.DOMAIN would become www.example.com for domain example.com.",
+                "tags": [
+                    "Default Records"
+                ]
+            }
+        },
+        "/default_records/{record_id}": {
+            "delete": {
+                "parameters": [
+                    {
+                        "$ref": "#/parameters/recordIdParam"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                },
+                "summary": "Delete a default record by id",
+                "tags": [
+                    "Default Records"
+                ]
+            },
+            "get": {
+                "parameters": [
+                    {
+                        "$ref": "#/parameters/recordIdParam"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                },
+                "summary": "Get record by id",
+                "tags": [
+                    "Default Records"
+                ]
+            },
+            "put": {
+                "parameters": [
+                    {
+                        "$ref": "#/parameters/recordIdParam"
+                    },
+                    {
+                        "$ref": "#/parameters/ttlParam"
+                    },
+                    {
+                        "$ref": "#/parameters/recordNameParam"
+                    },
+                    {
+                        "$ref": "#/parameters/recordValueParam"
+                    },
+                    {
+                        "$ref": "#/parameters/distanceParam"
+                    },
+                    {
+                        "$ref": "#/parameters/weightParam"
+                    },
+                    {
+                        "$ref": "#/parameters/portParam"
+                    },
+                    {
+                        "$ref": "#/parameters/emailSOAParam"
+                    },
+                    {
+                        "$ref": "#/parameters/nameserverParam"
+                    },
+                    {
+                        "$ref": "#/parameters/refreshParam"
+                    },
+                    {
+                        "$ref": "#/parameters/retryParam"
+                    },
+                    {
+                        "$ref": "#/parameters/expireParam"
+                    },
+                    {
+                        "$ref": "#/parameters/minimumParam"
+                    },
+                    {
+                        "$ref": "#/parameters/serialParam"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                },
+                "summary": "Modify a default record",
+                "description": "You can use the wildcard placeholder DOMAIN in the 'name' parameter for the domain's name later, i.e. www.DOMAIN would become www.example.com for domain example.com.",
+                "tags": [
+                    "Default Records"
+                ]
+            }
+        },
+        "/groups": {
+            "get": {
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                },
+                "summary": "List groups",
+                "tags": [
+                    "Groups"
+                ]
+            },
+            "post": {
+                "parameters": [
+                    {
+                        "$ref": "#/parameters/groupNameParam"
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "OK"
+                    }
+                },
+                "summary": "Create group",
+                "tags": [
+                    "Groups"
+                ]
+            }
+        },
+        "/groups/{group_id}": {
+            "get": {
+                "parameters": [
+                    {
+                        "$ref": "#/parameters/groupIdPathParam"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                },
+                "summary": "Get group by id",
+                "tags": [
+                    "Groups"
+                ]
+            },
+            "put": {
+                "parameters": [
+                    {
+                        "$ref": "#/parameters/groupIdPathParam"
+                    },
+                    {
+                        "$ref": "#/parameters/groupNameParam"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                },
+                "summary": "Modify group name",
+                "tags": [
+                    "Groups"
+                ]
+            },
+            "delete": {
+                "parameters": [
+                    {
+                        "$ref": "#/parameters/groupIdPathParam"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                },
+                "summary": "Delete group",
+                "tags": [
+                    "Groups"
+                ]
+            }
+        },
+        "/groupmembers": {
+            "get": {
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                },
+                "summary": "List accounts that are members of a group",
+                "tags": [
+                    "Groups"
+                ]
+            },
+            "post": {
+                "parameters": [
+                    {
+                        "name": "group_id",
+                        "type": "integer",
+                        "required": true,
+                        "description": "The group id",
+                        "in": "formData"
+                    },
+                    {
+                        "name": "account_id",
+                        "type": "integer",
+                        "description": "The account id",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "name": "is_admin",
+                        "type": "integer",
+                        "description": "Whether this account has admin privileges to administer the group.  1 for true, 0 for false.  Defaults to 0.",
+                        "required": false,
+                        "in": "formData"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                },
+                "summary": "Add a member to a group",
+                "tags": [
+                    "Groups"
+                ]
+            }
+        },
+        "/groupmembers/{member_id}": {
+            "get": {
+                "parameters": [
+                    {
+                        "$ref": "#/parameters/groupMemberIdPathParam"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                },
+                "summary": "Get an account member of a group by member id",
+                "tags": [
+                    "Groups"
+                ]
+            },
+            "put": {
+                "parameters": [
+                    {
+                        "$ref": "#/parameters/groupMemberIdPathParam"
+                    },
+                    {
+                        "name": "is_admin",
+                        "description": "Whether this account has admin privileges to administer the group.  1 for true, 0 for false.  Defaults to 0.",
+                        "type": "integer",
+                        "required": true,
+                        "in": "formData"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                },
+                "summary": "Modify an account's membership in group",
+                "tags": [
+                    "Groups"
+                ]
+            }
+        },
+        "/domaingroupmaps": {
+            "get": {
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                },
+                "summary": "List domain group maps",
+                "description": "Must include either group_id, domain_id, or both",
+                "tags": [
+                    "Groups"
+                ]
+            },
+            "post": {
+                "parameters": [
+                    {
+                        "$ref": "#/parameters/groupIdParam"
+                    },
+                    {
+                        "$ref": "#/parameters/domainIdParam"
+                    },
+                    {
+                        "$ref": "#/parameters/canReadParam"
+                    },
+                    {
+                        "$ref": "#/parameters/canWriteParam"
+                    },
+                    {
+                        "$ref": "#/parameters/canDeleteParam"
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "OK"
+                    }
+                },
+                "summary": "Create a domain group map",
+                "tags": [
+                    "Groups"
+                ]
+            }
+        },
+        "/domaingroupmaps/{map_id}": {
+            "get": {
+                "parameters": [
+                    {
+                        "$ref": "#/parameters/domainGroupMapIdPathParam"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                },
+                "summary": "List domain group maps",
+                "description": "Must include either group_id, domain_id, or both",
+                "tags": [
+                    "Groups"
+                ]
+            },
+            "put": {
+                "parameters": [
+                    {
+                        "$ref": "#/parameters/domainGroupMapIdPathParam"
+                    },
+                    {
+                        "$ref": "#/parameters/groupIdParam"
+                    },
+                    {
+                        "$ref": "#/parameters/domainIdParam"
+                    },
+                    {
+                        "$ref": "#/parameters/canReadParam"
+                    },
+                    {
+                        "$ref": "#/parameters/canWriteParam"
+                    },
+                    {
+                        "$ref": "#/parameters/canDeleteParam"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                },
+                "summary": "Edit a domain group map",
+                "tags": [
+                    "Groups"
+                ]
+            },
+            "delete": {
+                "parameters": [
+                    {
+                        "$ref": "#/parameters/domainGroupMapIdPathParam"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                },
+                "summary": "Delete a domain group map",
+                "tags": [
+                    "Groups"
+                ]
+            }
+        },
+        "/healthcheck": {
+            "get": {
+                "security": [],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                },
+                "summary": "Monitoring endpoint to check health status",
+                "tags": [
+                    "Utility"
+                ]
+            }
+        },
+        "/password_reset_tokens": {
+            "post": {
+                "security": [],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "On invalid or missing email"
+                    }
+                },
+                "summary": "Create a password reset token what will be emailed to the user",
+                "tags": [
+                    "Utility"
+                ]
+            }
+        },
+        "/password_reset_tokens/{token}": {
+            "get": {
+                "security": [],
+                "parameters": [
+                    {
+                        "$ref": "#/parameters/passwordResetTokenInPathParam"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK if token is currently valid"
+                    },
+                    "404": {
+                        "description": "Token not found or expired"
+                    }
+                },
+                "summary": "Check to see if a password token is valid",
+                "tags": [
+                    "Utility"
+                ]
+            },
+            "put": {
+                "security": [],
+                "parameters": [
+                    {
+                        "$ref": "#/parameters/passwordResetTokenInPathParam"
+                    },
+                    {
+                        "$ref": "#/parameters/accountPasswordParam"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                },
+                "summary": "Reset account password and delete token",
+                "tags": [
+                    "Utility"
+                ]
+            }
+        },
+        "/update-local-tinydns-data": {
+            "get": {
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                },
+                "summary": "Intended for testing only.  This endpoint simply calls the local update-data.sh script to force tinydns to update its data file so that dns queries can be tested immediately.  Used by integration tests.",
+                "tags": [
+                    "Utility"
+                ]
+            }
+        }
+    },
+    "produces": [
+        "application/json"
+    ],
+    "schemes": [
+        "http",
+        "https"
+    ],
+    "security": [
+        {
+            "Basic Auth": []
+        },
+        {
+            "BearerToken": []
+        }
+    ],
+    "securityDefinitions": {
+        "Basic Auth": {
+            "type": "basic"
+        },
+        "BearerToken": {
+            "flow": "application",
+            "tokenUrl": "localhost:5000/1.0/token",
+            "type": "oauth2"
+        }
+    },
+    "swagger": "2.0"
+}
