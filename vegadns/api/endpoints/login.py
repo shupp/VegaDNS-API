@@ -30,10 +30,10 @@ class Login(AbstractEndpoint):
         password = request.form.get("password", None)
 
         if email is None or password is None:
-            return abort(401, message="email and password required")
+            return abort(400, message="email and password required")
 
         if not Validate().email(email):
-            return abort(401, message="invalid email")
+            return abort(400, message="invalid email")
 
         try:
             account = ModelAccount.get(
