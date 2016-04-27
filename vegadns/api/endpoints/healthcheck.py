@@ -6,7 +6,6 @@ from vegadns.api.endpoints import AbstractEndpoint
 
 @endpoint
 class HealthCheck(AbstractEndpoint):
-    version = None
     auth_required = False
     route = '/healthcheck'
 
