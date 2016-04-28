@@ -29,6 +29,7 @@ password = secret
 database = vegadns
 host = localhost
 ```
+Have a look at [default.ini](vegadns/api/config/default.ini) for a full list of configuration items you may want to override.
 
 Lastly, you need to create your database contents.  You can apply the following an empty database:
 
@@ -40,7 +41,10 @@ mysql -u vegadns -p -h localhost vegadns < sql/data.sql
 If you are testing a copy of a legacy VegaDNS database, you can just run this instead:
 
 ```
-mysql -u vegadns -p -h localhost vegadns < sql/data.sql
+mysql -u vegadns -p -h localhost vegadns < sql/new_tables_only.sql
+mysql -u vegadns -p -h localhost vegadns < alter-01.sql
+mysql -u vegadns -p -h localhost vegadns < alter-02.sql
+mysql -u vegadns -p -h localhost vegadns < sql/data_api_keys_only.sql
 ```
 
 Now that the environment is setup, you can start the built-in flask web server to test below:

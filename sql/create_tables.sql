@@ -37,7 +37,7 @@ CREATE TABLE `accounts` (
   `cid` int(10) NOT NULL AUTO_INCREMENT,
   `gid` int(10) DEFAULT '0',
   `Email` varchar(60) NOT NULL DEFAULT '',
-  `Password` varchar(34) NOT NULL DEFAULT '',
+  `Password` varchar(100) NOT NULL DEFAULT '',
   `First_Name` varchar(20) NOT NULL DEFAULT '',
   `Last_Name` varchar(20) NOT NULL DEFAULT '',
   `Phone` varchar(15) NOT NULL DEFAULT '',
@@ -146,6 +146,7 @@ DROP TABLE IF EXISTS `log`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `log` (
+  `log_id` INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
   `domain_id` int(11) NOT NULL DEFAULT '0',
   `cid` int(11) NOT NULL DEFAULT '0',
   `Email` varchar(60) NOT NULL DEFAULT '',
