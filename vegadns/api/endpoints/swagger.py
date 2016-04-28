@@ -2,7 +2,7 @@ import os
 import sys
 import json
 
-from flask import Flask
+from flask import Flask, request
 
 from vegadns.api import endpoint
 from vegadns.api.endpoints import AbstractEndpoint
@@ -21,5 +21,13 @@ class Swagger(AbstractEndpoint):
             contents = template.read()
 
         body = json.loads(contents)
+        baseUrl = request.args.get('baseUrl', None)
+
+        if baseUrl is not None:
+            baseUrl = baseUrl.rstrip("/")
+            body['host'] = baseUrl
+            body['securityDefinitions']['BearerToken']['tokenUrl'] = (
+                baseUrl + "/1.0/token"
+            )
 
         return body
