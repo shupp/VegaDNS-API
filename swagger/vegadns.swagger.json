@@ -699,6 +699,22 @@
         },
         "/domaingroupmaps": {
             "get": {
+                "parameters": [
+                    {
+                        "name": "group_id",
+                        "in": "query",
+                        "required": false,
+                        "type": "integer",
+                        "description": "Group ID"
+                    },
+                    {
+                        "name": "domain_id",
+                        "in": "query",
+                        "required": false,
+                        "type": "integer",
+                        "description": "Domain ID"
+                    }
+                ],
                 "description": "Must include either group_id, domain_id, or both",
                 "responses": {
                     "200": {
