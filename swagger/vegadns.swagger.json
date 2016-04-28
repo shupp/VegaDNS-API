@@ -888,11 +888,6 @@
                         "description": "OK"
                     }
                 },
-                "security": [
-                    {
-                        "BearerToken": []
-                    }
-                ],
                 "summary": "Delete domain",
                 "tags": [
                     "Domains"
