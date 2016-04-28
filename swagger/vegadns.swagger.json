@@ -1501,6 +1501,15 @@
         },
         "/swagger": {
             "get": {
+                "parameters": [
+                    {
+                        "name": "baseUrl",
+                        "description": "Base url to use in swagger output, i.e. http://localhost:5000",
+                        "required": false,
+                        "type": "string",
+                        "in": "query"
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK"
@@ -1537,13 +1546,13 @@
         },
         "/update-local-tinydns-data": {
             "get": {
+                "description": "Intended for testing only.  This endpoint simply calls the local update-data.sh script to force tinydns to update its data file so that dns queries can be tested immediately.  Used by integration tests.",
                 "responses": {
                     "200": {
                         "description": "OK"
                     }
                 },
                 "summary": "Force update of local tinydns data",
-                "description": "Intended for testing only.  This endpoint simply calls the local update-data.sh script to force tinydns to update its data file so that dns queries can be tested immediately.  Used by integration tests.",
                 "tags": [
                     "Utility"
                 ]
