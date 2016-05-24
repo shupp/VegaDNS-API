@@ -10,6 +10,8 @@ from vegadns.api.models.domain import Domain as ModelDomain
 from vegadns.api.models.record import Record as ModelRecord
 from vegadns.api.models.audit_log import AuditLog as ModelAuditLog
 from vegadns.api.models.recordtypes import RecordType
+from vegadns.api.models.location import Location as ModelLocation
+from vegadns.api.models.location import LocationPrefix as ModelPrefix
 from vegadns.api.export.tinydns import ExportTinydnsData
 from vegadns.validate import Validate
 
@@ -45,8 +47,36 @@ class Export(AbstractEndpoint):
                 }
             )
 
+        locations = self.get_locations()
+        prefixes = self.get_prefixes()
+        locationdata = "# locations\n"
+
+        # need to build this manually since peewee join results are limiting
+        for location in locations:
+            temp_list = []
+
+            for prefix in prefixes:
+                if prefix.location_id != location.location_id:
+                    continue
+                else:
+                    if prefix.prefix_type == "ipv4":
+                        temp_list.append(prefix.prefix)
+                    else:
+                        temp_list.append(
+                            "s" + str(prefix.prefix).replace(
+                                ":", ""
+                            )
+                        )
+
+            if len(temp_list) == 0:
+                locationdata += "%" + location.location + "\n"
+            else:
+                for i in temp_list:
+                    locationdata += "%" + location.location + ":" + i + "\n"
+
+        datafile = locationdata + "\n"
         tinydns = ExportTinydnsData()
-        datafile = tinydns.export_domains(organized)
+        datafile += tinydns.export_domains(organized, locations)
 
         generation_record_host = config.get(
             'monitoring',
@@ -101,3 +131,15 @@ class Export(AbstractEndpoint):
                 ModelRecord.val.asc()
             )
         )
+
+    def get_locations(self):
+        return ModelLocation.select().order_by(ModelLocation.location.asc())
+
+    def get_prefixes(self):
+        prefixes = ModelPrefix.select().order_by(
+                ModelPrefix.location_id.asc(),
+                ModelPrefix.prefix_type.asc(),
+                ModelPrefix.prefix.asc()
+            )
+
+        return prefixes

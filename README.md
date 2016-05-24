@@ -65,6 +65,7 @@ Once installation is complete, you'll probably want to use one of the supported 
 ## Changes from legacy [VegaDNS](http://github.com/shupp/VegaDNS)
 
 * **New permissions structure**.  Instead of 3 tiers (_senior_admin, group_admin, user_), there is only _senior_admin_ and _user_ tiers (type).  Users can own domains and privileges can now be granted to groups.  This should be a much more flexible architecture.  Currently there is no migration tool for people using the legacy group_admin tier.  If there is much of a need, I can put one together.
+* **Added tinydns location support**.  If you want to do split horizon dns, you can specify locations and network prefixes for those locations, and then bind records to those locations to serve up different results based on the network the request came from.  If you want to use IPv6 network prefixes, note that djbdns needs to be [patched for IPv6](http://www.fefe.de/dns/).  (If on debian/ubuntu, you can alternately use the already patched dbndns package instead of the djbdns package)
 * **REST API only**, a JavaScript only UI is available separately [here](https://github.com/shupp/VegaDNS-UI)
 * API is written in **python** rather than PHP
 

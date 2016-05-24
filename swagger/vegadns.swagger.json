@@ -261,6 +261,62 @@
             "name": "weight",
             "required": false,
             "type": "integer"
+        },
+        "locationParam": {
+            "description": "A unique two character identifer for a location",
+            "in": "formData",
+            "name": "location",
+            "required": true,
+            "type": "string"
+        },
+        "locationDescriptionParam": {
+            "description": "Optional location description",
+            "in": "formData",
+            "name": "location_description",
+            "required": false,
+            "type": "string"
+        },
+        "locationIdPathParam": {
+            "description": "Location id",
+            "in": "path",
+            "name": "location_id",
+            "required": true,
+            "type": "integer"
+        },
+        "locationIdParam": {
+            "description": "Location id",
+            "in": "formData",
+            "name": "location_id",
+            "required": true,
+            "type": "integer"
+        },
+        "prefixParam": {
+            "description": "Network prefix, e.g. 192.168.1",
+            "in": "formData",
+            "name": "prefix",
+            "required": true,
+            "type": "string"
+        },
+        "prefixDescriptionParam": {
+            "description": "Prefix description",
+            "in": "formData",
+            "name": "prefix_description",
+            "required": false,
+            "type": "string"
+        },
+        "prefixIdPathParam": {
+            "description": "Network prefix id",
+            "in": "path",
+            "name": "prefix_id",
+            "required": true,
+            "type": "integer"
+        },
+        "prefixTypeParam": {
+            "description": "Network type, either ipv4 or ipv6",
+            "in": "formData",
+            "name": "prefix_type",
+            "required": true,
+            "type": "string"
         }
     },
     "paths": {
@@ -1507,6 +1563,227 @@
                 "summary": "Modify a record",
                 "tags": [
                     "Records"
+                ]
+            }
+        },
+        "/locations": {
+            "get": {
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                },
+                "summary": "List locations",
+                "tags": [
+                    "Locations"
+                ]
+            },
+            "post": {
+                "parameters": [
+                    {
+                        "$ref": "#/parameters/locationParam"
+                    },
+                    {
+                        "$ref": "#/parameters/locationDescriptionParam"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "Invalid parameter"
+                    },
+                    "403": {
+                        "description": "Insufficient privileges, requires senior_admin account type"
+                    }
+                },
+                "summary": "Add a location",
+                "tags": [
+                    "Locations"
+                ]
+            }
+        },
+        "/locations/{location_id}": {
+            "get": {
+                "parameters": [
+                    {
+                        "$ref": "#/parameters/locationIdPathParam"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                },
+                "summary": "Get a location by id",
+                "tags": [
+                    "Locations"
+                ]
+            },
+            "put": {
+                "parameters": [
+                    {
+                        "$ref": "#/parameters/locationIdPathParam"
+                    },
+                    {
+                        "$ref": "#/parameters/locationParam"
+                    },
+                    {
+                        "$ref": "#/parameters/locationDescriptionParam"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "Invalid parameter"
+                    },
+                    "403": {
+                        "description": "Insufficient privileges, requires senior_admin account type"
+                    }
+                },
+                "summary": "Edit a location",
+                "tags": [
+                    "Locations"
+                ]
+            },
+            "delete": {
+                "parameters": [
+                    {
+                        "$ref": "#/parameters/locationIdPathParam"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "403": {
+                        "description": "Insufficient privileges, requires senior_admin account type"
+                    }
+                },
+                "summary": "Delete a location",
+                "tags": [
+                    "Locations"
+                ]
+            }
+        },
+        "/location_prefixes": {
+            "get": {
+                "parameters": [
+                    {
+                        "description": "Location id",
+                        "name": "location_id",
+                        "in": "query",
+                        "required": true,
+                        "type": "integer"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                },
+                "summary": "List prefixes in a location",
+                "tags": [
+                    "Locations"
+                ]
+            },
+            "post": {
+                "parameters": [
+                    {
+                        "$ref": "#/parameters/locationIdParam"
+                    },
+                    {
+                        "$ref": "#/parameters/prefixDescriptionParam"
+                    },
+                    {
+                        "$ref": "#/parameters/prefixTypeParam"
+                    },
+                    {
+                        "$ref": "#/parameters/prefixParam"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "Invalid parameter"
+                    },
+                    "403": {
+                        "description": "Insufficient privileges, requires senior_admin account type"
+                    }
+                },
+                "summary": "Add a location prefix",
+                "tags": [
+                    "Locations"
+                ]
+            }
+        },
+        "/location_prefixes/{prefix_id}": {
+            "get": {
+                "parameters": [
+                    {
+                        "$ref": "#/parameters/prefixIdPathParam"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                },
+                "summary": "Get a location prefix by id",
+                "tags": [
+                    "Locations"
+                ]
+            },
+            "put": {
+                "parameters": [
+                    {
+                        "$ref": "#/parameters/prefixIdPathParam"
+                    },
+                    {
+                        "$ref": "#/parameters/prefixParam"
+                    },
+                    {
+                        "$ref": "#/parameters/prefixDescriptionParam"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "Invalid parameter"
+                    },
+                    "403": {
+                        "description": "Insufficient privileges, requires senior_admin account type"
+                    }
+                },
+                "summary": "Edit a location prefix",
+                "tags": [
+                    "Locations"
+                ]
+            },
+            "delete": {
+                "parameters": [
+                    {
+                        "$ref": "#/parameters/prefixIdPathParam"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "403": {
+                        "description": "Insufficient privileges, requires senior_admin account type"
+                    }
+                },
+                "summary": "Delete a location network prefix",
+                "tags": [
+                    "Locations"
                 ]
             }
         },

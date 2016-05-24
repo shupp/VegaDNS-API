@@ -6,38 +6,47 @@ from vegadns.api.export import ExportException
 
 
 class ExportTinydnsData(object):
+    locations = None
+
     def data_line_from_model(self, model):
+        locstring = ""
+        if self.locations is not None and model.location_id is not None:
+            for loc in self.locations:
+                if loc.location_id == model.location_id:
+                    locstring = "::" + loc.location
+                    break
 
         # A record
         if model.type == "A":
             return "+" + model.host + ":" + model.val + \
-                ":" + str(model.ttl) + "\n"
+                ":" + str(model.ttl) + locstring + "\n"
         # A+PTR record
         if model.type == "=":
             return "=" + model.host + ":" + model.val + \
-                ":" + str(model.ttl) + "\n"
+                ":" + str(model.ttl) + locstring + "\n"
         # MX record
         elif model.type == "M":
             return "@" + model.host + "::" + model.val + ":" + \
-                   str(model.distance) + ":" + str(model.ttl) + "\n"
+                   str(model.distance) + ":" + str(model.ttl) + \
+                   locstring + "\n"
         # PTR record
         elif model.type == "P":
             return "^" + model.host + ":" + model.val + \
-                ":" + str(model.ttl) + "\n"
+                ":" + str(model.ttl) + locstring + "\n"
         # TXT record
         elif model.type == "T":
             return "'" + model.host + ":" + model.val.replace(":", r"\072") + \
-                   ":" + str(model.ttl) + "\n"
+                   ":" + str(model.ttl) + locstring + "\n"
         # SPF record (rfc 4408, deprecated)
         elif model.type == "F":
             rdata_len = self.dec_to_oct_tinydns(len(model.val))
             return ":" + model.host + ":99:" + rdata_len + \
                    model.val.replace(":", r"\072") + ":" + \
-                   str(model.ttl) + "\n"
+                   str(model.ttl) + locstring + "\n"
         # CNAME record
         elif model.type == "C":
             return "C" + model.host + ":" + model.val + \
-                ":" + str(model.ttl) + "\n"
+                ":" + str(model.ttl) + locstring + "\n"
         # SOA record
         elif model.type == "S":
             soa = model.to_recordtype().to_dict()
@@ -56,7 +65,7 @@ class ExportTinydnsData(object):
         elif model.type == "N":
             return "&" + model.host + \
                 "::" + model.val + \
-                ":" + str(model.ttl) + \
+                ":" + str(model.ttl) + locstring + \
                 "\n"
 
         # SRV record
@@ -73,7 +82,7 @@ class ExportTinydnsData(object):
             return ":" + model.host + \
                 ":33:" + \
                 encoded + \
-                ":" + str(model.ttl) + \
+                ":" + str(model.ttl) + locstring + \
                 "\n"
 
         elif model.type == "3" or model.type == "6":
@@ -84,7 +93,7 @@ class ExportTinydnsData(object):
             formatted_octal = self.ipv6_to_tinydns(uncompressed)
 
             out += ":" + model.host + ":28:" + formatted_octal + \
-                ":" + str(model.ttl) + "\n"
+                ":" + str(model.ttl) + locstring + "\n"
 
             # if 6, then build corresponding PTR
             if model.type == "6":
@@ -107,7 +116,9 @@ class ExportTinydnsData(object):
 
         return output + formatted_records
 
-    def export_domains(self, domains):
+    def export_domains(self, domains, locations=None):
+        self.locations = locations
+
         output = ""
         for domain in domains:
             output += "\n"

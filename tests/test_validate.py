@@ -25,6 +25,7 @@ class TestValidate(unittest.TestCase):
             self.validate.ipv6('FE80:0000:0000:0000:0202:B3FF:FE1E:8329')
         )
         self.assertTrue(self.validate.ipv6('FE80::0202:B3FF:FE1E:8329'))
+        self.assertTrue(self.validate.ipv6('FE80::202:B3FF:FE1E:8329'))
         self.assertTrue(self.validate.ipv6('fe80::1'))
 
     def test_ipv6_invalid(self):
@@ -67,3 +68,37 @@ class TestValidate(unittest.TestCase):
 
     def test_is_uuid_invalid(self):
         self.assertFalse(self.validate.uuid('foo'))
+
+    def test_ipv4_prefix_valid(self):
+        self.assertTrue(self.validate.ip_prefix('127.0.0', 'ipv4'))
+        self.assertTrue(self.validate.ip_prefix('255.255.255', 'ipv4'))
+        self.assertTrue(self.validate.ip_prefix('1.2', 'ipv4'))
+        self.assertTrue(self.validate.ip_prefix('1', 'ipv4'))
+
+    def test_ipv4_prefix_invalid(self):
+        self.assertFalse(self.validate.ip_prefix(None, 'ipv4'))
+        self.assertFalse(self.validate.ip_prefix('256.0.0', 'ipv4'))
+        self.assertFalse(self.validate.ip_prefix('255.255.255.', 'ipv4'))
+        self.assertFalse(self.validate.ip_prefix('-25.240.10', 'ipv4'))
+        self.assertFalse(self.validate.ip_prefix('', 'ipv4'))
+
+    def test_ipv6_prefix_valid(self):
+        self.assertTrue(
+            self.validate.ip_prefix('FE80:0000:0000:0000:0202:B3FF', 'ipv6')
+        )
+        self.assertTrue(
+            self.validate.ip_prefix('FE80:0202:B3FF:FE1E:8329', 'ipv6')
+        )
+        self.assertTrue(self.validate.ip_prefix('FE80', 'ipv6'))
+
+    def test_ipv6_prefix_invalid(self):
+        self.assertFalse(self.validate.ip_prefix(None, 'ipv6'))
+        self.assertFalse(
+            self.validate.ip_prefix('FE80:0000:0000:0000:0202:B3FG', 'ipv6')
+        )
+        self.assertFalse(
+            self.validate.ip_prefix('FE80:202:B3FF:FE1E:8329', 'ipv6')
+        )
+        self.assertFalse(self.validate.ip_prefix(
+            'FE80:0000:0000:0000:0202:B3FF:0000:0000:0000:0000', 'ipv6')
+        )

@@ -121,7 +121,7 @@ class Records(RecordsCommon):
         try:
             readable_type = RecordType().set(record_type)
         except RecordTypeException:
-            abort(400, message="Invalid record_type: " + record_type)
+            abort(400, message="Invalid record_type: " + str(record_type))
 
         # If SOA, make sure a record doesn't yet exist
         if record_type == "SOA":

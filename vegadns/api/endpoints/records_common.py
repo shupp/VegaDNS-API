@@ -5,6 +5,7 @@ import peewee
 from vegadns.api.endpoints import AbstractEndpoint
 from vegadns.api.models.domain import Domain as ModelDomain
 from vegadns.api.models.record import Record as ModelRecord
+from vegadns.api.models.location import Location as ModelLocation
 from vegadns.api.models.recordtypes import RecordType
 
 
@@ -51,6 +52,26 @@ class RecordsCommon(AbstractEndpoint):
             TypeModel.values["serial"] = request_form.get("serial", "")
         else:
             raise Exception("Unsupported record type")
+
+        if TypeModel.record_type != "SOA":
+            # Add location_id for non SOA records
+
+            location_id = request_form.get("location_id", None)
+            if location_id is not None and str(location_id).isdigit():
+                try:
+                    locationdb = ModelLocation.get(
+                        ModelLocation.location_id == location_id
+                    )
+                except peewee.DoesNotExist:
+                    abort(
+                        400,
+                        message="location_id does not exist"
+                    )
+
+            # Map null/none to None type
+            if str(location_id).lower() in ["null", "none", ""]:
+                location_id = None
+            TypeModel.values["location_id"] = location_id
 
     def check_domain_suffix(self, domain):
         # make sure hostname ends in domain name

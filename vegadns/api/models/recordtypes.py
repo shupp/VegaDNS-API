@@ -103,12 +103,16 @@ class CommonRecord(AbstractRecordType):
         self.values['name'] = model.host
         self.values['value'] = model.val
         self.values['ttl'] = model.ttl
+        if hasattr(model, 'location_id'):
+            self.values['location_id'] = model.location_id
 
     def to_model(self, default_record=False):
         model = super(CommonRecord, self).to_model(default_record)
         model.host = self.values["name"]
         model.val = self.values["value"]
         model.ttl = self.values["ttl"]
+        if "location_id" in self.values:
+            model.location_id = self.values["location_id"]
 
         return model
 

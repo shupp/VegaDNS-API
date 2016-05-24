@@ -1,0 +1,1 @@
+ALTER TABLE records ADD COLUMN `location_id` INT UNSIGNED DEFAULT NULL AFTER `ttl`;

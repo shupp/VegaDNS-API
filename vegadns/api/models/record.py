@@ -13,6 +13,7 @@ class Record(BaseModel):
     port = IntegerField(null=True)
     record_id = PrimaryKeyField()
     ttl = IntegerField()
+    location_id = IntegerField(null=True, default=None)
     type = CharField(null=True)
     val = CharField(null=True)
     weight = IntegerField(null=True)
