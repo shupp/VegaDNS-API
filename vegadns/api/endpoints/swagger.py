@@ -1,6 +1,7 @@
 import os
 import sys
 import json
+import urlparse
 
 from flask import Flask, request
 
@@ -25,7 +26,9 @@ class Swagger(AbstractEndpoint):
 
         if baseUrl is not None:
             baseUrl = baseUrl.rstrip("/")
-            body['host'] = baseUrl
+            parsed = urlparse.urlparse(baseUrl)
+            body['host'] = parsed.netloc
+            body['schemes'] = [parsed.scheme]
             body['securityDefinitions']['BearerToken']['tokenUrl'] = (
                 baseUrl + "/1.0/token"
             )
