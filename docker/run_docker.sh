@@ -2,6 +2,7 @@
 
 set -e
 
+IP=`docker-machine ip`
 DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 
 if [ "$1" == "test" ]; then
@@ -15,5 +16,6 @@ else
         -p 80:80 \
         -p 53:53/udp \
         -v ${DIR}/../sql:/mnt \
+        -e IP=${IP} \
         vegadns2-public
 fi
