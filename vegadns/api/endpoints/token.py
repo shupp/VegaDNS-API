@@ -27,16 +27,23 @@ class Token(AbstractEndpoint):
 
         # validate request
         grant_type = request.form.get('grant_type', '')
-        if grant_type == "" or request.authorization is None:
+        if grant_type == "":
             abort(400, message="invalid_request")
         if grant_type != 'client_credentials':
             abort(400, message="unsupported_grant_type")
-        if request.authorization is None:
-            abort(400, message="invalid_request")
 
         # validate client (apikey)
-        key = request.authorization.username
-        secret = request.authorization.password
+        if request.authorization is not None:
+            # preferred, use basic authorization
+            key = request.authorization.username
+            secret = request.authorization.password
+        else:
+            # alternatively, look in post params
+            key = request.form.get('client_id', None)
+            secret = request.form.get('client_secret', None)
+
+        if not key or not secret:
+            abort(400, message="invalid_request")
 
         now = int(time.time())
         expire_time = int(config.get('oauth', 'token_expire_time'))
