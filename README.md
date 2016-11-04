@@ -44,6 +44,7 @@ If you are testing a copy of a legacy VegaDNS database, you can just run this in
 mysql -u vegadns -p -h localhost vegadns < sql/new_tables_only.sql
 mysql -u vegadns -p -h localhost vegadns < alter-01.sql
 mysql -u vegadns -p -h localhost vegadns < alter-02.sql
+mysql -u vegadns -p -h localhost vegadns < alter-03.sql
 mysql -u vegadns -p -h localhost vegadns < sql/data_api_keys_only.sql
 ```
 

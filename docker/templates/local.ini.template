@@ -3,6 +3,9 @@ user = {{db_user}}
 password = {{db_pass}}
 database = {{db_db}}
 host = {{db_host}}
+{{#db_ssl_ca}}
+ssl_ca = {{db_ssl_ca}}
+{{/db_ssl_ca}}
 
 [monitoring]
 vegadns_generation_txt_record = {{vegadns_generation}}

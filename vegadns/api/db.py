@@ -11,6 +11,7 @@ database = MySQLDatabase(
     **{
         'host': config.get('mysql', 'host'),
         'password': config.get('mysql', 'password'),
-        'user': config.get('mysql', 'user')
+        'user': config.get('mysql', 'user'),
+        'ssl': { 'ca': value for key, value in config.items('mysql') if key == 'ssl_ca' }
       }
 )

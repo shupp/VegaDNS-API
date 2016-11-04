@@ -8,15 +8,43 @@ import sys
 import pystache
 
 
+def pem_is_valid(pem):
+    if pem:
+        lines = pem.split('\n')
+        return (len(lines) > 2
+            and "-----BEGIN CERTIFICATE-----" in lines[0]
+            and "-----END CERTIFICATE-----" in lines[-1])
+        print >> sys.stderr, "SECRET_DB_CA_CERT env variable contains invalid MySQL CA certficate PEM"
+    return False
 
 directory = os.path.dirname(os.path.realpath(__file__))
 def main():
+    db_ssl_ca_cert = os.getenv("SECRET_DB_CA_CERT")
+    db_ssl_ca_file = os.getenv("DB_CA_FILE")
+
+    if pem_is_valid(db_ssl_ca_cert) and db_ssl_ca_file:
+        try:
+            with open(db_ssl_ca_file, 'w') as f:
+                f.write(db_ssl_ca_cert)
+        except Exception as err:
+            print >> sys.stderr, "Problem writing MySQL CA certficate file", err
+            sys.exit(1)
+    else:
+        # Reset db_ssl_ca_file if we're missing one or more environment variables for SSL
+        # to avoid adding an empty 'ssl_ca' option to the local.ini config.
+        if not db_ssl_ca_file:
+            print >> sys.stderr, "DB_CA_FILE env variable undefined, skipping MySQL SSL config."
+        if not db_ssl_ca_cert:
+            print >> sys.stderr, "SECRET_DB_CA_CERT env variable undefined, skipping MySQL SSL config."
+            db_ssl_ca_file = None
+
     try:
         config = {
             "db_host": os.getenv("DB_HOST", default="localhost"),
             "db_user": os.getenv("DB_USER", default="vegadns"),
             "db_pass": os.getenv("SECRET_DB_PASS", default="secret"),
             "db_db": os.getenv("DB_DB", default="vegadns"),
+            "db_ssl_ca": db_ssl_ca_file,
             "vegadns_generation": os.getenv("VEGADNS_GENERATION", default=""),
             "vegadns": os.getenv("VEGADNS", default="http://127.0.0.1/1.0/export/tinydns"),
             "trusted_ips": os.getenv("TRUSTED_IPS", default="127.0.0.1"),
@@ -31,7 +59,7 @@ def main():
             "support_email": os.getenv("SUPPORT_EMAIL", default="support@example.com"),
         }
     except Exception as err:
-        print "Problem reading environment", err
+        print >> sys.stderr, "Problem reading environment", err
         sys.exit(1)
 
     # optionally use first argument as template, path is still
@@ -44,7 +72,7 @@ def main():
         with open(directory + "/" + template_file) as template:
             print pystache.render(template.read(), config)
     except Exception as err:
-        print "Problem rendering template", err
+        print >> sys.stderr, "Problem rendering template", err
         sys.exit(1)
 
 
