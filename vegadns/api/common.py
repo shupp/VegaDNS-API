@@ -2,6 +2,7 @@ import re
 import time
 
 from flask import request
+from iptools import IpRangeList
 import peewee
 
 from vegadns.api.config import config
@@ -108,7 +109,11 @@ class Auth(object):
         if not trusted:
             raise AuthException('IP not authorized: ' + ip)
 
-        if ip != trusted and ip not in trusted.split(','):
+        trusted = trusted.replace(" ", "")
+        trusted_list = trusted.split(',')
+        ip_range = IpRangeList(*trusted_list)
+
+        if ip not in ip_range:
             raise AuthException('IP not authorized: ' + ip)
 
         self.authUsed = "ip"
