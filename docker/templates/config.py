@@ -6,6 +6,7 @@ import os
 import sys
 
 import pystache
+from iptools import IpRangeList
 
 
 def pem_is_valid(pem):
@@ -38,6 +39,17 @@ def main():
             print >> sys.stderr, "SECRET_DB_CA_CERT env variable undefined, skipping MySQL SSL config."
             db_ssl_ca_file = None
 
+    # Verify that we can parse the TRUSTED_IPS list
+    trusted_ips = os.getenv("TRUSTED_IPS", default="127.0.0.1")
+    trusted_ips = "".join(trusted_ips.split()) # remove whitespace
+    trusted_list = trusted_ips.split(',')
+
+    try:
+        trusted_ip_range = IpRangeList(*trusted_list)
+    except Exception:
+        print >> sys.stderr, "Problem parsing TRUSTED_IPS environment variable"
+        sys.exit(1)
+
     try:
         config = {
             "db_host": os.getenv("DB_HOST", default="localhost"),
@@ -47,7 +59,7 @@ def main():
             "db_ssl_ca": db_ssl_ca_file,
             "vegadns_generation": os.getenv("VEGADNS_GENERATION", default=""),
             "vegadns": os.getenv("VEGADNS", default="http://127.0.0.1/1.0/export/tinydns"),
-            "trusted_ips": os.getenv("TRUSTED_IPS", default="127.0.0.1"),
+            "trusted_ips": trusted_ips,
             "ui_url": os.getenv("UI_URL", default="http://localhost:8080"),
             "email_method": os.getenv("EMAIL_METHOD", default="smtp"),
             "smtp_host": os.getenv("SMTP_HOST", default="localhost"),

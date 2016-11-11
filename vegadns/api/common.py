@@ -109,9 +109,12 @@ class Auth(object):
         if not trusted:
             raise AuthException('IP not authorized: ' + ip)
 
-        trusted = trusted.replace(" ", "")
+        trusted = "".join(trusted.split()) # remove whitespace
         trusted_list = trusted.split(',')
-        ip_range = IpRangeList(*trusted_list)
+        try:
+            ip_range = IpRangeList(*trusted_list)
+        except:
+            raise AuthException('Error parsing IP acl list')
 
         if ip not in ip_range:
             raise AuthException('IP not authorized: ' + ip)
