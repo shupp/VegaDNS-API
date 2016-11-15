@@ -53,14 +53,14 @@ class Records(RecordsCommon):
         if search_name is not None:
             search_name = search_name.replace('*', '%')
             record_collection = record_collection.where(
-                (ModelRecord.host ** (search_name + '%'))
+                (ModelRecord.host ** ('%' + search_name + '%'))
             )
 
         search_value = request.args.get('search_value')
         if search_value is not None:
             search_value = search_value.replace('*', '%')
             record_collection = record_collection.where(
-                (ModelRecord.val ** (search_value + '%'))
+                (ModelRecord.val ** ('%' + search_value + '%'))
             )
 
         filter_record_type = request.args.get('filter_record_type')

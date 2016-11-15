@@ -143,7 +143,7 @@ class Domains(AbstractEndpoint):
             query = ModelDomain.select()
             if (search is not None):
                 search = search.replace('*', '%')
-                query = query.where((ModelDomain.domain ** (search + '%')))
+                query = query.where((ModelDomain.domain ** ('%' + search + '%')))
             return query
 
         # domain group maps query
