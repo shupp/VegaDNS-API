@@ -52,12 +52,12 @@ class Domain(BaseModel):
 
         if search_name is not None:
             query = query.where(
-                (Record.host ** (search_name + '%'))
+                (Record.host ** ('%' + search_name + '%'))
             )
 
         if search_value is not None:
             query = query.where(
-                (Record.val ** (search_value + '%'))
+                (Record.val ** ('%' + search_value + '%'))
             )
 
         return query.count()
