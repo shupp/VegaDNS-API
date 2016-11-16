@@ -109,7 +109,7 @@ class Auth(object):
         if not trusted:
             raise AuthException('IP not authorized: ' + ip)
 
-        trusted = "".join(trusted.split()) # remove whitespace
+        trusted = "".join(trusted.split())  # remove whitespace
         trusted_list = trusted.split(',')
         try:
             ip_range = IpRangeList(*trusted_list)
