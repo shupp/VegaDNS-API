@@ -66,7 +66,7 @@ def main():
             "smtp_port": os.getenv("SMTP_PORT", default="25"),
             "smtp_auth": os.getenv("SMTP_AUTH", default="false"),
             "smtp_user": os.getenv("SMTP_USER", default=""),
-            "smtp_password": os.getenv("SMTP_PASSWORD", default=""),
+            "smtp_password": os.getenv("SECRET_SMTP_PASSWORD", default=""),
             "support_name": os.getenv("SUPPORT_NAME", default="The VegaDNS Team"),
             "support_email": os.getenv("SUPPORT_EMAIL", default="support@example.com"),
         }
