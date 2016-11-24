@@ -49,7 +49,7 @@ class Record(RecordsCommon):
             domain.domain_id,
             (
                 "updated record " + str(model.record_id) +
-                "of type " + RecordType().get(model.type) +
+                " of type " + RecordType().get(model.type) +
                 " with host " + model.host +
                 " and value " + model.val
             )
