@@ -55,6 +55,15 @@ class Location(AbstractEndpoint):
 
         if location is not None:
             locationdb.location = location
+            # check for existing duplicate
+            try:
+                existing_location = ModelLocation.get(
+                    ModelLocation.location == location,
+                    ModelLocation.location_id != locationdb.location_id
+                )
+                abort(400, message="Location already in use")
+            except peewee.DoesNotExist:
+                pass
 
         if location_description is not None:
             locationdb.location_description = location_description
