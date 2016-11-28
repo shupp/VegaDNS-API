@@ -33,6 +33,14 @@ class Locations(AbstractEndpoint):
                 message="location parameter must be 1 or two characters"
             )
 
+        try:
+            existing_location = Location.get(
+                Location.location == location
+            )
+            abort(400, message="Location already in use")
+        except peewee.DoesNotExist:
+            pass
+
         location_description = request.form.get('location_description', None)
         new_location = Location()
         new_location.location = location
