@@ -288,10 +288,21 @@ class MXRecord(CommonRecord):
 class CNAMERecord(CommonRecord):
     record_type = 'CNAME'
 
+    def validate_cname_record_value(self, default_record=False):
+        value = str(self.values.get("value"))
+        if default_record:
+            test_value = value.replace("DOMAIN", "example.com")
+        else:
+            test_value = value
+
+        if not ValidateDNS.record_hostname(test_value):
+            raise RecordValueException("Invalid cname value: " + value)
+
     def validate(self, default_record=False):
         if not default_record:
             self.validate_domain_id()
         self.validate_record_hostname(default_record)
+        self.validate_cname_record_value(default_record)
 
         value = str(self.values.get("value"))
         if ValidateIPAddress.ipv4(value):

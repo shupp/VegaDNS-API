@@ -1,6 +1,7 @@
 import unittest
 
-from vegadns.api.models.domain import Record
+from vegadns.api.models.record import Record
+from vegadns.api.models.recordtypes import RecordValueException
 
 
 class TestRecord(unittest.TestCase):
@@ -14,3 +15,26 @@ class TestRecord(unittest.TestCase):
         self.assertTrue(record.hostname_in_domain(domain, domain))
         self.assertFalse(record.hostname_in_domain(bad, domain))
         self.assertTrue(record.hostname_in_domain(good, domain))
+
+    def test_cname_validation_fail(self):
+        record = Record()
+        record.type = 'C'
+        record.domain_id = 1
+        record.host = 'foobar.com'
+        record.val = 'www.example.com  '
+
+        with self.assertRaises(RecordValueException) as cm:
+            record.validate()
+        self.assertEquals(
+            'Invalid cname value: www.example.com  ',
+            cm.exception.message
+        )
+
+    def test_cname_validation_success(self):
+        record = Record()
+        record.type = 'C'
+        record.domain_id = 1
+        record.host = 'foobar.com'
+        record.val = 'www.example.com'
+
+        self.assertIsNone(record.validate())
