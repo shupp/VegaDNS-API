@@ -1,4 +1,5 @@
 import smtplib
+import logging
 
 from vegadns.api.config import config
 from vegadns.api.email.common import Common
@@ -31,6 +32,7 @@ class SMTP(Common):
                 smtp_host,
                 smtp_port
             )
+            # server.set_debuglevel(logging.DEBUG)
 
             if config.get("email", "smtp_tls") in ["True", "true"]:
                 server.starttls(smtp_keyfile, smtp_certfile)
