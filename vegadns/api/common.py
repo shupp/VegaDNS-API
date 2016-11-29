@@ -25,13 +25,13 @@ class Auth(object):
         # determine auth
         auth_header = self.request.headers.get('Authorization', None)
         if auth_header is None:
-            # check if cookie auth is allowed
-            if self.request.cookies.get("vegadns") is not None:
-                return self.cookie_authenticate()
-
             # check if ip auth is allowed
             if "ip" in self.endpoint.auth_types:
                 return self.ip_authenticate()
+
+            # check if cookie auth is allowed
+            if self.request.cookies.get("vegadns") is not None:
+                return self.cookie_authenticate()
 
             raise AuthException
 
