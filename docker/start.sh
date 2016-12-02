@@ -29,8 +29,8 @@ if [ $TEST -eq 1 ] || [ -z "$SKIP_LOCAL_MYSQL" ]; then
     echo "Setting up the vegadns DB"
     mysqladmin -u root create vegadns --password=""
     mysql --password="" -u root -e "GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, ALTER ON vegadns.* TO vegadns@localhost IDENTIFIED BY 'secret'"
-    mysql -u root vegadns < /mnt/create_tables.sql
-    mysql -u root vegadns < /mnt/data.sql
+    mysql -u root vegadns < /var/www/vegadns2/sql/create_tables.sql
+    mysql -u root vegadns < /var/www/vegadns2/sql/data.sql
 fi
 
 # Set up API_URL config for UI
