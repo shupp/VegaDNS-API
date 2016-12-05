@@ -76,7 +76,13 @@ Then you can point your browser to http://192.168.99.100:8000/ui/ to get VegaDNS
 Once installation is complete, you'll probably want to use one of the supported clients above for accessing the api.  If this is a clean install, the test account is test@test.com with a password of "test".  If you're using existing accounts, they should work as well.
 
 ## Tests
-To run unit tests and check pep8 compliance, run the following:
+First you'll need to activate your virtual environment:
+
+```
+. venv/bin/activate
+```
+
+Then, to run unit tests and check pep8 compliance, run the following:
 
 ```
 make
