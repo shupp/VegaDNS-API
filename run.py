@@ -12,6 +12,7 @@ from vegadns.api.endpoints import password_reset_token, password_reset_tokens
 from vegadns.api.endpoints import locations, location
 from vegadns.api.endpoints import location_prefixes, location_prefix
 from vegadns.api.endpoints import swagger
+from vegadns.api.endpoints import release_version
 
 profile = os.environ.get('PROFILE', None)
 debug = bool(os.environ.get('DEBUG', None))
