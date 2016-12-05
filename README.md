@@ -59,9 +59,45 @@ $ DEBUG=true python run.py
 ## Setup using docker
 If you have [docker](http://docker.com) setup, you can build a docker container with the cli and ui built in.  There are scripts in the docker directory to help with this, [build_docker_image.sh](https://github.com/shupp/VegaDNS-API/blob/master/docker/build_docker_image.sh) and [run_docker.sh](https://github.com/shupp/VegaDNS-API/blob/master/docker/run_docker.sh)
 
+Note: If your docker machine is on a different IP, you'll want to us slightly different syntax.  For example, if your docker IP is 192.168.99.100, you'll want to run the following (alternate port of 8000 is optional depending on your available ports):
+
+```
+docker run \
+    -p 8000:80 \
+    -p 53:53/udp \
+    -e API_URL=http://192.168.99.100:8000 \
+    vegadns2-public
+```
+
+Then you can point your browser to http://192.168.99.100:8000/ui/ to get VegaDNS-UI.
+
 
 ## Using
 Once installation is complete, you'll probably want to use one of the supported clients above for accessing the api.  If this is a clean install, the test account is test@test.com with a password of "test".  If you're using existing accounts, they should work as well.
+
+## Tests
+To run unit tests and check pep8 compliance, run the following:
+
+```
+make
+```
+
+You can also check code coverage:
+
+```
+make coverage
+```
+or
+```
+make coverage-html
+open coverage/index.html
+```
+
+You can also run integration tests in a container:
+```
+make test-integration
+# this builds the image first
+```
 
 ## Changes from legacy [VegaDNS](http://github.com/shupp/VegaDNS)
 
