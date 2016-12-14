@@ -57,7 +57,7 @@ $ DEBUG=true python run.py
   ```
 
 ## Setup using docker
-If you have [docker](http://docker.com) setup, you can build a docker container with the cli and ui built in.  There are scripts in the docker directory to help with this, [build_docker_image.sh](https://github.com/shupp/VegaDNS-API/blob/master/docker/build_docker_image.sh) and [run_docker.sh](https://github.com/shupp/VegaDNS-API/blob/master/docker/run_docker.sh)
+If you have [docker](http://docker.com) setup, you can build a docker container with the cli and ui built in.  There are scripts in the docker directory to help with this, [build_docker_image.sh](https://github.com/shupp/VegaDNS-API/blob/master/docker/build_docker_image.sh) and [run_docker.sh](https://github.com/shupp/VegaDNS-API/blob/master/docker/run_docker.sh).  Note that to build the image, you must have a checkout of this repository, as it gets added during build time.  Remote Dockerfile use is not supported.  Further, by default it expects the vegadns-ui and vegadns-cli directories to be checked out.  See [build_docker_image.sh](https://github.com/shupp/VegaDNS-API/blob/master/docker/build_docker_image.sh) for further info.
 
 Note: If your docker machine is on a different IP, you'll want to us slightly different syntax.  For example, if your docker IP is 192.168.99.100, you'll want to run the following (alternate port of 8000 is optional depending on your available ports):
 
