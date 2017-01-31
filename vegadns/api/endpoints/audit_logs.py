@@ -25,6 +25,7 @@ class AuditLogs(AbstractEndpoint):
             "domain_ids",
             None
         )
+        search = request.args.get("search", "")
 
         # check for provided list of domain ids
         if domain_ids is not None:
@@ -51,14 +52,18 @@ class AuditLogs(AbstractEndpoint):
         # get audit logs
         if self.auth.account.account_type == "senior_admin":
             if len(domain_id_list) == 0:
-                logs = ModelAuditLog.select()
+                logs = ModelAuditLog.select().where(
+                    ModelAuditLog.entry ** ('%' + search + '%')
+                )
             else:
                 logs = ModelAuditLog.select().where(
-                    ModelAuditLog.domain_id << domain_id_list
+                    ModelAuditLog.domain_id << domain_id_list,
+                    ModelAuditLog.entry ** ('%' + search + '%')
                 )
         else:
             logs = ModelAuditLog.select().where(
-                ModelAuditLog.domain_id << domain_id_list
+                ModelAuditLog.domain_id << domain_id_list,
+                ModelAuditLog.entry ** ('%' + search + '%')
             )
 
         total_logs = logs.count()
