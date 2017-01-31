@@ -16,8 +16,6 @@ class AuditLog(BaseModel):
     def validate(self):
         if not Validate().email(self.email):
             raise Exception("Invalid email")
-        if not self.domain_id:
-            raise Exception("domain_id is not set")
         if not self.time:
             raise Exception("time is not set")
         if not self.entry:

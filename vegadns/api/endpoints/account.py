@@ -43,6 +43,14 @@ class Account(AbstractEndpoint):
 
         account.delete_instance()
 
+        self.dns_log(
+            0,
+            (
+                "deleted account " + account.first_name + " " +
+                account.last_name + ", " + account.email
+            )
+        )
+
         return {'status': 'ok'}
 
     def put(self, account_id):

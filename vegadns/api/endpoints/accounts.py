@@ -62,6 +62,13 @@ class Accounts(AbstractEndpoint):
         account.set_password(password)
 
         account.save()
+        self.dns_log(
+            0,
+            (
+                "created account " + account.first_name + " " +
+                account.last_name + ", " + account.email
+            )
+        )
 
         return {'status': 'ok', 'account': account.to_clean_dict()}, 201
 
