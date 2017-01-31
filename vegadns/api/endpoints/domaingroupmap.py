@@ -54,6 +54,23 @@ class DomainGroupMap(AbstractEndpoint):
         map.set_perm(map.DELETE_PERM, can_delete)
         map.save()
 
+        # Log it
+        perms = []
+        if can_read:
+            perms.append("read")
+        if can_write:
+            perms.append("write")
+        if can_delete:
+            perms.append("delete")
+
+        self.dns_log(
+            map.domain_id.domain_id,
+            (
+                "Set permissions on " + map.domain_id.domain + " for group " +
+                map.group_id.name + " to " + ", ".join(perms)
+            )
+        )
+
         new = self.get_map(map_id)
 
         formatted = new.format_map(new)
@@ -72,6 +89,15 @@ class DomainGroupMap(AbstractEndpoint):
             map.delete_instance()
         except:
             abort(400, message="unable to delete domaingroupmap")
+
+        # Log it
+        self.dns_log(
+            map.domain_id.domain_id,
+            (
+                "Removed " + map.domain_id.domain + " from group " +
+                map.group_id.name
+            )
+        )
         return {'status': 'ok'}
 
     def get_map(self, map_id):

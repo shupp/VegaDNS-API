@@ -84,6 +84,23 @@ class DomainGroupMaps(AbstractEndpoint):
             can_delete
         )
 
+        # Log it
+        perms = []
+        if can_read:
+            perms.append("read")
+        if can_write:
+            perms.append("write")
+        if can_delete:
+            perms.append("delete")
+
+        self.dns_log(
+            domain_id,
+            (
+                "Added domain " + domain.domain + " to group " +
+                group.name + " with perms " + ", ".join(perms)
+            )
+        )
+
         # Do new lookup with joined tables for formatting
         map = self.get_map(domain_id, group_id)
         formatted = map.format_map(map)
