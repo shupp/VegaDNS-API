@@ -6,6 +6,7 @@ from vegadns.api import endpoint
 from vegadns.api.endpoints import AbstractEndpoint
 from vegadns.api.models.account import Account as ModelAccount
 from vegadns.api.models.account_group_map import AccountGroupMap as ModelMap
+from vegadns.api.models.group import Group as ModelGroup
 
 
 @endpoint
@@ -79,6 +80,16 @@ class GroupMember(AbstractEndpoint):
         try:
             # FIXME need to delete domain maps when in place
             map.delete_instance()
+
+            # Log change
+            group = ModelGroup.get(ModelGroup.group_id == map.group_id)
+            self.dns_log(
+                0,
+                (
+                    "Removed " + account.first_name + " " + account.last_name +
+                    " from group " + group.name
+                )
+            )
         except:
             abort(400, message="unable to delete groupmember")
         return {'status': 'ok'}

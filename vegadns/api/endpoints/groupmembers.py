@@ -74,6 +74,16 @@ class GroupMembers(AbstractEndpoint):
         newmap = self.create_map(account_id, group_id, is_admin)
         formatted = newmap.format_member(newmap, account)
 
+        # Log change
+        group = ModelGroup.get(ModelGroup.group_id == group_id)
+        self.dns_log(
+            0,
+            (
+                "Added " + account.first_name + " " + account.last_name +
+                " to group " + group.name
+            )
+        )
+
         return {'status': 'ok', 'groupmember': formatted}, 201
 
     def get_group_members(self, group_id):
