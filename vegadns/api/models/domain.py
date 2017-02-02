@@ -62,7 +62,10 @@ class Domain(BaseModel):
 
         return query.count()
 
-    def add_default_records(self, endpoint=None):
+    def add_default_soa_record(self, endpoint=None):
+        """Returns None if already exists, DoesNotExist bubbles up when no
+        default soa exists"""
+
         # sanity check
         if not self.domain_id:
             raise Exception(
@@ -75,23 +78,36 @@ class Domain(BaseModel):
                 Record.domain_id == self.domain_id,
                 Record.type == RecordType().set("SOA")
             )
+            return None
         except DoesNotExist:
-            # create SOA record
-            try:
-                default_soa = DefaultRecord.get(
-                    DefaultRecord.type == RecordType().set("SOA")
-                )
-                soa = Record()
-                soa.domain_id = self.domain_id
-                soa.host = default_soa.host.replace("DOMAIN", self.domain)
-                soa.val = default_soa.val
-                soa.ttl = default_soa.ttl
-                soa.type = default_soa.type
+            # create SOA record, let DoesNotExist bubble up
+            default_soa = DefaultRecord.get(
+                DefaultRecord.type == RecordType().set("SOA")
+            )
+            soa = Record()
+            soa.domain_id = self.domain_id
+            soa.host = default_soa.host.replace("DOMAIN", self.domain)
+            soa.val = default_soa.val
+            soa.ttl = default_soa.ttl
+            soa.type = default_soa.type
 
-                # replace uses of DOMAIN
-                soa.save()
-                if endpoint is not None:
-                    endpoint.dns_log(soa.domain_id, "added soa")
+            # replace uses of DOMAIN
+            soa.save()
+            if endpoint is not None:
+                endpoint.dns_log(soa.domain_id, "added soa")
+
+            return soa
+
+    def add_default_records(self, endpoint=None, skipSoa=False):
+        # sanity check
+        if not self.domain_id:
+            raise Exception(
+                "Cannot add default records when domain_id is not set"
+            )
+
+        if not skipSoa:
+            try:
+                soa = self.add_default_soa_record(endpoint)
             except DoesNotExist:
                 # no default SOA record set!
                 pass

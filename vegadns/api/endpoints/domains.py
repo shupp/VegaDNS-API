@@ -114,7 +114,8 @@ class Domains(AbstractEndpoint):
             abort(400, message="Domain already exists")
 
         # add default records
-        model.add_default_records(self)
+        skip_soa = bool(request.form.get("skip_soa", 0))
+        model.add_default_records(self, skipSoa=skip_soa)
         default_records = model.get_records()
         records = []
         for record in default_records:

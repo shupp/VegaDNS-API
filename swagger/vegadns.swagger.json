@@ -1033,6 +1033,28 @@
                 ]
             }
         },
+        "/domains/{domain_id}/create_default_soa": {
+            "post": {
+                "parameters": [
+                    {
+                        "description": "Domain id",
+                        "in": "path",
+                        "name": "domain_id",
+                        "required": true,
+                        "type": "integer"
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "OK"
+                    }
+                },
+                "summary": "Creates an SOA record for the domain if one doesn't already exist, using the default SOA record",
+                "tags": [
+                    "Domains"
+                ]
+            }
+        },
         "/export/tinydns": {
             "get": {
                 "produces": [
