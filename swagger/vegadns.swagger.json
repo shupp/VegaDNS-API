@@ -554,6 +554,13 @@
                         "type": "string"
                     },
                     {
+                        "description": "Optional search string for the entry column",
+                        "in": "query",
+                        "name": "search",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
                         "description": "Field to sort by, can be one of 'time', 'log_id', or 'domain_id'",
                         "in": "query",
                         "name": "sort",
