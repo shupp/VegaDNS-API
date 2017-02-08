@@ -1,7 +1,7 @@
 import re
 
 from flask import Flask, abort, request
-from flask.ext.restful import Resource, Api, abort
+from flask.ext.restful import Resource, Api, abort, reqparse
 
 import peewee
 
@@ -10,6 +10,7 @@ import vegadns.api.email.common
 from vegadns.api import endpoint
 from vegadns.api.endpoints import AbstractEndpoint
 from vegadns.api.models.domain import Domain as ModelDomain
+from vegadns.api.models.domain import Record as ModelRecord
 from vegadns.api.models.group import Group as ModelGroup
 from vegadns.api.models.account_group_map import AccountGroupMap
 from vegadns.api.models.domain_group_map import DomainGroupMap
@@ -83,9 +84,36 @@ class Domains(AbstractEndpoint):
         raise abort(500, message="Unable to determine domain permissions")
 
     def post(self):
-        domain = request.form.get("domain")
-        if domain is None:
-            abort(400, message="domain parameter is required")
+        parser = reqparse.RequestParser()
+        parser.add_argument(
+            'domain',
+            required=True,
+            location=['form', 'json'],
+            help='domain parameter is required'
+        )
+        parser.add_argument(
+            'move_colliding_records',
+            type=bool,
+            location=['form', 'json'],
+            default=False
+        )
+        parser.add_argument(
+            'skip_soa',
+            type=bool,
+            location=['form', 'json'],
+            default=False
+        )
+        parser.add_argument(
+            'skip_default_records',
+            type=bool,
+            location=['form', 'json'],
+            default=False
+        )
+        args = parser.parse_args()
+        print args
+
+        # Lower case the domain
+        domain = args['domain'].lower()
 
         # check for duplicate first
         try:
@@ -93,6 +121,24 @@ class Domains(AbstractEndpoint):
             abort(400, message="Domain already exists")
         except peewee.DoesNotExist:
             pass
+
+        # check for duplicate records
+        duplicate_records = ModelRecord().select().where(
+            (ModelRecord.host ** ('%.' + domain)) |
+            (ModelRecord.host == domain)
+        )
+
+        move_colliding_records = False
+        if duplicate_records.count() > 0:
+            move_colliding_records = args['move_colliding_records']
+            if (move_colliding_records is True and
+                    self.auth.account.account_type != 'senior_admin'):
+
+                m = "You must be a senior_admin to move colliding records"
+                abort(403, message=m)
+            if move_colliding_records is False:
+                m = "Unable to create domain, there are colliding records"
+                abort(409, message=m)
 
         model = ModelDomain()
         model.domain = domain
@@ -114,12 +160,19 @@ class Domains(AbstractEndpoint):
             abort(400, message="Domain already exists")
 
         # add default records
-        skip_soa = bool(request.form.get("skip_soa", 0))
-        model.add_default_records(self, skipSoa=skip_soa)
-        default_records = model.get_records()
         records = []
-        for record in default_records:
-            records.append(record.to_clean_dict())
+        if args['skip_default_records'] is False:
+            model.add_default_records(self, skipSoa=args['skip_soa'])
+            default_records = model.get_records()
+            for record in default_records:
+                records.append(record.to_clean_dict())
+
+        # move colliding records
+        if move_colliding_records is True:
+            for dr in duplicate_records:
+                dr.domain_id = model.domain_id
+                dr.save()
+                records.append(dr.to_clean_dict())
 
         if self.auth.account.account_type != 'senior_admin':
             common = vegadns.api.email.common.Common()
