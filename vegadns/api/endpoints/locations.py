@@ -47,4 +47,7 @@ class Locations(AbstractEndpoint):
         new_location.location_description = location_description
         new_location.save()
 
+        # notify listeners of dns data change
+        self.send_update_notification()
+
         return {'status': 'ok', 'location': new_location.to_dict()}, 201

@@ -169,4 +169,7 @@ class Records(RecordsCommon):
             )
         )
 
+        # notify listeners of dns data change
+        self.send_update_notification()
+
         return {'status': 'ok', 'record': model.to_recordtype().to_dict()}, 201

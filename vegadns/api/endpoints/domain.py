@@ -70,6 +70,9 @@ class Domain(AbstractEndpoint):
             log_msgs.append("status set to " + status)
         self.dns_log(domain.domain_id, ", ".join(log_msgs))
 
+        # notify listeners of dns data change
+        self.send_update_notification()
+
         return {'status': 'ok', 'domain': domain.to_clean_dict()}
 
     def delete(self, domain_id):
@@ -87,5 +90,8 @@ class Domain(AbstractEndpoint):
         domain.delete_instance()
 
         self.dns_log(log_domain_id, log_msg)
+
+        # notify listeners of dns data change
+        self.send_update_notification()
 
         return {'status': 'ok'}

@@ -72,6 +72,10 @@ def main():
             "support_email": os.getenv("SUPPORT_EMAIL", default="support@example.com"),
             "acl_labels": os.getenv("ACL_LABELS", default=""),
             "acl_emails": os.getenv("ACL_EMAILS", default=""),
+            "enable_redis_notifications": os.getenv("ENABLE_REDIS_NOTIFICATIONS", default="false"),
+            "redis_host": os.getenv("REDIS_HOST", default="127.0.0.1"),
+            "redis_port": os.getenv("REDIS_PORT", default="6379"),
+            "redis_channel": os.getenv("REDIS_CHANNEL", default="VEGADNS-CHANGES")
         }
     except Exception as err:
         print >> sys.stderr, "Problem reading environment", err

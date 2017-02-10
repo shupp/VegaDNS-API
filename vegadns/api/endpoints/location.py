@@ -70,6 +70,9 @@ class Location(AbstractEndpoint):
 
         locationdb.save()
 
+        # notify listeners of dns data change
+        self.send_update_notification()
+
         return {'status': 'ok', 'location': locationdb.to_dict()}
 
     def delete(self, location_id):
@@ -90,5 +93,8 @@ class Location(AbstractEndpoint):
         )
         query.execute()
         locationdb.delete_instance()
+
+        # notify listeners of dns data change
+        self.send_update_notification()
 
         return {'status': 'ok'}

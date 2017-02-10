@@ -7,6 +7,7 @@ from vegadns.api.common import Auth
 from vegadns.api.models.account import Account as ModelAccount
 from vegadns.api.models.domain import Domain as ModelDomain
 from vegadns.api.models.audit_log import AuditLog as ModelAuditLog
+from vegadns.api.update_notifications import Notifier
 
 
 class AbstractEndpoint(Resource):
@@ -78,6 +79,9 @@ class AbstractEndpoint(Resource):
         except:
             # FIXME log error
             pass
+
+    def send_update_notification(self):
+        Notifier().send()
 
     def serialize(self, content):
         return json.dumps(content)

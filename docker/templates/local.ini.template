@@ -30,3 +30,9 @@ support_email = {{support_email}}
 [global_record_acls]
 acl_labels = {{acl_labels}}
 acl_emails = {{acl_emails}}
+
+[update_notifications]
+enable_redis_notifications = {{enable_redis_notifications}}
+redis_host = {{redis_host}}
+redis_port = {{redis_port}}
+redis_channel = {{redis_channel}}

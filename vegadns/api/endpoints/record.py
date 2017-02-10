@@ -73,6 +73,9 @@ class Record(RecordsCommon):
             )
         )
 
+        # notify listeners of dns data change
+        self.send_update_notification()
+
         return {'status': 'ok', 'record': model.to_recordtype().to_dict()}
 
     def delete(self, record_id):
@@ -103,6 +106,9 @@ class Record(RecordsCommon):
                 " and value " + record.val
             )
         )
+
+        # notify listeners of dns data change
+        self.send_update_notification()
 
         return {'status': 'ok'}
 

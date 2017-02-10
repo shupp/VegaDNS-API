@@ -79,6 +79,9 @@ class LocationPrefixes(AbstractEndpoint):
                 message=str(e)
             )
 
+        # notify listeners of dns data change
+        self.send_update_notification()
+
         return {'status': 'ok', 'location_prefix': new_prefix.to_dict()}
 
     def get_location_id(self):

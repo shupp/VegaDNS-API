@@ -68,6 +68,9 @@ class LocationPrefix(AbstractEndpoint):
                 message=str(e)
             )
 
+        # notify listeners of dns data change
+        self.send_update_notification()
+
         return {'status': 'ok', 'location_prefix': prefixdb.to_dict()}
 
     def delete(self, prefix_id):
@@ -85,5 +88,8 @@ class LocationPrefix(AbstractEndpoint):
             abort(404, message="location prefix not found")
 
         prefixdb.delete_instance()
+
+        # notify listeners of dns data change
+        self.send_update_notification()
 
         return {'status': 'ok'}

@@ -29,6 +29,9 @@ class DomainsDefaultSOA(AbstractEndpoint):
         if soa is None:
             abort(400, message="An SOA record already exists for this domain")
 
+        # notify listeners of dns data change
+        self.send_update_notification()
+
         return {
             'status': 'ok',
             'domain': domain.to_clean_dict(),

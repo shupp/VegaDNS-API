@@ -188,6 +188,9 @@ class Domains(AbstractEndpoint):
 
             vegadns.api.email.send(to, subject, msg_body)
 
+        # notify listeners of dns data change
+        self.send_update_notification()
+
         return {
             'status': 'ok',
             'domain': model.to_clean_dict(),
