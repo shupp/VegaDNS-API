@@ -1,0 +1,12 @@
+FROM nginx:alpine
+
+RUN apk add --update \
+  git \
+# Must have bash for build.sh...
+  bash \
+  nodejs
+
+RUN git clone https://github.com/shupp/VegaDNS-UI.git /opt/vegadns
+RUN cd /opt/vegadns && /opt/vegadns/build.sh
+RUN rm -rf /usr/share/nginx/html/ && \
+  ln -s /opt/vegadns/public /usr/share/nginx/html

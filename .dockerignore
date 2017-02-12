@@ -1,0 +1,8 @@
+bin/*
+sql/*
+tests/*
+Dockerfile*
+docker-compose.yml
+Makefile
+README.md
+records_format.json

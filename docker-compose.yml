@@ -1,0 +1,36 @@
+version: "3.0"
+services:
+  api:
+    restart: always
+    build: .
+    ports:
+      - "5000:5000"
+    links:
+      - mysql:mysql
+    environment:
+      DB_HOST: mysql
+      DB_USER: vegadns
+      SECRET_DB_PASS: secret
+    depends_on:
+      - mysql
+  ui:
+    restart: always
+    build:
+      dockerfile: Dockerfile-ui
+      context: .
+    ports:
+      - "80:80"
+    links:
+      - api:api
+    depends_on:
+      - api
+  mysql:
+    restart: always
+    image: mysql:latest
+    ports:
+      - "3306:3306"
+    environment:
+       MYSQL_ROOT_PASSWORD: vegadns
+       MYSQL_DATABASE: vegadns
+       MYSQL_USER: vegadns
+       MYSQL_PASSWORD: secret

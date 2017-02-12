@@ -17,7 +17,7 @@ RUN apt-get -q update && apt-get install -yf nodejs
 
 # Configuration script dependencies
 RUN apt-get update && apt-get install -y python-pip
-RUN pip install pystache netaddr
+RUN pip install pystache
 
 # create djbdns accounts Gtinydns, Gdnslog
 RUN adduser --force-badname --no-create-home --disabled-login --shell /bin/false Gdnslog

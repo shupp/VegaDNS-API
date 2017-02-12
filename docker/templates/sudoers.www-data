@@ -1,1 +1,0 @@
-www-data	ALL = NOPASSWD: /var/www/vegadns2/bin/update-data.sh
