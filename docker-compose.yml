@@ -15,9 +15,7 @@ services:
       - mysql
   ui:
     restart: always
-    build:
-      dockerfile: Dockerfile-ui
-      context: .
+    build: ../VegaDNS-UI
     ports:
       - "80:80"
     links:

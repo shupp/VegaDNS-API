@@ -1,8 +1,11 @@
 bin/*
 sql/*
 tests/*
-Dockerfile*
+Dockerfile
 docker-compose.yml
 Makefile
 README.md
 records_format.json
+test-requirements.txt
+.git
+.*ignore
