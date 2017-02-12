@@ -2,7 +2,7 @@ import re
 import time
 
 from flask import request
-from iptools import IpRangeList
+from netaddr import IPSet
 import peewee
 
 from vegadns.api.config import config
@@ -113,7 +113,7 @@ class Auth(object):
         trusted = "".join(trusted.split())  # remove whitespace
         trusted_list = trusted.split(',')
         try:
-            ip_range = IpRangeList(*trusted_list)
+            ip_range = IPSet(trusted_list)
         except:
             raise AuthException('Error parsing IP acl list')
 
