@@ -6,7 +6,7 @@ import os
 import sys
 
 import pystache
-from iptools import IpRangeList
+from netaddr import IPSet
 
 
 def pem_is_valid(pem):
@@ -45,8 +45,9 @@ def main():
     trusted_list = trusted_ips.split(',')
 
     try:
-        trusted_ip_range = IpRangeList(*trusted_list)
-    except Exception:
+        trusted_ip_range = IPSet(trusted_list)
+    except Exception as e:
+        print >> sys.stderr, trusted_list, e
         print >> sys.stderr, "Problem parsing TRUSTED_IPS environment variable"
         sys.exit(1)
 
