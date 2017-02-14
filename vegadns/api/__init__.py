@@ -98,6 +98,8 @@ def set_request_id():
 @app.before_request
 def db_connect():
     """ create DB connection """
+    global dbConnected
+
     attempts = 5
     while attempts > 0:
         try:
