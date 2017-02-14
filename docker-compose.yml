@@ -11,6 +11,7 @@ services:
       DB_HOST: mysql
       DB_USER: vegadns
       SECRET_DB_PASS: secret
+      TRUSTED_IPS: 0.0.0.0/0
     depends_on:
       - mysql
   ui:
