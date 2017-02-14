@@ -23,6 +23,10 @@ services:
       - api:api
     depends_on:
       - api
+    environment:
+      # don't set this to api:5000 unless "api" resolves on your local machine
+      # all client API requests are done from the browser!
+      API_URL: ""
   mysql:
     restart: always
     image: mysql:latest
