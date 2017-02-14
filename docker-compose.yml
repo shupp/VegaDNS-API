@@ -16,8 +16,7 @@ services:
       - mysql
   ui:
     restart: always
-    build:
-      context: https://github.com/shupp/VegaDNS-UI.git
+    build: https://github.com/shupp/VegaDNS-UI.git
     ports:
       - "80:80"
     links:
