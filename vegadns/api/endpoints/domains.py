@@ -110,7 +110,6 @@ class Domains(AbstractEndpoint):
             default=False
         )
         args = parser.parse_args()
-        print args
 
         # Lower case the domain
         domain = args['domain'].lower()
