@@ -27,6 +27,18 @@ services:
       # don't set this to api:5000 unless "api" resolves on your local machine
       # all client API requests are done from the browser!
       API_URL: ""
+  client:
+    restart: always
+    build: ../VegaDNS-Client
+    ports:
+      - "5300:53"
+      - "5300/udp:53/udp"
+    links:
+      - api:api
+    depends_on:
+      - api
+    environment:
+      API_URL: http://api:5000
   mysql:
     restart: always
     image: mysql:latest
