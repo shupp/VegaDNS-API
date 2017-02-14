@@ -30,7 +30,7 @@ services:
       API_URL: ""
   client:
     restart: always
-    build: ../VegaDNS-Client
+    build: https://github.com/tresni/VegaDNS-UpdateClient.git
     ports:
       - "5300:53"
       - "5300/udp:53/udp"
