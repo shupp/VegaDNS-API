@@ -2,6 +2,7 @@ FROM alpine:latest
 
 ENV VEGADNS_CLI master
 ENV VEGADNS_API master
+ENV API_PORT 8000
 
 ADD . /opt/vegadns
 
@@ -14,6 +15,6 @@ RUN apk --update add --virtual build-dependencies git py-pip python-dev libffi-d
 
 WORKDIR /opt/vegadns
 CMD python docker/templates/config.py > /opt/vegadns/vegadns/api/config/local.ini \
-  && gunicorn --workers=25 run:app -b 0.0.0.0:80
+  && gunicorn --workers=25 run:app -b 0.0.0.0:${API_PORT}
 
 EXPOSE 80
