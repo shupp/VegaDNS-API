@@ -4,17 +4,16 @@ ENV VEGADNS_CLI master
 ENV VEGADNS_API master
 
 ADD . /opt/vegadns
-COPY docker/nginx.conf /etc/nginx/nginx.conf
 
-RUN apk --update add python uwsgi-python nginx
+RUN apk --update add python py-gunicorn py-setuptools
 # Removing these packages in the RUN keeps the image small (~70MB)
 RUN apk --update add --virtual build-dependencies git py-pip python-dev libffi-dev build-base \
   && pip install git+https://github.com/shupp/VegaDNS-CLI.git@${VEGADNS_CLI} \
   && pip install -r /opt/vegadns/requirements.txt \
   && apk del build-dependencies
 
+WORKDIR /opt/vegadns
 CMD python docker/templates/config.py > /opt/vegadns/vegadns/api/config/local.ini \
-  && nginx \
-  && uwsgi --ini /opt/vegadns/docker/vegadns.ini
+  && gunicorn --workers=25 run:app -b 0.0.0.0:80
 
 EXPOSE 80
