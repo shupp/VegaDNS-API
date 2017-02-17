@@ -38,7 +38,7 @@ services:
     depends_on:
       - api
     environment:
-      API_URL: http://api:5000
+      API_URL: http://api
   mysql:
     restart: always
     image: mysql:latest
