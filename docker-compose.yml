@@ -1,47 +1,68 @@
 version: "2.0"
+
+networks:
+  vegadns_net:
+    driver: bridge
+
 services:
   api:
     restart: always
+    networks:
+      - vegadns_net
     build: .
     ports:
       - "5000:5000"
-    links:
-      - mysql:mysql
     environment:
       DB_HOST: mysql
       DB_USER: vegadns
       SECRET_DB_PASS: secret
       TRUSTED_IPS: 0.0.0.0/0
       API_PORT: 5000
+      ENABLE_REDIS_NOTIFICATIONS: "true"
+      REDIS_HOST: redis
     depends_on:
       - mysql
+      - redis
   ui:
     restart: always
+    networks:
+      - vegadns_net
     build: https://github.com/shupp/VegaDNS-UI.git
     ports:
       - "80:80"
-    links:
-      - api:api
     depends_on:
       - api
     environment:
       # don't set this to api:5000 unless "api" resolves on your local machine
       # all client API requests are done from the browser!
-      API_URL: ""
+      API_URL: ${API_URL}
   client:
     restart: always
-    build: https://github.com/tresni/VegaDNS-UpdateClient.git
+    networks:
+      - vegadns_net
+    build: https://github.com/shupp/VegaDNS-UpdateClient.git
     ports:
-      - "5300:53"
-      - "5300/udp:53/udp"
+      - "53:53"
+      - "53/udp:53/udp"
     links:
       - api:api
     depends_on:
       - api
+      - redis
     environment:
       API_URL: http://api:5000
+      REDIS_HOST: redis
+  redis:
+    restart: always
+    networks:
+      - vegadns_net
+    image: redis:latest
+    ports:
+      - "3679:3679"
   mysql:
     restart: always
+    networks:
+      - vegadns_net
     image: mysql:latest
     ports:
       - "3306:3306"
