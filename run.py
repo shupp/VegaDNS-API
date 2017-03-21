@@ -16,7 +16,11 @@ from vegadns.api.endpoints import swagger
 from vegadns.api.endpoints import release_version
 
 profile = os.environ.get('PROFILE', None)
-debug = bool(os.environ.get('DEBUG', None))
+debug = True
+if str(os.environ.get('DEBUG', True)).lower() not in ['true', '1']:
+    debug = False
+
+app.DEBUG = debug
 
 if profile:
     from werkzeug.contrib.profiler import ProfilerMiddleware
