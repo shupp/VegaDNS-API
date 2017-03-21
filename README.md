@@ -56,21 +56,17 @@ $ DEBUG=true python run.py
   * Restarting with stat
   ```
 
-## Setup using docker
-If you have [docker](http://docker.com) setup, you can build a docker container with the cli and ui built in.  There are scripts in the docker directory to help with this, [build_docker_image.sh](https://github.com/shupp/VegaDNS-API/blob/master/docker/build_docker_image.sh) and [run_docker.sh](https://github.com/shupp/VegaDNS-API/blob/master/docker/run_docker.sh).  Note that to build the image, you must have a checkout of this repository, as it gets added during build time.  Remote Dockerfile use is not supported.  Further, by default it expects the vegadns-ui and vegadns-cli directories to be checked out.  See [build_docker_image.sh](https://github.com/shupp/VegaDNS-API/blob/master/docker/build_docker_image.sh) for further info.
+## Setup using docker compose
+Note what your docker host's name is.  The following steps assumes "localhost"
 
-Note: If your docker machine is on a different IP, you'll want to us slightly different syntax.  For example, if your docker IP is 192.168.99.100, you'll want to run the following (alternate port of 8000 is optional depending on your available ports):
+    API_URL=http://localhost:5000 docker-compose up
 
-```
-docker run \
-    -p 8000:80 \
-    -p 53:53/udp \
-    -e API_URL=http://192.168.99.100:8000 \
-    vegadns2-public
-```
+Once that's running, you'll need to seed the data in another terminal from this directory:
 
-Then you can point your browser to http://192.168.99.100:8000/ui/ to get VegaDNS-UI.
+    mysql -u vegadns -h localhost -psecret vegadns < sql/create_tables.sql
+    mysql -u vegadns -h localhost -psecret vegadns < sql/data.sql
 
+Then log in at http://localhost/ with the user "test@test.com" and a password of "test"
 
 ## Using
 Once installation is complete, you'll probably want to use one of the supported clients above for accessing the api.  If this is a clean install, the test account is test@test.com with a password of "test".  If you're using existing accounts, they should work as well.
@@ -109,7 +105,7 @@ make test-integration
 
 * **New permissions structure**.  Instead of 3 tiers (_senior_admin, group_admin, user_), there is only _senior_admin_ and _user_ tiers (type).  Users can own domains and privileges can now be granted to groups.  This should be a much more flexible architecture.  Currently there is no migration tool for people using the legacy group_admin tier.  If there is much of a need, I can put one together.
 * **Added tinydns location support**.  If you want to do split horizon dns, you can specify locations and network prefixes for those locations, and then bind records to those locations to serve up different results based on the network the request came from.  If you want to use IPv6 network prefixes, note that djbdns needs to be [patched for IPv6](http://www.fefe.de/dns/).  (If on debian/ubuntu, you can alternately use the already patched dbndns package instead of the djbdns package)
-* **Optional push notifications to updaters**.  If you want your tinydns servers to update on demand, you can set up a redis server to handle Pub/Sub messaging.  See [default.ini](vegadns/api/config/default.ini) and [redis_listener.sh](bin/redis_listener.sh).
+* **Optional push notifications to updaters**.  If you want your tinydns servers to update on demand, you can set up a redis server to handle Pub/Sub messaging.  See [default.ini](vegadns/api/config/default.ini) and [redis_listener.sh](https://github.com/shupp/VegaDNS-UpdateClient/redis_listener.sh).
 * **REST API only**, a JavaScript only UI is available separately [here](https://github.com/shupp/VegaDNS-UI)
 * API is written in **python** rather than PHP
 
