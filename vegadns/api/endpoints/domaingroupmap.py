@@ -17,7 +17,6 @@ class DomainGroupMap(AbstractEndpoint):
         try:
             map = self.get_map(map_id)
         except peewee.DoesNotExist:
-            print 'here'
             abort(404, message="domaingroupmap does not exist")
 
         formatted = map.format_map(map)
