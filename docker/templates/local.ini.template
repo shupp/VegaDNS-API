@@ -26,3 +26,7 @@ smtp_user = {{smtp_user}}
 smtp_password = {{smtp_password}}
 support_name = {{support_name}}
 support_email = {{support_email}}
+
+[global_record_acls]
+acl_labels = {{acl_labels}}
+acl_emails = {{acl_emails}}

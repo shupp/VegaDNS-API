@@ -26,8 +26,11 @@ class Domains(AbstractEndpoint):
 
     def get(self):
         domains = []
+        in_global_acl = self.auth.account.in_global_acl_emails(
+            self.auth.account.email
+        )
         try:
-            domain_list = self.get_domain_list()
+            domain_list = self.get_domain_list(in_global_acl)
         except peewee.DoesNotExist:
             domain_list = []
 
@@ -51,7 +54,9 @@ class Domains(AbstractEndpoint):
         for d in domain_list:
             domain = d.to_clean_dict()
             if include_permissions:
-                domain["permissions"] = self.get_permissions(d, dgmaps)
+                domain["permissions"] = self.get_permissions(
+                    d, dgmaps, in_global_acl
+                )
             domains.append(domain)
 
         return {
@@ -60,13 +65,13 @@ class Domains(AbstractEndpoint):
             'total_domains': total_domains
         }
 
-    def get_permissions(self, domain, dgmaps):
+    def get_permissions(self, domain, dgmaps, in_global_acl=False):
         allperms = {
             "can_read": True,
             "can_write": True,
             "can_delete": True
         }
-        if self.auth.account.account_type == "senior_admin":
+        if self.auth.account.account_type == "senior_admin" or in_global_acl:
             return allperms
 
         if domain.owner_id == self.auth.account.account_id:
@@ -189,10 +194,10 @@ class Domains(AbstractEndpoint):
             'records': records
         }, 201
 
-    def get_domain_list(self):
+    def get_domain_list(self, in_global_acl=False):
         search = request.args.get('search', None)
 
-        if self.auth.account.account_type == 'senior_admin':
+        if self.auth.account.account_type == 'senior_admin' or in_global_acl:
             query = ModelDomain.select()
             if (search is not None):
                 search = search.replace('*', '%')

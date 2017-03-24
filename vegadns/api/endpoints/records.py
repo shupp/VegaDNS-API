@@ -31,16 +31,17 @@ class Records(RecordsCommon):
 
         # check if the domain exists
         try:
-            self.get_domain(domain_id)
+            domain = self.get_domain(domain_id)
         except peewee.DoesNotExist:
             abort(404, message="domain_id does not exist: " + domain_id)
 
-        if domain_id is None:
-            abort(400, message="'domain_id' parameter is required")
-
         # get domain and check authorization
         self.auth.account.load_domains()
-        domain = self.get_read_domain(domain_id)
+        in_acl = self.auth.account.in_global_acl_emails(
+            self.auth.account.email
+        )
+        if not in_acl:
+            domain = self.get_read_domain(domain_id)
 
         record_collection = self.paginate_query(
             domain.get_records(),
@@ -89,9 +90,16 @@ class Records(RecordsCommon):
 
         clean_domain = domain.to_clean_dict()
         if request.args.get('include_permissions', None):
-            clean_domain["permissions"] = self.get_permissions(
-                domain.domain_id
-            )
+            if in_acl:
+                clean_domain["permissions"] = {
+                    "can_read": True,
+                    "can_write": True,
+                    "can_delete": True
+                }
+            else:
+                clean_domain["permissions"] = self.get_permissions(
+                    domain.domain_id
+                )
         return {
             'status': 'ok',
             'total_records': total_records,
@@ -109,13 +117,9 @@ class Records(RecordsCommon):
 
         # check if the domain exists
         try:
-            self.get_domain(domain_id)
+            domain = self.get_domain(domain_id)
         except peewee.DoesNotExist:
             abort(404, message="domain_id does not exist: " + domain_id)
-
-        # get domain and check authorization
-        self.auth.account.load_domains()
-        domain = self.get_write_domain(domain_id)
 
         record_type = request.form.get('record_type')
         try:
@@ -140,6 +144,17 @@ class Records(RecordsCommon):
 
         TypeModel.values["domain_id"] = domain.domain_id
         model = TypeModel.to_model()
+
+        # get domain and check authorization
+        domain = self.auth.account.get_domain_by_record_acl(
+            domain_id,
+            model.host,
+            record_type
+        )
+        if domain is False:
+            self.auth.account.load_domains()
+            domain = self.get_write_domain(domain_id)
+
         try:
             model.save()
         except RecordValueException as e:

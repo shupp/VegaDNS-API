@@ -70,6 +70,8 @@ def main():
             "smtp_password": os.getenv("SECRET_SMTP_PASSWORD", default=""),
             "support_name": os.getenv("SUPPORT_NAME", default="The VegaDNS Team"),
             "support_email": os.getenv("SUPPORT_EMAIL", default="support@example.com"),
+            "acl_labels": os.getenv("ACL_LABELS", default=""),
+            "acl_emails": os.getenv("ACL_EMAILS", default=""),
         }
     except Exception as err:
         print >> sys.stderr, "Problem reading environment", err

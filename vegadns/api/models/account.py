@@ -1,5 +1,6 @@
 import hashlib
 import bcrypt
+import re
 
 from peewee import CharField, IntegerField, PrimaryKeyField
 
@@ -174,3 +175,51 @@ class Account(BaseModel):
         hash = hashlib.md5(string).hexdigest()
 
         return account_id + "-" + hash
+
+    def in_global_acl_emails(self, email):
+        # load emails and verify
+        emails = [
+            x.strip() for x in config.get(
+                "global_record_acls", "acl_emails"
+            ).strip('"').split(",")
+        ]
+        if email in emails:
+            return True
+
+        return False
+
+    def get_global_acl_labels(self):
+        config_labels = config.get(
+            "global_record_acls",
+            "acl_labels"
+        ).strip('"')
+        if len(config_labels) == 0:
+            return []
+
+        return [x.strip() for x in config_labels.split(",")]
+
+    def get_domain_by_record_acl(self, domain_id, record_name, record_type):
+        if str(record_type).upper() == "SOA":
+            # SOA records are not allowed
+            return False
+
+        if not self.in_global_acl_emails(self.email):
+            return False
+
+        labels = self.get_global_acl_labels()
+
+        # load domain
+        domain = Domain.get(Domain.domain_id == domain_id)
+
+        # check no sublabel use case (DOMAIN)
+        if record_name == domain.domain and 'DOMAIN' in labels:
+            return domain
+
+        # check sublabel matches
+        pattern = "\." + domain.domain + "$"
+        sublabel = re.sub(pattern, "", record_name)
+        if sublabel in labels:
+            return domain
+
+        # No match
+        return False

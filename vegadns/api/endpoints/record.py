@@ -19,8 +19,9 @@ class Record(RecordsCommon):
             abort(404, message="record does not exist")
 
         # check authorization
-        self.auth.account.load_domains()
-        domain = self.get_read_domain(record.domain_id)
+        if not self.auth.account.in_global_acl_emails(self.auth.account.email):
+            self.auth.account.load_domains()
+            domain = self.get_read_domain(record.domain_id)
 
         recordtype = record.to_recordtype()
         return {'status': 'ok', 'record': recordtype.to_dict()}
@@ -31,16 +32,33 @@ class Record(RecordsCommon):
         except peewee.DoesNotExist:
             abort(404, message="record does not exist")
 
-        # get domain and check authorization
-        self.auth.account.load_domains()
-        domain = self.get_write_domain(record.domain_id)
-
         TypeModel = record.to_recordtype()
+
+        # get domain and check authorization
+        domain = self.auth.account.get_domain_by_record_acl(
+            record.domain_id,
+            record.host,
+            TypeModel.record_type
+        )
+        if domain is False:
+            self.auth.account.load_domains()
+            domain = self.get_read_domain(record.domain_id)
 
         self.request_form_to_type_model(request.form, TypeModel, domain)
 
         try:
             model = TypeModel.to_model()
+            # recheck auth in case host changed
+            if record.host != model.host:
+                domain = self.auth.account.get_domain_by_record_acl(
+                    record.domain_id,
+                    model.host,
+                    TypeModel.record_type
+                )
+                if domain is False:
+                    self.auth.account.load_domains()
+                    domain = self.get_read_domain(record.domain_id)
+
             model.save()
         except RecordValueException as e:
             abort(400, message=str(e))
@@ -63,9 +81,18 @@ class Record(RecordsCommon):
         except:
             abort(404, message="record does not exist")
 
-        # check authorization
-        self.auth.account.load_domains()
-        domain = self.get_delete_domain(record.domain_id)
+        TypeModel = record.to_recordtype()
+
+        # load domain and check authorization
+        domain = self.auth.account.get_domain_by_record_acl(
+            record.domain_id,
+            record.host,
+            TypeModel.record_type
+        )
+        if domain is False:
+            self.auth.account.load_domains()
+            domain = self.get_delete_domain(record.domain_id)
+
         record.delete_instance()
 
         self.dns_log(
