@@ -102,3 +102,7 @@ class TestValidate(unittest.TestCase):
         self.assertFalse(self.validate.ip_prefix(
             'FE80:0000:0000:0000:0202:B3FF:0000:0000:0000:0000', 'ipv6')
         )
+
+    def test_email_valid(self):
+        self.assertTrue(self.validate.email('user@example.com'))
+        self.assertFalse(self.validate.email('example.com'))
