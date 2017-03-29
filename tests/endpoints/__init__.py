@@ -29,6 +29,8 @@ class AbstractEndpointTest(unittest.TestCase):
         else:
             account.status = 'inactive'
 
+        account.load_domains = MagicMock(return_value=None)
+
         vegadns.api.common.Auth.get_account_by_email = MagicMock(
             return_value=account
         )
