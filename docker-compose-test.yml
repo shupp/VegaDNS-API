@@ -5,7 +5,7 @@ networks:
     driver: bridge
 
 services:
-  api:
+  api_unittest:
     restart: never
     networks:
       - vegadns_unittest_net
