@@ -1,0 +1,51 @@
+version: "2.0"
+
+networks:
+  vegadns_net:
+    driver: bridge
+
+services:
+  api:
+    restart: always
+    networks:
+      - vegadns_net
+    build: .
+    environment:
+      DB_HOST: mysql
+      DB_USER: vegadns
+      SECRET_DB_PASS: secret
+      TRUSTED_IPS: 0.0.0.0/0
+      API_PORT: 5000
+      ENABLE_REDIS_NOTIFICATIONS: "true"
+      REDIS_HOST: redis
+    depends_on:
+      - mysql
+      - redis
+  client:
+    restart: always
+    networks:
+      - vegadns_net
+    build: https://github.com/shupp/VegaDNS-UpdateClient.git
+    links:
+      - api:api
+    depends_on:
+      - api
+      - redis
+    environment:
+      API_URL: http://api:5000
+      REDIS_HOST: redis
+  redis:
+    restart: always
+    networks:
+      - vegadns_net
+    image: redis:latest
+  mysql:
+    restart: always
+    networks:
+      - vegadns_net
+    image: mysql:latest
+    environment:
+       MYSQL_ROOT_PASSWORD: vegadns
+       MYSQL_DATABASE: vegadns
+       MYSQL_USER: vegadns
+       MYSQL_PASSWORD: secret

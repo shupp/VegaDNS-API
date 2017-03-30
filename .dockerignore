@@ -2,7 +2,7 @@ bin/*
 sql/*
 tests/*
 Dockerfile
-docker-compose.yml
+docker-compose*
 Makefile
 README.md
 records_format.json
