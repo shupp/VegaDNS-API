@@ -62,6 +62,11 @@ Then log in at http://localhost/ with the user "test@test.com" and a password of
 ## Using
 Once installation is complete, you'll probably want to use one of the supported clients above for accessing the api.  If this is a clean install, the test account is test@test.com with a password of "test".  If you're using existing accounts, they should work as well.
 
+## Running under uwsgi/supervisor/nginx
+The docker container for the API currently runs under [gunicorn](http://gunicorn.org).  If you want to run
+it under uwsgi/supervisor/nginx, and alongside the UI on a single instance, see the files in the
+[example-configs](example-configs) directory.
+
 ## Tests - running in containers
 To run unit tests in a container using docker-compose, just run:
 
