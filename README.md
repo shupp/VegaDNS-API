@@ -105,6 +105,7 @@ or
 * **Added tinydns location support**.  If you want to do split horizon dns, you can specify locations and network prefixes for those locations, and then bind records to those locations to serve up different results based on the network the request came from.  If you want to use IPv6 network prefixes, note that djbdns needs to be [patched for IPv6](http://www.fefe.de/dns/).  (If on debian/ubuntu, you can alternately use the already patched dbndns package instead of the djbdns package)
 * **Optional push notifications to updaters**.  If you want your tinydns servers to update on demand, you can set up a redis server to handle Pub/Sub messaging.  See [default.ini](vegadns/api/config/default.ini) and [redis_listener.sh](https://github.com/shupp/VegaDNS-UpdateClient/redis_listener.sh).
 * **REST API only**, a JavaScript only UI is available separately [here](https://github.com/shupp/VegaDNS-UI)
+* **Optional global record ACLs** To allow restrictions on integrations with tools like [Let's Encrypt](https://letsencrypt.org), you can now specify certain global labels (i.e. _acme-challenge.DOMAIN) that can be written to by a list of users.  See [default.ini](vegadns/api/config/default.ini) for more details.
 * API is written in **python** rather than PHP
 
 ## Support
