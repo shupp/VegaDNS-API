@@ -7,6 +7,8 @@ default: check test
 check:
 	pep8 vegadns tests run.py
 
+test-container:
+	docker-compose -f docker-compose-test.yml up && docker-compose -f docker-compose-test.yml down
 # Test everything in the tests directory
 test:
 	nosetests tests
@@ -19,7 +21,5 @@ clean-coverage:
 	rm -rf coverage .coverage
 clean-python:
 	find vegadns tests -name "*.pyc" -exec rm {} \;
-build-image:
-	docker/build_docker_image.sh
-test-integration: build-image
-	docker/run_docker.sh test
+test-integration:
+	./run_integration_tests.sh

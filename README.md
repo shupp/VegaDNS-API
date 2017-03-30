@@ -14,47 +14,38 @@ There are two supported API clients at this time:
 ### Manual setup from a git checkout
 If you want to get this up and running from a git checkout quickly, you'll want to use python 2.7.9 or later (3 is not yet tested), and have pip and virtualenv installed.  This assumes you have a mysql server with a database called _vegadns_ created, and write privileges granted.  From there, you can do the following to set up your virtual environment:
 
-```
-virtualenv venv
-. venv/bin/activate
-pip install -r requirements.txt
-```
+    virtualenv venv
+    . venv/bin/activate
+    pip install -r requirements.txt
 
 You'll also need to set up your vegadns/api/config/local.ini file with the following, replacing values with credentials for your mysql database:
 
-```
-[mysql]
-user = vegadns
-password = secret
-database = vegadns
-host = localhost
-```
+    [mysql]
+    user = vegadns
+    password = secret
+    database = vegadns
+    host = localhost
+
 Have a look at [default.ini](vegadns/api/config/default.ini) for a full list of configuration items you may want to override.
 
 Lastly, you need to create your database contents.  You can apply the following an empty database:
 
-```
-mysql -u vegadns -p -h localhost vegadns < sql/create_tables.sql
-mysql -u vegadns -p -h localhost vegadns < sql/data.sql
-```
+    mysql -u vegadns -p -h localhost vegadns < sql/create_tables.sql
+    mysql -u vegadns -p -h localhost vegadns < sql/data.sql
 
 If you are testing a copy of a legacy VegaDNS database, you can just run this instead:
 
-```
-mysql -u vegadns -p -h localhost vegadns < sql/new_tables_only.sql
-mysql -u vegadns -p -h localhost vegadns < sql/alter-01.sql
-mysql -u vegadns -p -h localhost vegadns < sql/alter-02.sql
-mysql -u vegadns -p -h localhost vegadns < sql/alter-03.sql
-mysql -u vegadns -p -h localhost vegadns < sql/data_api_keys_only.sql
-```
+    mysql -u vegadns -p -h localhost vegadns < sql/new_tables_only.sql
+    mysql -u vegadns -p -h localhost vegadns < sql/alter-01.sql
+    mysql -u vegadns -p -h localhost vegadns < sql/alter-02.sql
+    mysql -u vegadns -p -h localhost vegadns < sql/alter-03.sql
+    mysql -u vegadns -p -h localhost vegadns < sql/data_api_keys_only.sql
 
 Now that the environment is setup, you can start the built-in flask web server to test below:
 
-```
-$ DEBUG=true python run.py
- * Running on http://0.0.0.0:5000/ (Press CTRL+C to quit)
-  * Restarting with stat
-  ```
+    $ DEBUG=true python run.py
+     * Running on http://0.0.0.0:5000/ (Press CTRL+C to quit)
+      * Restarting with stat
 
 ## Setup using docker compose
 Note what your docker host's name is.  The following steps assumes "localhost"
@@ -71,35 +62,37 @@ Then log in at http://localhost/ with the user "test@test.com" and a password of
 ## Using
 Once installation is complete, you'll probably want to use one of the supported clients above for accessing the api.  If this is a clean install, the test account is test@test.com with a password of "test".  If you're using existing accounts, they should work as well.
 
-## Tests
-First you'll need to activate your virtual environment:
+## Tests - running in containers
+To run unit tests in a container using docker-compose, just run:
 
-```
-. venv/bin/activate
-```
+    make test-container
+
+For integration tests, run:
+
+    make test-integration
+
+
+## Tests - running locally
+To run tests locally, you'll need to first activate your virtualenv:
+
+    . venv/bin/activate
+
+Next, to make sure you have the testing dependencies installed, run:
+
+    pip install -r test-requirements.txt
 
 Then, to run unit tests and check pep8 compliance, run the following:
 
-```
-make
-```
+    make
 
 You can also check code coverage:
 
-```
-make coverage
-```
-or
-```
-make coverage-html
-open coverage/index.html
-```
+    make coverage
 
-You can also run integration tests in a container:
-```
-make test-integration
-# this builds the image first
-```
+or
+
+    make coverage-html
+    open coverage/index.html
 
 ## Changes from legacy [VegaDNS](http://github.com/shupp/VegaDNS)
 
