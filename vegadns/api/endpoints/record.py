@@ -42,7 +42,7 @@ class Record(RecordsCommon):
         )
         if domain is False:
             self.auth.account.load_domains()
-            domain = self.get_read_domain(record.domain_id)
+            domain = self.get_write_domain(record.domain_id)
 
         self.request_form_to_type_model(request.form, TypeModel, domain)
 
