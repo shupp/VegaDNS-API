@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y libffi-dev
 RUN apt-get update && apt-get install -y curl wget
 
 # for npm
-RUN curl -sL https://deb.nodesource.com/setup_0.12 | bash -
+RUN curl -sL https://deb.nodesource.com/setup_4.x | bash -
 RUN apt-get -q update && apt-get install -yf nodejs
 
 # Configuration script dependencies
