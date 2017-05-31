@@ -2,7 +2,7 @@ import hashlib
 import bcrypt
 import re
 
-from peewee import CharField, IntegerField, PrimaryKeyField
+from peewee import CharField, IntegerField, PrimaryKeyField, DoesNotExist
 
 from vegadns.api.config import config
 from vegadns.api.models import database, BaseModel
@@ -209,17 +209,60 @@ class Account(BaseModel):
         labels = self.get_global_acl_labels()
 
         # load domain
-        domain = Domain.get(Domain.domain_id == domain_id)
+        domain = self.get_domain_object().get(Domain.domain_id == domain_id)
 
         # check no sublabel use case (DOMAIN)
+        # i.e. example.com for domain example.com
         if record_name == domain.domain and 'DOMAIN' in labels:
             return domain
 
-        # check sublabel matches
+        # check single sublabel match
+        # i.e. _acme-challenge.example.com for domain example.com
         pattern = "\." + domain.domain + "$"
         sublabel = re.sub(pattern, "", record_name)
         if sublabel in labels:
             return domain
 
-        # No match
+        # dummy check that the record_name ends with the correct domain
+        if not record_name.endswith(domain.domain):
+            return False
+
+        # If no match, then check for multiple labels in the sublabel
+        # i.e. _acme-challenge.office.example.com for domain example.com
+        sublabels = sublabel.split(".")
+        if len(sublabels) is 1:
+            # Only one sublabel, so no match
+            return False
+        if sublabels[0] not in labels:
+            # First sublabel isn't allowed
+            return False
+
+        # Now let's make sure there isn't a domain collision
+        # Pop off first sublabel
+        sublabels.pop(0)
+        while len(sublabels) >= 1:
+            try:
+                d = self.get_domain_object().get(
+                    Domain.domain == '.'.join(sublabels) + '.' + domain.domain
+                )
+                if d.domain_id == domain.domain_id:
+                    # Should not get here, but just in case
+                    # domain name and id match, done checking
+                    return domain
+                else:
+                    # collision!
+                    return False
+            except DoesNotExist:
+                sublabels.pop(0)
+                if len(sublabels) is 0:
+                    # Done checking, no collisions
+                    return domain
+                else:
+                    # no collisions yet, keep checking
+                    continue
+
+        # Should not ever get here, but just in case
         return False
+
+    def get_domain_object(self):
+        return Domain
