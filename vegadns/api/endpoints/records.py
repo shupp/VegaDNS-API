@@ -119,7 +119,7 @@ class Records(RecordsCommon):
         try:
             domain = self.get_domain(domain_id)
         except peewee.DoesNotExist:
-            abort(404, message="domain_id does not exist: " + domain_id)
+            abort(404, message="domain_id does not exist: " + str(domain_id))
 
         record_type = request.form.get('record_type')
         try:
