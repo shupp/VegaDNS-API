@@ -413,6 +413,58 @@ class SPFRecord(CommonRecord):
         self.validate_record_hostname(default_record)
 
 
+# defined in [RFC 6844](https://tools.ietf.org/html/rfc6844)
+class CAARecord(CommonRecord):
+    record_type = 'CAA'
+
+    def __init__(self, defaults=None):
+        if defaults is None:
+            defaults = {"weight": 0}
+
+        super(CAARecord, self).__init__(defaults)
+
+    def from_model(self, model):
+        super(CAARecord, self).from_model(model)
+        caa_split = self.values['value'].split(":", 2)
+        self.values['flag'] = caa_split[0]
+        self.values['tag'] = caa_split[1]
+        self.values['tagval'] = caa_split[2]
+        del(self.values['value'])  # Only used for storing/retrieving from DB
+
+    def to_model(self, default_record=False):
+        self.values["value"] = None  # Only used for storing/retrieving from DB
+        model = super(CAARecord, self).to_model(default_record)
+        model.val = ":".join((self.values.get('flag', 0),
+                              self.values.get('tag', ''),
+                              self.values.get('tagval', '')))
+        return model
+
+    def validate(self, default_record=False):
+        if not default_record:
+            self.validate_domain_id()
+        self.validate_record_hostname(default_record)
+        flag = str(self.values.get("flag"))
+        if not flag.isdigit():
+            raise RecordValueException("Invalid CAA flag: " + flag)
+
+        tag = str(self.values.get("tag"))
+        tagval = str(self.values.get("tagval"))
+        if tag == "issue" or tag == "issuewild":
+            # verify either a domain or semi-colon
+            if tagval == ';':
+                pass
+            elif not ValidateDNS.record_hostname(tagval):
+                raise RecordValueException("Invalid CAA tag value for %s: %s" %
+                                           (tag, tagval))
+        elif tag == 'iodef':
+            p = re.compile('^(https?|mailto):', re.IGNORECASE)
+            if not p.match(tagval):
+                raise RecordValueException("Invalid CAA tag value for %s: %s" %
+                                           (tag, tagval))
+        else:
+            raise RecordValueException("Invalid CAA tag: " + tag)
+
+
 class RecordType(object):
     record_types = {
         'S': {'name': 'SOA', 'record_class': SOARecord},
@@ -426,7 +478,8 @@ class RecordType(object):
         'T': {'name': 'TXT', 'record_class': TXTRecord},
         'C': {'name': 'CNAME', 'record_class': CNAMERecord},
         'V': {'name': 'SRV', 'record_class': SRVRecord},
-        'F': {'name': 'SPF', 'record_class': SPFRecord}
+        'F': {'name': 'SPF', 'record_class': SPFRecord},
+        'E': {'name': 'CAA', 'record_class': CAARecord}
     }
 
     def get(self, type):
