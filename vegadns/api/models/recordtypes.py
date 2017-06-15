@@ -419,14 +419,18 @@ class CAARecord(CommonRecord):
 
     def __init__(self, defaults=None):
         if defaults is None:
-            defaults = {"weight": 0}
+            defaults = {
+                "flag": 0,
+                "tag": '',
+                "tagval": ''
+            }
 
         super(CAARecord, self).__init__(defaults)
 
     def from_model(self, model):
         super(CAARecord, self).from_model(model)
         caa_split = self.values['value'].split(":", 2)
-        self.values['flag'] = caa_split[0]
+        self.values['flag'] = int(caa_split[0])
         self.values['tag'] = caa_split[1]
         self.values['tagval'] = caa_split[2]
         del(self.values['value'])  # Only used for storing/retrieving from DB
@@ -434,7 +438,7 @@ class CAARecord(CommonRecord):
     def to_model(self, default_record=False):
         self.values["value"] = None  # Only used for storing/retrieving from DB
         model = super(CAARecord, self).to_model(default_record)
-        model.val = ":".join((self.values.get('flag', 0),
+        model.val = ":".join((str(self.values.get('flag', 0)),
                               self.values.get('tag', ''),
                               self.values.get('tagval', '')))
         return model

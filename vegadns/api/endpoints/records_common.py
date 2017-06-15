@@ -53,7 +53,7 @@ class RecordsCommon(AbstractEndpoint):
         elif TypeModel.record_type == "CAA":
             TypeModel.values["name"] = request_form.get("name")
             TypeModel.values["ttl"] = request_form.get("ttl", 3600)
-            TypeModel.values["flag"] = request_form.get("flag")
+            TypeModel.values["flag"] = request_form.get("flag", 0)
             TypeModel.values["tag"] = request_form.get("tag")
             TypeModel.values["tagval"] = request_form.get("tagval")
         else:
