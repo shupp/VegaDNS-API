@@ -38,7 +38,7 @@ RUN pip install --upgrade /var/www/vegadns2/vegadns-cli
 RUN chmod +x /var/www/vegadns2/vegadns-ui/build.sh
 RUN /var/www/vegadns2/vegadns-ui/build.sh
 
-RUN chown -R www-data:www-data /var/www/vegadns2
+RUN chown -R www-data:www-data /var/www/vegadns2/vegadns-ui/public
 
 # remove default nginx config
 RUN rm -f /etc/nginx/sites-enabled/default
