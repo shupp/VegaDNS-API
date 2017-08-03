@@ -69,7 +69,7 @@ class GroupMember(AbstractEndpoint):
             # check they are a member and is_admin is 1
             try:
                 mymap = ModelMap.get(
-                    ModelMap.group_id == member_id,
+                    ModelMap.group_id == map.group_id,
                     ModelMap.account_id == self.auth.account.account_id
                 )
                 if mymap.is_admin != 1:
