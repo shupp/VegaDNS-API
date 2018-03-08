@@ -111,7 +111,7 @@ class ExportTinydnsData(object):
                 "\%03o" % len(caa_split[1]) + \
                 "".join("\%03o" % ord(c) for c in caa_split[1]) + \
                 "".join("\%03o" % ord(c) for c in caa_split[2]) + \
-                ":" + str(model.ttl)
+                ":" + str(model.ttl) + \
                 "\n"
 
     def export_domain(self, domain_name, records):
