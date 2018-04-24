@@ -1,5 +1,6 @@
 import re
 import time
+import random
 
 from flask import request
 from netaddr import IPSet
@@ -84,6 +85,15 @@ class Auth(object):
 
     def get_account_by_oauth_token(self, token):
         now = int(time.time())
+
+        # First, remove old tokens every 4 requests or so
+        if random.randint(1,4) == 1:
+            q = OauthAccessToken.delete().where(
+                OauthAccessToken.expires_at < now
+            )
+            deleted = q.execute()
+            # print "Old tokens deleted: " + str(deleted)
+
         try:
             access_token = OauthAccessToken.get(
                 OauthAccessToken.access_token == token,
