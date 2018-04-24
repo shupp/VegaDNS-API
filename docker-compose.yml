@@ -43,7 +43,7 @@ services:
     build: https://github.com/shupp/VegaDNS-UpdateClient.git
     ports:
       - "53:53"
-      - "53/udp:53/udp"
+      - "53:53/udp"
     links:
       - api:api
     depends_on:
