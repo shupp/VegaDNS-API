@@ -1,4 +1,4 @@
-version: "2.0"
+version: "3.0"
 
 networks:
   vegadns_net:
@@ -10,6 +10,7 @@ services:
     networks:
       - vegadns_net
     build: .
+    image: vegadns/api
     ports:
       - "5000:5000"
     environment:
@@ -28,6 +29,7 @@ services:
     networks:
       - vegadns_net
     build: https://github.com/shupp/VegaDNS-UI.git
+    image: vegadns/ui
     ports:
       - "80:80"
     depends_on:
@@ -36,19 +38,19 @@ services:
       # don't set this to api:5000 unless "api" resolves on your local machine
       # all client API requests are done from the browser!
       API_URL: ${API_URL}
-  client:
+  tinydns:
     restart: always
+    image: vegadns/tinydns
     networks:
       - vegadns_net
     build: https://github.com/shupp/VegaDNS-UpdateClient.git
     ports:
       - "53:53"
       - "53:53/udp"
-    links:
-      - api:api
     depends_on:
       - api
       - redis
+      - mysql
     environment:
       API_URL: http://api:5000
       REDIS_HOST: redis
@@ -63,7 +65,7 @@ services:
     restart: always
     networks:
       - vegadns_net
-    image: mysql:latest
+    image: mysql:5.7
     ports:
       - "3306:3306"
     environment:
@@ -71,3 +73,18 @@ services:
        MYSQL_DATABASE: vegadns
        MYSQL_USER: vegadns
        MYSQL_PASSWORD: secret
+  mysql_seed_client:
+    restart: "no"
+    networks:
+      - vegadns_net
+    image: mysql:5.7
+    volumes:
+      - ./:/vegadns
+    entrypoint: /vegadns/seed_mysql_data.sh
+    environment:
+       MYSQL_ROOT_PASSWORD: vegadns
+       MYSQL_DATABASE: vegadns
+       MYSQL_USER: vegadns
+       MYSQL_PASSWORD: secret
+    depends_on:
+      - mysql
