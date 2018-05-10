@@ -11,3 +11,5 @@ test-requirements.txt
 .*ignore
 run_integration_tests.sh
 run_tests.sh
+venv
+vegadns/api/config/local.ini*
