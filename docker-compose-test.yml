@@ -1,15 +1,10 @@
-version: "2.0"
-
-networks:
-  vegadns_unittest_net:
-    driver: bridge
+version: "3.0"
 
 services:
   api_unittest:
-    restart: never
-    networks:
-      - vegadns_unittest_net
+    restart: "no"
     build: .
+    image: vegadns/api
     volumes:
       - ./run_tests.sh:/run_tests.sh
       - ./test-requirements.txt:/opt/vegadns/test-requirements.txt
