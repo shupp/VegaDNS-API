@@ -87,7 +87,7 @@ class Auth(object):
         now = int(time.time())
 
         # First, remove old tokens every 4 requests or so
-        if random.randint(1,4) == 1:
+        if random.randint(1, 4) == 1:
             q = OauthAccessToken.delete().where(
                 OauthAccessToken.expires_at < now
             )
