@@ -33,11 +33,12 @@ test-docker: up
 # Test everything in the tests directory
 test:
 	nosetests tests
-coverage:
+coverage: clean-coverage
 	nosetests --with-coverage --cover-package vegadns tests
 coverage-html: clean-coverage
 	nosetests --with-coverage --cover-html --cover-html-dir coverage --cover-package vegadns tests
-clean: clean-coverage
+	open coverage/index.html
+clean: clean-python clean-coverage
 clean-coverage:
 	rm -rf coverage .coverage
 clean-python:
