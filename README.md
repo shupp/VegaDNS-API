@@ -48,16 +48,15 @@ Now that the environment is setup, you can start the built-in flask web server t
       * Restarting with stat
 
 ## Setup using docker compose
-Note what your docker host's name is.  The following steps assumes "localhost"
+The following steps assumes your docker host is "localhost"
 
-    API_URL=http://localhost:5000 docker-compose up
-
-Once that's running, you'll need to seed the data in another terminal from this directory:
-
-    mysql -u vegadns -h localhost -psecret vegadns < sql/create_tables.sql
-    mysql -u vegadns -h localhost -psecret vegadns < sql/data.sql
+    make up
 
 Then log in at http://localhost/ with the user "test@test.com" and a password of "test"
+
+If you want to watch logs, say for just api and tinydns, you can do:
+
+    LOGS_ARGS="-f api tinydns" make logs
 
 ## Using
 Once installation is complete, you'll probably want to use one of the supported clients above for accessing the api.  If this is a clean install, the test account is test@test.com with a password of "test".  If you're using existing accounts, they should work as well.
@@ -70,25 +69,32 @@ it under uwsgi/supervisor/nginx, and alongside the UI on a single instance, see 
 ## Tests - running in containers
 To run unit tests in a container using docker-compose, just run:
 
-    make test-container
+    make test-docker
 
 For integration tests, run:
 
-    make test-integration
+    make up test-integration
 
+_NOTE: this assumes you're starting from a new data set, otherwise you might see data issues_
+
+To stop containers, just do:
+
+    make down
 
 ## Tests - running locally
 To run tests locally, you'll need to first activate your virtualenv:
 
+    virtualenv venv
     . venv/bin/activate
 
 Next, to make sure you have the testing dependencies installed, run:
 
+    pip install -r requirements.txt
     pip install -r test-requirements.txt
 
 Then, to run unit tests and check pep8 compliance, run the following:
 
-    make
+    make check test
 
 You can also check code coverage:
 
@@ -97,7 +103,8 @@ You can also check code coverage:
 or
 
     make coverage-html
-    open coverage/index.html
+
+This will call "open" on the coverage html, opening it in your browser.
 
 ## Changes from legacy [VegaDNS](http://github.com/shupp/VegaDNS)
 
