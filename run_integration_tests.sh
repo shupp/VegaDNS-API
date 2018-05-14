@@ -1,20 +1,24 @@
 #!/bin/bash
 
-DATE=`date +%s`
-export COMPOSE_PROJECT_NAME="vegadnsapiintegration${DATE}"
-
-printf "Building VegaDNS-CLI ...\n"
-docker build -t ${COMPOSE_PROJECT_NAME}_vegadns-cli https://github.com/shupp/VegaDNS-CLI.git
-
-printf "\nStarting containers\n"
-API_URL=${API_URL:-http://localhost:5000} docker-compose -f docker-compose-integration-test.yml up -d || exit 1
-
-printf "\nwaiting for mysql "
+printf "\nWaiting for VegaDNS-API to be up "
 RETURN_CODE=1
-while [ $RETURN_CODE -ne 0 ]; do
-    docker exec -i ${COMPOSE_PROJECT_NAME}_mysql_1 mysql -h mysql -u vegadns -psecret -e QUIT vegadns >/dev/null 2>&1
+COUNT=0
+COUNT_LIMIT=${COUNT_LIMIT:-60}
+API_URL=${API_URL:-http://localhost:5000}
+
+while [ $RETURN_CODE -ne 0 ] && [ ${COUNT} ]; do
+    RESULTS=$(curl -s -i -o - ${API_URL}/1.0/healthcheck)
     RETURN_CODE=$?
-    sleep 1
+    COUNT=$((COUNT + 1))
+    if [ ${RETURN_CODE} -ne 0 ]; then
+        sleep 1
+    else
+        HTTP_CODE=$(echo ${RESULTS} | grep HTTP | awk '{ print $2 }')
+        if [ "${HTTP_CODE}" != "200" ]; then
+            RETURN_CODE=1
+            sleep 1
+        fi
+    fi
     printf "."
 done
 printf " done\n"
@@ -22,21 +26,7 @@ printf " done\n"
 # exit on failure
 set -e
 
-printf "\nSeeding data ...\n"
-docker exec -i ${COMPOSE_PROJECT_NAME}_mysql_1 mysql -h mysql -u vegadns -psecret vegadns < ./sql/create_tables.sql
-docker exec -i ${COMPOSE_PROJECT_NAME}_mysql_1 mysql -h mysql -u vegadns -psecret vegadns < ./sql/data.sql
+printf "\nRunning integration tests ... \n"
+docker-compose -f docker-compose-integration-test.yml run --rm integration_tests
 
-printf "\nRunning integration tests ...\n"
-docker run \
-    -e NAMESERVER=client \
-    -e HOST=http://api:5000 \
-    --net ${COMPOSE_PROJECT_NAME}_vegadns_net \
-    --name ${COMPOSE_PROJECT_NAME}_vegadns-cli \
-    ${COMPOSE_PROJECT_NAME}_vegadns-cli
-
-printf "\nCleaning up ...\n"
-docker rm ${COMPOSE_PROJECT_NAME}_vegadns-cli
-docker rmi ${COMPOSE_PROJECT_NAME}_vegadns-cli
-API_URL=${API_URL:-http://localhost:5000} docker-compose -f docker-compose-integration-test.yml down
-# Need to manually remove this one, not sure why
-docker rmi ${COMPOSE_PROJECT_NAME}_api
+printf "Done.\n"
