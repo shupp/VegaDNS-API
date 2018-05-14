@@ -1,0 +1,9 @@
+version: "3.2"
+
+services:
+  api_unittest:
+    restart: "no"
+    image: vegadns/api
+    volumes:
+      - ../:/opt/vegadns/
+    entrypoint: /opt/vegadns/run_tests.sh

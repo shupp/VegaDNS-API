@@ -1,17 +1,12 @@
-version: "2.0"
-
-networks:
-  vegadns_net:
-    driver: bridge
+version: "3.2"
 
 services:
   integration_tests:
     restart: always
     networks:
       - vegadns_net
-    build: https://github.com/shupp/VegaDNS-CLI.git
     image: vegadns/cli
     environment:
-      HOST: http://api:5000
+      HOST: ${HOST}
       REDIS_HOST: redis
       NAMESERVER: tinydns

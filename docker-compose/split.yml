@@ -1,0 +1,38 @@
+version: "3.2"
+
+services:
+  api:
+    restart: always
+    networks:
+      - vegadns_net
+    build: .
+    image: vegadns/api
+    ports:
+      - target: "5000"
+        protocol: "tcp"
+    environment:
+      DB_HOST: mysql
+      DB_USER: vegadns
+      SECRET_DB_PASS: secret
+      TRUSTED_IPS: 0.0.0.0/0
+      API_PORT: 5000
+      ENABLE_REDIS_NOTIFICATIONS: "true"
+      REDIS_HOST: redis
+    depends_on:
+      - mysql
+      - redis
+  ui:
+    restart: always
+    networks:
+      - vegadns_net
+    build: https://github.com/shupp/VegaDNS-UI.git
+    image: vegadns/ui
+    ports:
+      - target: "80"
+        protocol: "tcp"
+    depends_on:
+      - api
+    environment:
+      # don't set this to api:5000 unless "api" resolves on your local machine
+      # all client API requests are done from the browser!
+      API_URL: ${API_URL}

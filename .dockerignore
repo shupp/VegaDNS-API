@@ -2,7 +2,7 @@ bin/*
 sql/*
 tests/*
 Dockerfile
-docker-compose*
+docker-compose
 Makefile
 README.md
 records_format.json
@@ -15,3 +15,6 @@ venv
 vegadns/api/config/local.ini*
 .coverage
 coverage
+vegadns-cli
+vegadns-ui
+vdns

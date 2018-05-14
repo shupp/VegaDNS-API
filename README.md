@@ -11,12 +11,35 @@ There are two supported API clients at this time:
 
 ## Installation
 
-### Manual setup from a git checkout
-If you want to get this up and running from a git checkout quickly, you'll want to use python 2.7.9 or later (3 is not yet tested), and have pip and virtualenv installed.  This assumes you have a mysql server with a database called _vegadns_ created, and write privileges granted.  From there, you can do the following to set up your virtual environment:
+### Setup using docker compose
+The following steps assumes your docker host is "localhost"
 
-    virtualenv venv
-    . venv/bin/activate
-    pip install -r requirements.txt
+    make pull up
+
+Then log in at http://localhost/ with the user "test@test.com" and a password of "test"
+
+If you want to watch logs, say for just api and tinydns, you can do:
+
+    LOGS_ARGS="-f api tinydns" make logs
+
+To shut down, just run
+
+    make down
+
+The above will run the api on port 5000, and the ui on port 80.  If you would like to experiment with the vegadns/apiui image, which runs both components on port 80, you can use the following commands:
+
+    make up apiui
+    make down apiui
+
+### Building the vegadns/api or vegadns/apiui images
+
+    make build-api
+    make build-apiui
+
+### Manual setup of the api from a git checkout
+If you want to get this up and running from a git checkout manually, you'll want to use python 2.7.9 or later (3 is not yet tested), and have pip and virtualenv installed.  This assumes you have a mysql server with a database called _vegadns_ created, and write privileges granted.  From there, you can do the following to set up your virtual environment:
+
+    make venv
 
 You'll also need to set up your vegadns/api/config/local.ini file with the following, replacing values with credentials for your mysql database:
 
@@ -43,58 +66,31 @@ If you are testing a copy of a legacy VegaDNS database, you can just run this in
 
 Now that the environment is setup, you can start the built-in flask web server to test below:
 
-    $ DEBUG=true python run.py
+    $ . venv/bin/activate && DEBUG=true python run.py
      * Running on http://0.0.0.0:5000/ (Press CTRL+C to quit)
       * Restarting with stat
-
-## Setup using docker compose
-The following steps assumes your docker host is "localhost"
-
-    make up
-
-Then log in at http://localhost/ with the user "test@test.com" and a password of "test"
-
-If you want to watch logs, say for just api and tinydns, you can do:
-
-    LOGS_ARGS="-f api tinydns" make logs
 
 ## Using
 Once installation is complete, you'll probably want to use one of the supported clients above for accessing the api.  If this is a clean install, the test account is test@test.com with a password of "test".  If you're using existing accounts, they should work as well.
 
 ## Running under uwsgi/supervisor/nginx
-The docker container for the API currently runs under [gunicorn](http://gunicorn.org).  If you want to run
-it under uwsgi/supervisor/nginx, and alongside the UI on a single instance, see the files in the
-[example-configs](example-configs) directory.
+The vegadns/api image currently runs under [gunicorn](http://gunicorn.org).  If you want to run
+it under uwsgi/supervisor/nginx and alongside the UI like the vegadns/apiui image, see the files in the
+[docker/templates](docker/templates) directory, as well as [docker/Dockerfile.apiui](docker/Dockerfile.apiui) and [docker/start.sh](docker/start.sh).
 
 ## Tests - running in containers
 To run unit tests in a container using docker-compose, just run:
 
     make test-docker
 
-For integration tests, run:
+For integration tests only, run:
 
-    make up test-integration
-
-_NOTE: this assumes you're starting from a new data set, otherwise you might see data issues_
-
-To stop containers, just do:
-
-    make down
+    make up test-integration down
 
 ## Tests - running locally
-To run tests locally, you'll need to first activate your virtualenv:
+To check pep8 compliance and run tests locally, run:
 
-    virtualenv venv
-    . venv/bin/activate
-
-Next, to make sure you have the testing dependencies installed, run:
-
-    pip install -r requirements.txt
-    pip install -r test-requirements.txt
-
-Then, to run unit tests and check pep8 compliance, run the following:
-
-    make check test
+    make test
 
 You can also check code coverage:
 

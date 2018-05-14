@@ -1,0 +1,13 @@
+version: "3.2"
+
+services:
+  api:
+    ports:
+      - target: "5000"
+        published: "5000"
+        protocol: "tcp"
+  ui:
+    ports:
+      - target: "80"
+        published: "80"
+        protocol: "tcp"

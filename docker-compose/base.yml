@@ -1,43 +1,6 @@
-version: "3.0"
-
-networks:
-  vegadns_net:
-    driver: bridge
+version: "3.2"
 
 services:
-  api:
-    restart: always
-    networks:
-      - vegadns_net
-    build: .
-    image: vegadns/api
-    ports:
-      - "5000:5000"
-    environment:
-      DB_HOST: mysql
-      DB_USER: vegadns
-      SECRET_DB_PASS: secret
-      TRUSTED_IPS: 0.0.0.0/0
-      API_PORT: 5000
-      ENABLE_REDIS_NOTIFICATIONS: "true"
-      REDIS_HOST: redis
-    depends_on:
-      - mysql
-      - redis
-  ui:
-    restart: always
-    networks:
-      - vegadns_net
-    build: https://github.com/shupp/VegaDNS-UI.git
-    image: vegadns/ui
-    ports:
-      - "80:80"
-    depends_on:
-      - api
-    environment:
-      # don't set this to api:5000 unless "api" resolves on your local machine
-      # all client API requests are done from the browser!
-      API_URL: ${API_URL}
   tinydns:
     restart: always
     image: vegadns/tinydns
@@ -45,8 +8,10 @@ services:
       - vegadns_net
     build: https://github.com/shupp/VegaDNS-UpdateClient.git
     ports:
-      - "53:53"
-      - "53:53/udp"
+      - target: "53"
+        protocol: "tcp"
+      - target: "53"
+        protocol: "udp"
     depends_on:
       - api
       - redis
@@ -60,14 +25,16 @@ services:
       - vegadns_net
     image: redis:latest
     ports:
-      - "3679:3679"
+      - target: "3679"
+        protocol: "udp"
   mysql:
     restart: always
     networks:
       - vegadns_net
     image: mysql:5.7
     ports:
-      - "3306:3306"
+      - target: "3306"
+        protocol: "udp"
     environment:
        MYSQL_ROOT_PASSWORD: vegadns
        MYSQL_DATABASE: vegadns
@@ -79,7 +46,7 @@ services:
       - vegadns_net
     image: mysql:5.7
     volumes:
-      - ./:/vegadns
+      - ../:/vegadns
     entrypoint: /vegadns/seed_mysql_data.sh
     environment:
        MYSQL_ROOT_PASSWORD: vegadns

@@ -1,6 +1,5 @@
 #!/bin/sh
 
-apk add py-pip
-pip install -r /opt/vegadns/test-requirements.txt
+set -e
 
-cd /opt/vegadns && nosetests tests
+cd /opt/vegadns && pep8 vegadns tests run.py && nosetests tests

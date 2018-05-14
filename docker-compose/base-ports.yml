@@ -1,0 +1,16 @@
+version: "3.2"
+
+services:
+  tinydns:
+    ports:
+      - target: "53"
+        published: "53"
+        protocol: "tcp"
+      - target: "53"
+        published: "53"
+        protocol: "udp"
+  redis:
+    ports:
+      - target: "3679"
+        published: "3679"
+        protocol: "udp"

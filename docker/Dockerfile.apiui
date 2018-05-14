@@ -1,0 +1,36 @@
+FROM alpine:latest
+
+ENV API_PORT 80
+
+ADD . /opt/vegadns
+
+RUN apk --update add python py-setuptools nginx supervisor uwsgi-python nodejs bash
+# Removing these packages in the RUN keeps the image small (~70MB)
+RUN apk --update add --virtual build-dependencies py-pip python-dev git libffi-dev build-base \
+  && pip install -r /opt/vegadns/requirements.txt \
+  && pip install supervisor-stdout \
+  && rm -rf /opt/vegadns/vegadns-ui \
+  && git clone https://github.com/shupp/VegaDNS-UI.git /opt/vegadns/vegadns-ui \
+  && rm -rf /opt/vegadns/vegadns-ui/.git \
+  && apk del build-dependencies
+
+RUN /opt/vegadns/vegadns-ui/build.sh \
+  && rm -rf /opt/vegadns/vegadns-ui/node_modules
+
+# Config setups
+RUN chown -R nginx:nginx /opt/vegadns
+RUN mkdir -p /etc/supervisor.d
+RUN mkdir -p /run/nginx
+RUN rm -f /etc/nginx/conf.d/default.conf
+RUN ln -s /opt/vegadns/docker/templates/nginx-vegadns2.conf /etc/nginx/conf.d/vegadns2.conf
+RUN ln -s /opt/vegadns/docker/templates/supervisor-vegadns2.conf /etc/supervisor.d/vegadns2.ini
+RUN ln -s /opt/vegadns/docker/templates/supervisor-nginx.conf /etc/supervisor.d/nginx.ini
+RUN ln -s /opt/vegadns/docker/templates/supervisor-stdout.conf /etc/supervisor.d/stdout.ini
+
+ENTRYPOINT ["/opt/vegadns/docker/start.sh"]
+WORKDIR /opt/vegadns
+
+# CMD /usr/bin/supervisord -n -c /etc/supervisord.conf
+CMD ["/usr/bin/supervisord", "-n", "-c", "/etc/supervisord.conf"]
+
+EXPOSE ${API_PORT}

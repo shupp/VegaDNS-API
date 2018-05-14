@@ -1,0 +1,27 @@
+version: "3.2"
+
+services:
+  # Update port for API_URL
+  tinydns:
+    environment:
+      API_URL: http://api:80
+  api:
+    restart: always
+    networks:
+      - vegadns_net
+    image: vegadns/apiui
+    ports:
+      - target: "80"
+        protocol: "tcp"
+    environment:
+      DB_HOST: mysql
+      DB_USER: vegadns
+      SECRET_DB_PASS: secret
+      TRUSTED_IPS: 0.0.0.0/0
+      API_PORT: 80
+      ENABLE_REDIS_NOTIFICATIONS: "true"
+      REDIS_HOST: redis
+      API_URL: ${API_URL}
+    depends_on:
+      - mysql
+      - redis
