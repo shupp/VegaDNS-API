@@ -7,6 +7,7 @@ There are two supported API clients at this time:
 
 * [VegaDNS-UI](https://github.com/shupp/VegaDNS-UI) - a JavaScript only UI, similar to the old VegaDNS.
 * [VegaDNS-CLI](https://github.com/shupp/VegaDNS-CLI) - a command line interface that includes a reusable client library written in python.
+* [vegadns2client](https://github.com/opendns/vegadns2client) - a new, though currently incomplete, golang library.
 
 
 ## Installation
