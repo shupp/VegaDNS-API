@@ -14,3 +14,8 @@ services:
       - target: "3679"
         published: "3679"
         protocol: "udp"
+  mysql:
+    ports:
+      - target: "3306"
+        published: "3306"
+        protocol: "tcp"

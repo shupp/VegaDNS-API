@@ -103,6 +103,8 @@ logs-apiui:
 			-f docker-compose/base.yml \
 			-f docker-compose/apiui.yml \
 			logs $(LOGS_ARGS)
+dev-db:
+	mysql -u vegadns -psecret -h 127.0.0.1 vegadns
 
 
 # Tests, cleaning targets

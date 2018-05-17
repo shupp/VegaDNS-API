@@ -34,7 +34,7 @@ services:
     image: mysql:5.7
     ports:
       - target: "3306"
-        protocol: "udp"
+        protocol: "tcp"
     environment:
        MYSQL_ROOT_PASSWORD: vegadns
        MYSQL_DATABASE: vegadns

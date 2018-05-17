@@ -23,6 +23,10 @@ If you want to watch logs, say for just api and tinydns, you can do:
 
     LOGS_ARGS="-f api tinydns" make logs
 
+If you'd like to easily log into the example mysql service, do:
+
+    make dev-db
+
 To shut down, just run
 
     make down
