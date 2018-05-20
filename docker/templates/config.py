@@ -75,7 +75,11 @@ def main():
             "enable_redis_notifications": os.getenv("ENABLE_REDIS_NOTIFICATIONS", default="false"),
             "redis_host": os.getenv("REDIS_HOST", default="127.0.0.1"),
             "redis_port": os.getenv("REDIS_PORT", default="6379"),
-            "redis_channel": os.getenv("REDIS_CHANNEL", default="VEGADNS-CHANGES")
+            "redis_channel": os.getenv("REDIS_CHANNEL", default="VEGADNS-CHANGES"),
+            "enable_consul_notifications": os.getenv("ENABLE_CONSUL_NOTIFICATIONS", default="false"),
+            "consul_host": os.getenv("CONSUL_HOST", default="127.0.0.1"),
+            "consul_port": os.getenv("CONSUL_PORT", default="8500"),
+            "consul_key": os.getenv("CONSUL_KEY", default="VEGADNS-CHANGES")
         }
     except Exception as err:
         print >> sys.stderr, "Problem reading environment", err

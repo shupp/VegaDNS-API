@@ -1,6 +1,8 @@
 import logging
 
 import redis
+import consul
+import uuid
 
 from vegadns.api.config import config
 
@@ -23,5 +25,21 @@ class Notifier(object):
             try:
                 r = redis.Redis(host=redis_host, port=redis_port)
                 r.publish(redis_channel, "UPDATE")
+            except Exception as e:
+                logger.critical(e)
+
+        consul_enabled = config.get(
+            'update_notifications',
+            'enable_consul_notifications'
+        )
+
+        if consul_enabled in ["True", "true"]:
+            consul_host = config.get('update_notifications', 'consul_host')
+            consul_port = config.get('update_notifications', 'consul_port')
+            consul_key = config.get('update_notifications', 'consul_key')
+
+            try:
+                c = consul.Consul(host=consul_host, port=consul_port)
+                c.kv.put(consul_key, str(uuid.uuid4()))
             except Exception as e:
                 logger.critical(e)

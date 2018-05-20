@@ -16,6 +16,7 @@ pytz==2015.2
 six==1.9.0
 Werkzeug==0.10.4
 redis==2.10.5
+python-consul==1.0.1
 
 # Test dependencies
 coverage==4.5.1

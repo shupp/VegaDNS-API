@@ -36,3 +36,7 @@ enable_redis_notifications = {{enable_redis_notifications}}
 redis_host = {{redis_host}}
 redis_port = {{redis_port}}
 redis_channel = {{redis_channel}}
+enable_consul_notifications = {{enable_consul_notifications}}
+consul_host = {{consul_host}}
+consul_port = {{consul_port}}
+consul_key = {{consul_key}}
