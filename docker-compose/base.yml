@@ -14,19 +14,21 @@ services:
         protocol: "udp"
     depends_on:
       - api
-      - redis
+      - consul
       - mysql
     environment:
       API_URL: http://api:5000
-      REDIS_HOST: redis
-  redis:
+      CONSUL_HOST: ${CONSUL_HOST}
+      CONSUL_KEY: ${CONSUL_KEY}
+      CONSUL_LOCK_KEY: ${CONSUL_LOCK_KEY}
+  consul:
     restart: always
     networks:
       - vegadns_net
-    image: redis:latest
+    image: consul:latest
     ports:
-      - target: "3679"
-        protocol: "udp"
+      - target: "8500"
+        protocol: "tcp"
   mysql:
     restart: always
     networks:

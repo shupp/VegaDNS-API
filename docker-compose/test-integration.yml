@@ -8,5 +8,4 @@ services:
     image: vegadns/cli
     environment:
       HOST: ${HOST}
-      REDIS_HOST: redis
       NAMESERVER: tinydns

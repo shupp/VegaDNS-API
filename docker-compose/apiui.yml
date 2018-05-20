@@ -19,9 +19,12 @@ services:
       SECRET_DB_PASS: secret
       TRUSTED_IPS: 0.0.0.0/0
       API_PORT: 80
-      ENABLE_REDIS_NOTIFICATIONS: "true"
-      REDIS_HOST: redis
+      ENABLE_CONSUL_NOTIFICATIONS: "true"
+      CONSUL_HOST: ${CONSUL_HOST}
+      CONSUL_PORT: ${CONSUL_PORT}
+      CONSUL_KEY: ${CONSUL_KEY}
+      CONSUL_LOCK_KEY: ${CONSUL_LOCK_KEY}
       API_URL: ${API_URL}
     depends_on:
       - mysql
-      - redis
+      - consul

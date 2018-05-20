@@ -9,11 +9,11 @@ services:
       - target: "53"
         published: "53"
         protocol: "udp"
-  redis:
+  consul:
     ports:
-      - target: "3679"
-        published: "3679"
-        protocol: "udp"
+      - target: "8500"
+        published: "8500"
+        protocol: "tcp"
   mysql:
     ports:
       - target: "3306"
