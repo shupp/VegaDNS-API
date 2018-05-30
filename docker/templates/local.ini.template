@@ -40,3 +40,6 @@ enable_consul_notifications = {{enable_consul_notifications}}
 consul_host = {{consul_host}}
 consul_port = {{consul_port}}
 consul_key = {{consul_key}}
+consul_scheme = {{consul_scheme}}
+consul_verify_ssl = {{consul_verify_ssl}}
+consul_token = {{consul_token}}

@@ -79,6 +79,9 @@ def main():
             "enable_consul_notifications": os.getenv("ENABLE_CONSUL_NOTIFICATIONS", default="false"),
             "consul_host": os.getenv("CONSUL_HOST", default="127.0.0.1"),
             "consul_port": os.getenv("CONSUL_PORT", default="8500"),
+            "consul_scheme": os.getenv("CONSUL_SCHEME", default="http"),
+            "consul_verify_ssl": os.getenv("CONSUL_VERIFY_SSL", default=True),
+            "consul_token": os.getenv("CONSUL_TOKEN", default=None),
             "consul_key": os.getenv("CONSUL_KEY", default="VEGADNS-CHANGES")
         }
     except Exception as err:

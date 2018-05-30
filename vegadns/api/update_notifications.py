@@ -36,10 +36,34 @@ class Notifier(object):
         if consul_enabled in ["True", "true"]:
             consul_host = config.get('update_notifications', 'consul_host')
             consul_port = config.get('update_notifications', 'consul_port')
+            consul_scheme = config.get('update_notifications', 'consul_scheme')
             consul_key = config.get('update_notifications', 'consul_key')
+            consul_token = config.get('update_notifications', 'consul_token')
+            consul_verify_ssl = config.get(
+                'update_notifications', 'consul_verify_ssl'
+            )
+
+            # Make sure consul_verify_ssl is type bool
+            if (consul_verify_ssl is True or
+                    consul_verify_ssl in ["True", "true"]):
+                consul_verify_ssl = True
+            else:
+                consul_verify_ssl = False
+
+            # Make sure consul_token string or None
+            if (consul_token is None or
+                    len(consul_token) == 0 or
+                    consul_token in ["none", "None"]):
+                consul_token = None
 
             try:
-                c = consul.Consul(host=consul_host, port=consul_port)
+                c = consul.Consul(
+                    host=consul_host,
+                    port=consul_port,
+                    scheme=consul_scheme,
+                    token=consul_token,
+                    verify=consul_verify_ssl
+                )
                 c.kv.put(consul_key, str(uuid.uuid4()))
             except Exception as e:
                 logger.critical(e)
