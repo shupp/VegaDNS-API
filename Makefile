@@ -65,10 +65,17 @@ logs:
 			-f docker-compose/split.yml \
 			logs $(LOGS_ARGS)
 
+ssh-%:
+	COMPOSE_PROJECT_NAME=$(COMPOSE_PROJECT_NAME) \
+		 docker-compose -f docker-compose/network.yml \
+			-f docker-compose/base.yml \
+			-f docker-compose/split.yml \
+			exec $* sh
+
 
 # vegadns/apiui image targets
 up-apiui:
-	COMPOSE_PROJECT_NAME=$(COMPOSE_PROJECT_NAME) \
+	API_URL=http://localhost COMPOSE_PROJECT_NAME=$(COMPOSE_PROJECT_NAME) \
 		 docker-compose -f docker-compose/network.yml \
 			-f docker-compose/base.yml \
 			-f docker-compose/base-ports.yml \
