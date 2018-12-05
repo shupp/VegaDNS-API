@@ -4,7 +4,7 @@ ENV API_PORT 80
 
 ADD . /opt/vegadns
 
-RUN apk --update add python py-setuptools nginx supervisor uwsgi-python nodejs bash
+RUN apk --update add python py-setuptools nginx supervisor uwsgi-python nodejs nodejs-current-npm bash
 # Removing these packages in the RUN keeps the image small (~70MB)
 RUN apk --update add --virtual build-dependencies py-pip python-dev git libffi-dev build-base \
   && pip install -r /opt/vegadns/requirements.txt \
