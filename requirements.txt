@@ -1,7 +1,7 @@
 aniso8601==0.92
-bcrypt==2.0.0
+bcrypt==3.1.4
 certifi==2018.11.29
-cffi==1.5.2
+cffi==1.11.5
 chardet==3.0.4
 Click==7.0
 coverage==4.5.1
@@ -22,14 +22,14 @@ pbr==5.1.1
 peewee==2.5.1
 pep8==1.6.2
 py==1.7.0
-pycparser==2.14
+pycparser==2.19
 PyMySQL==0.6.6
 pystache==0.5.4
 python-consul==1.0.1
 pytz==2015.2
 redis==2.10.5
 requests==2.20.1
-six==1.9.0
+six==1.11.0
 tox==1.9.2
 urllib3==1.24.1
 virtualenv==16.1.0
