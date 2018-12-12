@@ -13,7 +13,15 @@ There are two supported API clients at this time:
 ## Installation
 
 ### Setup using docker compose
-The following steps assumes your docker host is "localhost"
+__The following steps assumes your docker host is "localhost".  If it is not, you can indicate your docker host via the API_URL environment variable.  i.e.:__
+
+    # for standard split services via "make up":
+    export API_URL=http://192.168.1.1:5000
+
+    # Or if you are using "make up-apiui"
+    export API_URL=http://192.168.1.1:80
+
+Start by pulling down the docker images:
 
     make pull up
 
