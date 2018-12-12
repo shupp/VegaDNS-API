@@ -61,13 +61,15 @@ Lastly, you need to create your database contents.  You can apply the following 
     mysql -u vegadns -p -h localhost vegadns < sql/create_tables.sql
     mysql -u vegadns -p -h localhost vegadns < sql/data.sql
 
-If you are testing a copy of a legacy VegaDNS database, you can just run this instead:
+If you are testing a copy of a legacy VegaDNS 0.11.3 or newer database, you can just run this instead:
 
     mysql -u vegadns -p -h localhost vegadns < sql/new_tables_only.sql
     mysql -u vegadns -p -h localhost vegadns < sql/alter-01.sql
     mysql -u vegadns -p -h localhost vegadns < sql/alter-02.sql
     mysql -u vegadns -p -h localhost vegadns < sql/alter-03.sql
     mysql -u vegadns -p -h localhost vegadns < sql/data_api_keys_only.sql
+
+(If you are running VegaDNS < 0.11.3, see [UPGRADE](https://github.com/shupp/VegaDNS/blob/master/UPGRADE) for details on upgrading beforehand)
 
 Now that the environment is setup, you can start the built-in flask web server to test below:
 
