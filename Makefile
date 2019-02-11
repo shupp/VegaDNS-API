@@ -1,14 +1,6 @@
-ifeq ("$(UP_ARGS)","")
-        UP_ARGS="-d"
-endif
-
-ifeq ("$(COMPOSE_PROJECT_NAME_SUFFIX)","")
-        # Local use case
-        COMPOSE_PROJECT_NAME=vegadns-api
-else
-        # CI/CD use case
-        COMPOSE_PROJECT_NAME=vegadnsapiintegration$(COMPOSE_PROJECT_NAME_SUFFIX)
-endif
+export UP_ARGS?="-d"
+export COMPOSE_PROJECT_NAME_SUFFIX?=""
+export COMPOSE_PROJECT_NAME=vegadns-api$(COMPOSE_PROJECT_NAME_SUFFIX)
 
 # You'll need to source venv/bin/activate before running this file
 .PHONY: coverage
@@ -29,53 +21,47 @@ pull:
 
 # vegadns/api and vegadns/ui (split) image targets
 up:
-	COMPOSE_PROJECT_NAME=$(COMPOSE_PROJECT_NAME) \
-		 docker-compose -f docker-compose/network.yml \
-			-f docker-compose/base.yml \
-			-f docker-compose/base-ports.yml \
-			-f docker-compose/split.yml \
-			-f docker-compose/split-ports.yml \
-			up $(UP_ARGS)
+	 docker-compose -f docker-compose/network.yml \
+		-f docker-compose/base.yml \
+		-f docker-compose/base-ports.yml \
+		-f docker-compose/split.yml \
+		-f docker-compose/split-ports.yml \
+		up $(UP_ARGS)
 down:
-	COMPOSE_PROJECT_NAME=$(COMPOSE_PROJECT_NAME) \
-		 docker-compose -f docker-compose/network.yml \
-			-f docker-compose/base.yml \
-			-f docker-compose/base-ports.yml \
-			-f docker-compose/split.yml \
-			-f docker-compose/split-ports.yml \
-			down
+	docker-compose -f docker-compose/network.yml \
+		-f docker-compose/base.yml \
+		-f docker-compose/base-ports.yml \
+		-f docker-compose/split.yml \
+		-f docker-compose/split-ports.yml \
+		down
 up-no-ports:
-	COMPOSE_PROJECT_NAME=$(COMPOSE_PROJECT_NAME) \
-		 docker-compose -f docker-compose/network.yml \
-			-f docker-compose/base.yml \
-			-f docker-compose/split.yml \
-			up $(UP_ARGS)
+	docker-compose -f docker-compose/network.yml \
+		-f docker-compose/base.yml \
+		-f docker-compose/split.yml \
+		up $(UP_ARGS)
 down-no-ports:
-	COMPOSE_PROJECT_NAME=$(COMPOSE_PROJECT_NAME) \
-		 docker-compose -f docker-compose/network.yml \
-			-f docker-compose/base.yml \
-			-f docker-compose/split.yml \
-			down
+	docker-compose -f docker-compose/network.yml \
+		-f docker-compose/base.yml \
+		-f docker-compose/split.yml \
+		down
 logs:
 	# To follow logs: LOGS_ARGS="-f" make logs
 	# To follow logs for a service: LOGS_ARGS="-f <service>" make logs
-	COMPOSE_PROJECT_NAME=$(COMPOSE_PROJECT_NAME) \
-		 docker-compose -f docker-compose/network.yml \
-			-f docker-compose/base.yml \
-			-f docker-compose/split.yml \
-			logs $(LOGS_ARGS)
+	docker-compose -f docker-compose/network.yml \
+		-f docker-compose/base.yml \
+		-f docker-compose/split.yml \
+		logs $(LOGS_ARGS)
 
 ssh-%:
-	COMPOSE_PROJECT_NAME=$(COMPOSE_PROJECT_NAME) \
-		 docker-compose -f docker-compose/network.yml \
-			-f docker-compose/base.yml \
-			-f docker-compose/split.yml \
-			exec $* sh
+	docker-compose -f docker-compose/network.yml \
+		-f docker-compose/base.yml \
+		-f docker-compose/split.yml \
+		exec $* sh
 
 
 # vegadns/apiui image targets
 up-apiui:
-	API_URL=http://localhost COMPOSE_PROJECT_NAME=$(COMPOSE_PROJECT_NAME) \
+	API_URL=http://localhost \
 		 docker-compose -f docker-compose/network.yml \
 			-f docker-compose/base.yml \
 			-f docker-compose/base-ports.yml \
@@ -83,33 +69,29 @@ up-apiui:
 			-f docker-compose/apiui-ports.yml \
 			up $(UP_ARGS)
 down-apiui:
-	COMPOSE_PROJECT_NAME=$(COMPOSE_PROJECT_NAME) \
-		 docker-compose -f docker-compose/network.yml \
-			-f docker-compose/base.yml \
-			-f docker-compose/base-ports.yml \
-			-f docker-compose/apiui.yml \
-			-f docker-compose/apiui-ports.yml \
-			down
+	docker-compose -f docker-compose/network.yml \
+		-f docker-compose/base.yml \
+		-f docker-compose/base-ports.yml \
+		-f docker-compose/apiui.yml \
+		-f docker-compose/apiui-ports.yml \
+		down
 up-apiui-no-ports:
-	COMPOSE_PROJECT_NAME=$(COMPOSE_PROJECT_NAME) \
-		 docker-compose -f docker-compose/network.yml \
-			-f docker-compose/base.yml \
-			-f docker-compose/apiui.yml \
-			up $(UP_ARGS)
+	docker-compose -f docker-compose/network.yml \
+		-f docker-compose/base.yml \
+		-f docker-compose/apiui.yml \
+		up $(UP_ARGS)
 down-apiui-no-ports:
-	COMPOSE_PROJECT_NAME=$(COMPOSE_PROJECT_NAME) \
-		 docker-compose -f docker-compose/network.yml \
-			-f docker-compose/base.yml \
-			-f docker-compose/apiui.yml \
-			down
+	docker-compose -f docker-compose/network.yml \
+		-f docker-compose/base.yml \
+		-f docker-compose/apiui.yml \
+		down
 logs-apiui:
 	# To follow logs: LOGS_ARGS="-f" make logs
 	# To follow logs for a service: LOGS_ARGS="-f <service>" make logs-apiui
-	COMPOSE_PROJECT_NAME=$(COMPOSE_PROJECT_NAME) \
-		 docker-compose -f docker-compose/network.yml \
-			-f docker-compose/base.yml \
-			-f docker-compose/apiui.yml \
-			logs $(LOGS_ARGS)
+	docker-compose -f docker-compose/network.yml \
+		-f docker-compose/base.yml \
+		-f docker-compose/apiui.yml \
+		logs $(LOGS_ARGS)
 dev-db:
 	mysql -u vegadns -psecret -h 127.0.0.1 vegadns
 
@@ -124,9 +106,9 @@ check: venv
 	source venv/bin/activate && \
 		pep8 vegadns tests run.py
 test-integration:
-	COMPOSE_PROJECT_NAME=$(COMPOSE_PROJECT_NAME) ./run_integration_tests.sh
+	./run_integration_tests.sh
 test-integration-apiui:
-	COMPOSE_PROJECT_NAME=$(COMPOSE_PROJECT_NAME) API_URL=http://localhost HOST=http://api:80 ./run_integration_tests.sh
+	API_URL=http://localhost HOST=http://api:80 ./run_integration_tests.sh
 test-docker:
 	docker-compose -f docker-compose/test.yml run --rm api_unittest
 test: venv check
