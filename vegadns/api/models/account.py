@@ -158,7 +158,9 @@ class Account(BaseModel):
         )
 
     def get_domain_permission(self, domain_id, permission):
-        if domain_id not in self.domains:
+        # FIXME - type juggling should happen at endpoints
+        domain_id = int(domain_id)
+        if domain_id not in self.domains.keys():
             return False
         if self.domains[domain_id]["domain"].owner_id == self.account_id:
             return True
