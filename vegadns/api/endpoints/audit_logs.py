@@ -36,7 +36,11 @@ class AuditLogs(AbstractEndpoint):
                 for d in requested_domain_ids:
                     if not str.isdigit(str(d)):
                         abort(400, message="invalid domain_ids value")
-                    if self.auth.account.can_read_domain(d):
+                    if self.auth.account.can_read_domain(d) or \
+                        self.auth.account.in_global_acl_emails(
+                            self.auth.account.email
+                            ):
+
                         domain_id_list.append(d)
             else:
                 for d in requested_domain_ids:
@@ -50,7 +54,12 @@ class AuditLogs(AbstractEndpoint):
                     domain_id_list.append(d)
 
         # get audit logs
-        if self.auth.account.account_type == "senior_admin":
+        total_logs = 0
+        if self.auth.account.account_type == "senior_admin" or \
+            self.auth.account.in_global_acl_emails(
+                self.auth.account.email
+                ):
+
             if len(domain_id_list) == 0:
                 logs = ModelAuditLog.select().where(
                     ModelAuditLog.entry ** ('%' + search + '%')
@@ -60,15 +69,22 @@ class AuditLogs(AbstractEndpoint):
                     ModelAuditLog.domain_id << domain_id_list,
                     ModelAuditLog.entry ** ('%' + search + '%')
                 )
-        else:
-            logs = ModelAuditLog.select().where(
-                ModelAuditLog.domain_id << domain_id_list,
-                ModelAuditLog.entry ** ('%' + search + '%')
-            )
 
-        total_logs = logs.count()
-        logs = self.paginate_query(logs, request.args)
-        logs = self.sort_query(logs, request.args)
+            total_logs = logs.count()
+            logs = self.paginate_query(logs, request.args)
+            logs = self.sort_query(logs, request.args)
+        else:
+            if len(domain_id_list) > 0:
+                logs = ModelAuditLog.select().where(
+                    ModelAuditLog.domain_id << domain_id_list,
+                    ModelAuditLog.entry ** ('%' + search + '%')
+                )
+
+                total_logs = logs.count()
+                logs = self.paginate_query(logs, request.args)
+                logs = self.sort_query(logs, request.args)
+            else:
+                logs = []
 
         audit_logs = []
         for l in logs:
