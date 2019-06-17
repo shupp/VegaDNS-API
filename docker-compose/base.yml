@@ -6,7 +6,6 @@ services:
     image: vegadns/tinydns
     networks:
       - vegadns_net
-    build: https://github.com/shupp/VegaDNS-UpdateClient.git
     ports:
       - target: "53"
         protocol: "tcp"

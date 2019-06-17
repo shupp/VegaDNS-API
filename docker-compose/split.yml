@@ -28,7 +28,6 @@ services:
     restart: always
     networks:
       - vegadns_net
-    build: https://github.com/shupp/VegaDNS-UI.git
     image: vegadns/ui
     ports:
       - target: "80"
