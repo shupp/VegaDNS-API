@@ -1,3 +1,4 @@
+from builtins import object
 from vegadns.api.config import config
 
 

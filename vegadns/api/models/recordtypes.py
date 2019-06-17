@@ -1,3 +1,5 @@
+from builtins import str
+from builtins import object
 import re
 
 from vegadns.api.models import ensure_validation
@@ -29,7 +31,7 @@ class AbstractRecordType(object):
 
     def set_defaults(self, defaults):
         if defaults is not None:
-            for key in self.defaults.keys():
+            for key in list(self.defaults.keys()):
                 if key in defaults:
                     self.defaults[key] = defaults[key]
 
@@ -394,7 +396,7 @@ class SRVRecord(CommonRecord):
             "port": self.values.get("port")
         }
 
-        for k, v in mydict.items():
+        for k, v in list(mydict.items()):
             if not self.check_number_range(v):
                 raise RecordValueException(
                     "SRV " + k + " must be a numeric value between 0 and 65535"
@@ -487,7 +489,7 @@ class RecordType(object):
     }
 
     def get(self, type):
-        if type in self.record_types.keys():
+        if type in list(self.record_types.keys()):
             return self.record_types[type]['name']
         else:
             raise RecordTypeException('Invalid record type')
@@ -496,7 +498,7 @@ class RecordType(object):
         if not type:
             raise RecordTypeException('Invalid record type')
 
-        for k, v in self.record_types.items():
+        for k, v in list(self.record_types.items()):
             if v['name'] == type.upper():
                 return k
 
@@ -504,7 +506,7 @@ class RecordType(object):
 
     def get_class(self, type):
         upper = type.upper()
-        if upper not in self.record_types.keys():
+        if upper not in list(self.record_types.keys()):
             raise RecordTypeException('Invalid record type')
 
         return self.record_types[upper]['record_class']

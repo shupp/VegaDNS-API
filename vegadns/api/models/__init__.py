@@ -1,3 +1,4 @@
+from builtins import object
 import logging
 from peewee import Model
 from lib.shortcuts import model_to_dict
@@ -39,5 +40,5 @@ class BaseModel(Model):
     def validate(self):
         raise Exception('No validation defined')
 
-    class Meta:
+    class Meta(object):
         database = database

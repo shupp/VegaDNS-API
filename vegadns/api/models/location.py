@@ -1,3 +1,4 @@
+from builtins import object
 from peewee import CharField, PrimaryKeyField
 
 from vegadns.api.models import database, BaseModel
@@ -9,7 +10,7 @@ class Location(BaseModel):
     location = CharField(unique=True)
     location_description = CharField()
 
-    class Meta:
+    class Meta(object):
         db_table = 'locations'
 
     def validate(self):

@@ -27,9 +27,9 @@ class ApiKey(AbstractEndpoint):
 
         data = request.form
 
-        if 'description' in data.keys():
+        if 'description' in list(data.keys()):
             apikey.description = data['description']
-        if 'deleted' in data.keys():
+        if 'deleted' in list(data.keys()):
             apikey.deleted = int(data['deleted'])
 
         apikey.save()

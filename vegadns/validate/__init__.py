@@ -1,3 +1,4 @@
+from builtins import object
 from vegadns.validate.ip import ValidateIPAddress
 from vegadns.validate.ip_prefix import ValidateIPPrefix
 from vegadns.validate.dns import ValidateDNS

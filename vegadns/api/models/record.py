@@ -1,3 +1,4 @@
+from builtins import object
 import re
 
 from peewee import IntegerField, CharField, PrimaryKeyField
@@ -25,7 +26,7 @@ class Record(BaseModel):
         instance.from_model(self)
         return instance
 
-    class Meta:
+    class Meta(object):
         db_table = 'records'
 
     def validate(self):

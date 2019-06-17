@@ -1,3 +1,5 @@
+from builtins import str
+from builtins import object
 import re
 
 from peewee import *
@@ -101,7 +103,7 @@ class ManyToManyField(Field):
             lhs, rhs = self.get_models()
             tables = [model._meta.db_table for model in (lhs, rhs)]
 
-            class Meta:
+            class Meta(object):
                 database = self.model_class._meta.database
                 db_table = '%s_%s_through' % tuple(tables)
                 indexes = (
@@ -254,7 +256,7 @@ def model_to_dict(model, recurse=True, backrefs=False, only=None,
         data[field.name] = field_data
 
     if backrefs:
-        for related_name, foreign_key in model._meta.reverse_rel.items():
+        for related_name, foreign_key in list(model._meta.reverse_rel.items()):
             descriptor = getattr(model_class, related_name)
             if descriptor in exclude or foreign_key in exclude:
                 continue
@@ -284,7 +286,7 @@ def model_to_dict(model, recurse=True, backrefs=False, only=None,
 def dict_to_model(model_class, data, ignore_unknown=False):
     instance = model_class()
     meta = model_class._meta
-    for key, value in data.items():
+    for key, value in list(data.items()):
         if key in meta.fields:
             field = meta.fields[key]
             is_backref = False

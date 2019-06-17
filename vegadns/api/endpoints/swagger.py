@@ -1,7 +1,9 @@
+from future import standard_library
+standard_library.install_aliases()
 import os
 import sys
 import json
-import urlparse
+import urllib.parse
 
 from flask import Flask, request
 
@@ -26,7 +28,7 @@ class Swagger(AbstractEndpoint):
 
         if baseUrl is not None:
             baseUrl = baseUrl.rstrip("/")
-            parsed = urlparse.urlparse(baseUrl)
+            parsed = urllib.parse.urlparse(baseUrl)
             body['host'] = parsed.netloc
             body['schemes'] = [parsed.scheme]
             body['securityDefinitions']['BearerToken']['tokenUrl'] = (

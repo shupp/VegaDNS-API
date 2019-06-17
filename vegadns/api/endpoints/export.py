@@ -1,3 +1,4 @@
+from builtins import str
 import hashlib
 
 from flask import Flask, abort, redirect, url_for, make_response

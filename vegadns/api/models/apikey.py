@@ -1,3 +1,5 @@
+from builtins import str
+from builtins import object
 from peewee import PrimaryKeyField, IntegerField, CharField
 
 import hmac
@@ -36,5 +38,5 @@ class ApiKey(BaseModel):
         if self.deleted != 0 and self.deleted != 1:
             raise Exception('deleted must be 1 or 0')
 
-    class Meta:
+    class Meta(object):
         db_table = 'api_keys'

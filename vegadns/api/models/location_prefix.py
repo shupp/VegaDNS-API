@@ -1,3 +1,4 @@
+from builtins import object
 from peewee import CharField, PrimaryKeyField, IntegerField
 
 from vegadns.api.models import database, BaseModel
@@ -11,7 +12,7 @@ class LocationPrefix(BaseModel):
     prefix_type = CharField(default='ipv4')
     prefix_description = CharField()
 
-    class Meta:
+    class Meta(object):
         db_table = 'location_prefixes'
 
     def validate(self):

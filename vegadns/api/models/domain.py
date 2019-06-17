@@ -1,3 +1,4 @@
+from builtins import object
 from peewee import CharField, IntegerField, PrimaryKeyField, DoesNotExist
 
 from vegadns.api.models import database, BaseModel
@@ -17,7 +18,7 @@ class Domain(BaseModel):
     owner_id = IntegerField(db_column='owner_id', null=True, default=0)
     status = CharField(default="active")
 
-    class Meta:
+    class Meta(object):
         db_table = 'domains'
 
     # For removing unused group_owner field via self.to_clean_dict()

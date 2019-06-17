@@ -1,3 +1,7 @@
+from builtins import oct
+from builtins import str
+from builtins import range
+from builtins import object
 import struct
 
 from vegadns.ip import IPv6

@@ -1,3 +1,4 @@
+from builtins import object
 from peewee import CharField, IntegerField, PrimaryKeyField
 
 from vegadns.api.models import database, BaseModel
@@ -23,7 +24,7 @@ class DefaultRecord(BaseModel):
         instance.from_model(self)
         return instance
 
-    class Meta:
+    class Meta(object):
         db_table = 'default_records'
 
     def validate(self):

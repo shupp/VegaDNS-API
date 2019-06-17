@@ -1,3 +1,4 @@
+from builtins import str
 from flask.ext.restful import request, abort
 
 import peewee

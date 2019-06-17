@@ -1,3 +1,4 @@
+from builtins import str
 import time
 import json
 
@@ -90,7 +91,7 @@ class AbstractEndpoint(Resource):
         if not hasattr(self, 'sort_fields'):
             return query
 
-        sort_fields = self.sort_fields.keys()
+        sort_fields = list(self.sort_fields.keys())
         sort = params.get('sort', None)
         if sort is not None and sort in sort_fields:
             sort_field = self.sort_fields[sort]

@@ -1,3 +1,5 @@
+from builtins import str
+from builtins import object
 import hmac
 import hashlib
 import time
@@ -28,7 +30,7 @@ class PasswordResetToken(BaseModel):
         if not self.account_id:
             raise Exception("account_id is not set")
 
-    class Meta:
+    class Meta(object):
         db_table = 'password_reset_tokens'
 
     def generateToken(self):

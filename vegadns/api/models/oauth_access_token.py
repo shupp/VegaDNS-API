@@ -1,3 +1,4 @@
+from builtins import object
 from peewee import PrimaryKeyField, IntegerField, CharField
 
 from vegadns.api.models import database, BaseModel
@@ -21,5 +22,5 @@ class OauthAccessToken(BaseModel):
         if not v.uuid(self.access_token):
             raise Exception('Invalid access_token')
 
-    class Meta:
+    class Meta(object):
         db_table = 'oauth_access_tokens'

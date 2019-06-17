@@ -1,3 +1,5 @@
+from builtins import str
+from builtins import object
 import hashlib
 import bcrypt
 import re
@@ -26,7 +28,7 @@ class Account(BaseModel):
     # For removing password and gid fields via self.to_clean_dict()
     clean_keys = ["gid", "password"]
 
-    class Meta:
+    class Meta(object):
         db_table = 'accounts'
 
     def __init__(self, *args, **kwargs):
@@ -160,7 +162,7 @@ class Account(BaseModel):
     def get_domain_permission(self, domain_id, permission):
         # FIXME - type juggling should happen at endpoints
         domain_id = int(domain_id)
-        if domain_id not in self.domains.keys():
+        if domain_id not in list(self.domains.keys()):
             return False
         if self.domains[domain_id]["domain"].owner_id == self.account_id:
             return True

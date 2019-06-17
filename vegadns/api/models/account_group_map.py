@@ -1,3 +1,4 @@
+from builtins import object
 from peewee import PrimaryKeyField, IntegerField
 
 from vegadns.api.models import BaseModel
@@ -22,7 +23,7 @@ class AccountGroupMap(BaseModel):
             'account': account.to_clean_dict()
         }
 
-    class Meta:
+    class Meta(object):
         db_table = 'account_group_map'
         indexes = (
             (('account_id', 'group_id'), True),

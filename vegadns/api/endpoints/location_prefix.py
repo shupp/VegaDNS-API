@@ -1,3 +1,4 @@
+from builtins import str
 from flask import Flask, request
 from flask.ext.restful import Resource, Api, abort
 

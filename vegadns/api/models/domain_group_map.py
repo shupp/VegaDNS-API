@@ -1,3 +1,4 @@
+from builtins import object
 from peewee import PrimaryKeyField, CharField, IntegerField
 
 from vegadns.api.models import database, BaseModel
@@ -9,7 +10,7 @@ class DomainGroupMap(BaseModel):
     domain_id = IntegerField()
     permissions = IntegerField(default=3)
 
-    class Meta:
+    class Meta(object):
         db_table = 'domain_group_map'
         indexes = (
             (('domain_id', 'group_id'), True),

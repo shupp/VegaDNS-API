@@ -1,3 +1,4 @@
+from builtins import object
 from peewee import CharField, IntegerField, PrimaryKeyField
 
 from vegadns.api.models import database, BaseModel
@@ -23,5 +24,5 @@ class AuditLog(BaseModel):
         if not self.account_id:
             raise Exception("account_id is not set")
 
-    class Meta:
+    class Meta(object):
         db_table = 'log'
