@@ -6,7 +6,7 @@ services:
     networks:
       - vegadns_net
     build: .
-    image: vegadns/api
+    image: vegadns/api:${API_TAG}
     ports:
       - target: "5000"
         protocol: "tcp"

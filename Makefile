@@ -1,6 +1,7 @@
 export UP_ARGS?="-d"
 export COMPOSE_PROJECT_NAME_SUFFIX?=""
 export COMPOSE_PROJECT_NAME=vegadns-api$(COMPOSE_PROJECT_NAME_SUFFIX)
+export API_TAG=python3
 
 # You'll need to source venv/bin/activate before running this file
 .PHONY: coverage
@@ -132,6 +133,6 @@ clean-venv:
 
 # Build targets
 build-api:
-	docker build --no-cache -t vegadns/api .
+	docker build --no-cache -t vegadns/api:$(API_TAG) .
 build-apiui:
 	docker build --no-cache -f docker/Dockerfile.apiui -t vegadns/apiui .
