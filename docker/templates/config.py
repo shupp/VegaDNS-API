@@ -2,6 +2,7 @@
 """
 config.py - configures vegadns2 from the environment variables
 """
+from __future__ import print_function
 import os
 import sys
 
@@ -15,7 +16,7 @@ def pem_is_valid(pem):
         return (len(lines) > 2
             and "-----BEGIN CERTIFICATE-----" in lines[0]
             and "-----END CERTIFICATE-----" in lines[-1])
-        print >> sys.stderr, "SECRET_DB_CA_CERT env variable contains invalid MySQL CA certficate PEM"
+        print("SECRET_DB_CA_CERT env variable contains invalid MySQL CA certficate PEM", file=sys.stderr)
     return False
 
 directory = os.path.dirname(os.path.realpath(__file__))
@@ -28,15 +29,15 @@ def main():
             with open(db_ssl_ca_file, 'w') as f:
                 f.write(db_ssl_ca_cert)
         except Exception as err:
-            print >> sys.stderr, "Problem writing MySQL CA certficate file", err
+            print("Problem writing MySQL CA certficate file", err, file=sys.stderr)
             sys.exit(1)
     else:
         # Reset db_ssl_ca_file if we're missing one or more environment variables for SSL
         # to avoid adding an empty 'ssl_ca' option to the local.ini config.
         if not db_ssl_ca_file:
-            print >> sys.stderr, "DB_CA_FILE env variable undefined, skipping MySQL SSL config."
+            print("DB_CA_FILE env variable undefined, skipping MySQL SSL config.", file=sys.stderr)
         if not db_ssl_ca_cert:
-            print >> sys.stderr, "SECRET_DB_CA_CERT env variable undefined, skipping MySQL SSL config."
+            print("SECRET_DB_CA_CERT env variable undefined, skipping MySQL SSL config.", file=sys.stderr)
             db_ssl_ca_file = None
 
     # Verify that we can parse the TRUSTED_IPS list
@@ -47,8 +48,8 @@ def main():
     try:
         trusted_ip_range = IPSet(trusted_list)
     except Exception as e:
-        print >> sys.stderr, trusted_list, e
-        print >> sys.stderr, "Problem parsing TRUSTED_IPS environment variable"
+        print(trusted_list, e, file=sys.stderr)
+        print("Problem parsing TRUSTED_IPS environment variable", file=sys.stderr)
         sys.exit(1)
 
     try:
@@ -85,7 +86,7 @@ def main():
             "consul_key": os.getenv("CONSUL_KEY", default="VEGADNS-CHANGES")
         }
     except Exception as err:
-        print >> sys.stderr, "Problem reading environment", err
+        print("Problem reading environment", err, file=sys.stderr)
         sys.exit(1)
 
     # optionally use first argument as template, path is still
@@ -96,9 +97,9 @@ def main():
 
     try:
         with open(directory + "/" + template_file) as template:
-            print pystache.render(template.read(), config)
+            print(pystache.render(template.read(), config))
     except Exception as err:
-        print >> sys.stderr, "Problem rendering template", err
+        print("Problem rendering template", err, file=sys.stderr)
         sys.exit(1)
 
 
