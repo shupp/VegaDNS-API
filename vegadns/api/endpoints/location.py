@@ -1,5 +1,5 @@
 from flask import Flask, request
-from flask.ext.restful import Resource, Api, abort
+from flask_restful import Resource, Api, abort
 
 import peewee
 

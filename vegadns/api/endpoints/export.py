@@ -2,7 +2,7 @@ from builtins import str
 import hashlib
 
 from flask import Flask, abort, redirect, url_for, make_response
-from flask.ext.restful import Resource, Api, abort
+from flask_restful import Resource, Api, abort
 
 from vegadns.api import endpoint
 from vegadns.api.config import config

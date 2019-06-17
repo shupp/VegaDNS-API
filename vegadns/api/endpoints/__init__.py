@@ -2,7 +2,7 @@ from builtins import str
 import time
 import json
 
-from flask.ext.restful import Resource, request, abort
+from flask_restful import Resource, request, abort
 
 from vegadns.api.common import Auth
 from vegadns.api.models.account import Account as ModelAccount

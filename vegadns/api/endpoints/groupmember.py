@@ -1,5 +1,5 @@
 from flask import Flask, request
-from flask.ext.restful import abort
+from flask_restful import abort
 import peewee
 
 from vegadns.api import endpoint

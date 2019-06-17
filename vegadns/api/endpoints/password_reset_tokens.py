@@ -2,7 +2,7 @@ import time
 
 import peewee
 from flask import Flask, redirect, url_for, make_response
-from flask.ext.restful import abort, request
+from flask_restful import abort, request
 
 from vegadns.api import endpoint
 import vegadns.api.email

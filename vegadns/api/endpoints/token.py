@@ -5,7 +5,7 @@ import uuid
 import peewee
 
 from flask import Flask, abort, request
-from flask.ext.restful import Resource, abort
+from flask_restful import Resource, abort
 
 from vegadns.api.config import config
 from vegadns.api import endpoint

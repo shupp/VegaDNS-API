@@ -2,7 +2,7 @@ import subprocess
 import logging
 
 from flask import Flask, abort, make_response
-from flask.ext.restful import Resource, Api, abort
+from flask_restful import Resource, Api, abort
 
 from vegadns.api import endpoint
 from vegadns.api.endpoints import AbstractEndpoint

@@ -6,8 +6,8 @@ import time
 
 from peewee import OperationalError
 from flask import Flask
-from flask.ext.restful import request, Resource, Api, abort
-from flask.ext.cors import CORS
+from flask_restful import request, Resource, Api, abort
+from flask_cors import CORS
 
 from vegadns.api.db import database
 

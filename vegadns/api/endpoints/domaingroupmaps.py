@@ -1,6 +1,6 @@
 from builtins import str
 from flask import Flask, request
-from flask.ext.restful import abort
+from flask_restful import abort
 import peewee
 from peewee import IntegrityError
 
