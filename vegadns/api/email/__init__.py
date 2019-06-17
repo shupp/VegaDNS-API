@@ -19,7 +19,7 @@ def send(to, subject, body, extra_headers=False):
 
     try:
         transport.send(to, subject, body, extra_headers)
-    except Exception, e:
+    except Exception as e:
         # don't block on email issues
         logger.exception(e)
 

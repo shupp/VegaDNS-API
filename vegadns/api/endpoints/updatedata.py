@@ -25,7 +25,7 @@ class UpdateData(AbstractEndpoint):
                 ["sudo", "/var/www/vegadns2/bin/update-data.sh"],
                 stderr=subprocess.STDOUT
             )
-        except Exception, e:
+        except Exception as e:
             logger.exception(e)
 
         response = make_response(output)
