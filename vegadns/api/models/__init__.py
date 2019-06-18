@@ -1,7 +1,7 @@
 from builtins import object
 import logging
 from peewee import Model
-from lib.shortcuts import model_to_dict
+from playhouse.shortcuts import model_to_dict
 
 from vegadns.api.db import database
 
