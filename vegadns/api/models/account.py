@@ -77,11 +77,11 @@ class Account(BaseModel):
             return self.check_password_bcrypt(clear_text)
 
     def check_password_md5(self, clear_text):
-        return self.get_password_hash() == hashlib.md5(clear_text).hexdigest()
+        return self.get_password_hash() == hashlib.md5(clear_text.encode('utf-8')).hexdigest()
 
     def check_password_bcrypt(self, clear_text):
         hashed = self.get_password_hash()
-        return hashed == bcrypt.hashpw(
+        return bcrypt.checkpw(
             clear_text.encode('utf-8'),
             hashed.encode('utf-8')
         )
@@ -89,7 +89,7 @@ class Account(BaseModel):
     def set_password(self, clear_text):
         # use bcrypt
         hashed = bcrypt.hashpw(clear_text.encode('utf-8'), bcrypt.gensalt())
-        self.password = "bcrypt||" + hashed
+        self.password = "bcrypt||".encode('utf-8') + hashed
 
     # helper methods for domain permissions
     def load_domains(self):
@@ -176,7 +176,7 @@ class Account(BaseModel):
         cookie_secret = config.get("auth", "cookie_secret")
         account_id = str(account.account_id)
         string = (account_id + account.password + cookie_secret + agent)
-        hash = hashlib.md5(string).hexdigest()
+        hash = hashlib.md5(string.encode('utf-8')).hexdigest()
 
         return account_id + "-" + hash
 
