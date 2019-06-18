@@ -15,7 +15,6 @@ from vegadns.api.models.account import Account
 from vegadns.api.models.oauth_access_token import OauthAccessToken
 
 from peewee import MySQLDatabase, Model
-from lib.shortcuts import model_to_dict
 
 
 @endpoint
