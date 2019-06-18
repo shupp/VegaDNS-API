@@ -6,3 +6,4 @@ coverage
 vegadns-cli
 vegadns-ui
 .idea
+*.swp
