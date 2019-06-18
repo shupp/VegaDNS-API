@@ -175,7 +175,7 @@ class Account(BaseModel):
     def generate_cookie_value(self, account, agent):
         cookie_secret = config.get("auth", "cookie_secret")
         account_id = str(account.account_id)
-        string = (account_id + account.password + cookie_secret + agent)
+        string = (account_id + str(account.password) + cookie_secret + agent)
         hash = hashlib.md5(string.encode('utf-8')).hexdigest()
 
         return account_id + "-" + hash
