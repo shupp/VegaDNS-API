@@ -1,16 +1,16 @@
 from builtins import object
-from peewee import CharField, IntegerField, PrimaryKeyField
+from peewee import CharField, IntegerField, AutoField
 
 from vegadns.api.models import database, BaseModel
 from vegadns.validate import Validate
 
 
 class AuditLog(BaseModel):
-    log_id = PrimaryKeyField()
-    email = CharField(db_column='Email')
-    name = CharField(db_column='Name')
-    account_id = IntegerField(db_column='cid')
-    domain_id = IntegerField(db_column='domain_id')
+    log_id = AutoField()
+    email = CharField(column_name='Email')
+    name = CharField(column_name='Name')
+    account_id = IntegerField(column_name='cid')
+    domain_id = IntegerField(column_name='domain_id')
     entry = CharField()
     time = IntegerField()
 
@@ -25,4 +25,4 @@ class AuditLog(BaseModel):
             raise Exception("account_id is not set")
 
     class Meta(object):
-        db_table = 'log'
+        table_name = 'log'

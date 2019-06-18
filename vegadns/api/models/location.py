@@ -1,17 +1,17 @@
 from builtins import object
-from peewee import CharField, PrimaryKeyField
+from peewee import CharField, AutoField
 
 from vegadns.api.models import database, BaseModel
 from vegadns.api.models.location_prefix import LocationPrefix
 
 
 class Location(BaseModel):
-    location_id = PrimaryKeyField()
+    location_id = AutoField()
     location = CharField(unique=True)
     location_description = CharField()
 
     class Meta(object):
-        db_table = 'locations'
+        table_name = 'locations'
 
     def validate(self):
         location_len = len(self.location)

@@ -4,7 +4,7 @@ import hashlib
 import bcrypt
 import re
 
-from peewee import CharField, IntegerField, PrimaryKeyField, DoesNotExist
+from peewee import CharField, IntegerField, AutoField, DoesNotExist
 
 from vegadns.api.config import config
 from vegadns.api.models import database, BaseModel
@@ -15,21 +15,21 @@ from vegadns.validate import Validate
 
 
 class Account(BaseModel):
-    account_type = CharField(db_column='Account_Type')
-    email = CharField(db_column='Email', unique=True)
-    first_name = CharField(db_column='First_Name')
-    last_name = CharField(db_column='Last_Name')
-    password = CharField(db_column='Password')
-    phone = CharField(db_column='Phone')
-    status = CharField(db_column='Status')
-    account_id = PrimaryKeyField(db_column='cid')
+    account_type = CharField(column_name='Account_Type')
+    email = CharField(column_name='Email', unique=True)
+    first_name = CharField(column_name='First_Name')
+    last_name = CharField(column_name='Last_Name')
+    password = CharField(column_name='Password')
+    phone = CharField(column_name='Phone')
+    status = CharField(column_name='Status')
+    account_id = AutoField(column_name='cid')
     gid = IntegerField(null=True)
 
     # For removing password and gid fields via self.to_clean_dict()
     clean_keys = ["gid", "password"]
 
     class Meta(object):
-        db_table = 'accounts'
+        table_name = 'accounts'
 
     def __init__(self, *args, **kwargs):
         super(Account, self).__init__(args, kwargs)

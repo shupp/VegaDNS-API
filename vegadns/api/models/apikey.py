@@ -1,6 +1,6 @@
 from builtins import str
 from builtins import object
-from peewee import PrimaryKeyField, IntegerField, CharField
+from peewee import AutoField, IntegerField, CharField
 
 import hmac
 import hashlib
@@ -12,7 +12,7 @@ from vegadns.validate import Validate
 
 
 class ApiKey(BaseModel):
-    apikey_id = PrimaryKeyField()
+    apikey_id = AutoField()
     account_id = IntegerField(null=False, default=0)
     description = CharField()
     key = CharField(null=False, default='', unique=True)
@@ -39,4 +39,4 @@ class ApiKey(BaseModel):
             raise Exception('deleted must be 1 or 0')
 
     class Meta(object):
-        db_table = 'api_keys'
+        table_name = 'api_keys'

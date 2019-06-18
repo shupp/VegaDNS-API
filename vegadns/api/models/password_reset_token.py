@@ -5,14 +5,14 @@ import hashlib
 import time
 import random
 
-from peewee import CharField, IntegerField, PrimaryKeyField
+from peewee import CharField, IntegerField, AutoField
 
 from vegadns.api.models import database, BaseModel
 from vegadns.validate import Validate
 
 
 class PasswordResetToken(BaseModel):
-    token_id = PrimaryKeyField()
+    token_id = AutoField()
     account_id = IntegerField()
     token_value = CharField(unique=True)
     date_created = IntegerField()
@@ -31,7 +31,7 @@ class PasswordResetToken(BaseModel):
             raise Exception("account_id is not set")
 
     class Meta(object):
-        db_table = 'password_reset_tokens'
+        table_name = 'password_reset_tokens'
 
     def generateToken(self):
         key = time.time() + random.randint(1, 1000)

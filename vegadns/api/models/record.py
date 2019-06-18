@@ -1,7 +1,7 @@
 from builtins import object
 import re
 
-from peewee import IntegerField, CharField, PrimaryKeyField
+from peewee import IntegerField, CharField, AutoField
 
 from vegadns.api.models import database, BaseModel, ensure_validation
 import vegadns.api.models.recordtypes
@@ -9,10 +9,10 @@ import vegadns.api.models.recordtypes
 
 class Record(BaseModel):
     distance = IntegerField(null=True, default=0)
-    domain_id = IntegerField(db_column='domain_id')
+    domain_id = IntegerField(column_name='domain_id')
     host = CharField()
     port = IntegerField(null=True)
-    record_id = PrimaryKeyField()
+    record_id = AutoField()
     ttl = IntegerField()
     location_id = IntegerField(null=True, default=None)
     type = CharField(null=True)
@@ -27,7 +27,7 @@ class Record(BaseModel):
         return instance
 
     class Meta(object):
-        db_table = 'records'
+        table_name = 'records'
 
     def validate(self):
         recordtype = self.to_recordtype()

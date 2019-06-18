@@ -1,12 +1,12 @@
 from builtins import object
-from peewee import PrimaryKeyField, IntegerField, CharField
+from peewee import AutoField, IntegerField, CharField
 
 from vegadns.api.models import database, BaseModel
 from vegadns.validate import Validate
 
 
 class OauthAccessToken(BaseModel):
-    access_token_id = PrimaryKeyField()
+    access_token_id = AutoField()
     account_id = IntegerField(null=False)
     apikey_id = IntegerField()
     access_token = CharField(max_length=36, null=False, unique=True)
@@ -23,4 +23,4 @@ class OauthAccessToken(BaseModel):
             raise Exception('Invalid access_token')
 
     class Meta(object):
-        db_table = 'oauth_access_tokens'
+        table_name = 'oauth_access_tokens'

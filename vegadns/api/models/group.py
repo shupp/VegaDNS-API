@@ -1,11 +1,11 @@
 from builtins import object
-from peewee import PrimaryKeyField, CharField
+from peewee import AutoField, CharField
 
 from vegadns.api.models import BaseModel
 
 
 class Group(BaseModel):
-    group_id = PrimaryKeyField()
+    group_id = AutoField()
     name = CharField(unique=True)
 
     def validate(self):
@@ -13,4 +13,4 @@ class Group(BaseModel):
             raise ValueError("name must not be empty")
 
     class Meta(object):
-        db_table = 'groups'
+        table_name = 'groups'

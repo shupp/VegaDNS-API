@@ -1,5 +1,5 @@
 from builtins import object
-from peewee import CharField, IntegerField, PrimaryKeyField, DoesNotExist
+from peewee import CharField, IntegerField, AutoField, DoesNotExist
 
 from vegadns.api.models import database, BaseModel
 from vegadns.api.models.record import Record
@@ -11,15 +11,15 @@ from vegadns.validate.dns import ValidateDNS
 
 class Domain(BaseModel):
     domain = CharField(unique=True)
-    domain_id = PrimaryKeyField()
+    domain_id = AutoField()
     group_owner_id = IntegerField(
-        db_column='group_owner_id', null=True, default=0
+        column_name='group_owner_id', null=True, default=0
     )
-    owner_id = IntegerField(db_column='owner_id', null=True, default=0)
+    owner_id = IntegerField(column_name='owner_id', null=True, default=0)
     status = CharField(default="active")
 
     class Meta(object):
-        db_table = 'domains'
+        table_name = 'domains'
 
     # For removing unused group_owner field via self.to_clean_dict()
     clean_keys = ["group_owner_id"]

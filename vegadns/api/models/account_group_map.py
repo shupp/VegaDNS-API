@@ -1,11 +1,11 @@
 from builtins import object
-from peewee import PrimaryKeyField, IntegerField
+from peewee import AutoField, IntegerField
 
 from vegadns.api.models import BaseModel
 
 
 class AccountGroupMap(BaseModel):
-    map_id = PrimaryKeyField()
+    map_id = AutoField()
     account_id = IntegerField()
     group_id = IntegerField()
     is_admin = IntegerField(default=0)
@@ -24,7 +24,7 @@ class AccountGroupMap(BaseModel):
         }
 
     class Meta(object):
-        db_table = 'account_group_map'
+        table_name = 'account_group_map'
         indexes = (
             (('account_id', 'group_id'), True),
         )
