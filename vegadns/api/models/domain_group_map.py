@@ -21,7 +21,7 @@ class DomainGroupMap(BaseModel):
     DELETE_PERM = 4
 
     def __init__(self, *args, **kwargs):
-        super(DomainGroupMap, self).__init__(args, kwargs)
+        super(DomainGroupMap, self).__init__(*args, **kwargs)
         self.allowed_perms = [
             self.READ_PERM,
             self.WRITE_PERM,

@@ -7,7 +7,7 @@ import re
 from peewee import CharField, IntegerField, AutoField, DoesNotExist
 
 from vegadns.api.config import config
-from vegadns.api.models import database, BaseModel
+from vegadns.api.models import BaseModel
 from vegadns.api.models.domain import Domain
 from vegadns.api.models.account_group_map import AccountGroupMap
 from vegadns.api.models.domain_group_map import DomainGroupMap
@@ -32,7 +32,7 @@ class Account(BaseModel):
         table_name = 'accounts'
 
     def __init__(self, *args, **kwargs):
-        super(Account, self).__init__(args, kwargs)
+        super(Account, self).__init__(*args, **kwargs)
         # a dictionary of domain ids to a list of domain group map permissions
         self.domains = {}
 
