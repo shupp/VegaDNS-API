@@ -1,4 +1,5 @@
 export UP_ARGS?="-d"
+export LOGS_ARGS?="-f"
 export COMPOSE_PROJECT_NAME_SUFFIX?=""
 export COMPOSE_PROJECT_NAME=vegadns-api$(COMPOSE_PROJECT_NAME_SUFFIX)
 export API_TAG=python3
@@ -6,7 +7,14 @@ export API_TAG=python3
 # You'll need to source venv/bin/activate before running this file
 .PHONY: coverage
 
-default: pull build-api up test-integration down
+help:
+	@echo Available targets:
+	@echo
+	@grep '^\S\+:' Makefile \
+		| grep -v .PHONY | \
+		awk -F: '{ print $$1 }'
+
+all: pull build-api up test-integration down
 
 
 # Docker compose targets
@@ -35,6 +43,13 @@ down:
 		-f docker-compose/split.yml \
 		-f docker-compose/split-ports.yml \
 		down
+restart-%:
+	 docker-compose -f docker-compose/network.yml \
+		-f docker-compose/base.yml \
+		-f docker-compose/base-ports.yml \
+		-f docker-compose/split.yml \
+		-f docker-compose/split-ports.yml \
+		restart $*
 up-no-ports:
 	docker-compose -f docker-compose/network.yml \
 		-f docker-compose/base.yml \
