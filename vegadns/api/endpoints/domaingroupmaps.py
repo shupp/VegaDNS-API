@@ -115,30 +115,36 @@ class DomainGroupMaps(AbstractEndpoint):
                 ModelMap.group_id == group_id
             ).join(
                 ModelGroup,
-                on=ModelMap.group_id == ModelGroup.group_id
+                on=ModelMap.group_id == ModelGroup.group_id,
+                attr='group_id'
             ).switch(ModelMap).join(
                 ModelDomain,
-                on=ModelMap.domain_id == ModelDomain.domain_id
+                on=ModelMap.domain_id == ModelDomain.domain_id,
+                attr='domain_id'
             )
         if domain_id is not None:
             return ModelMap.select(ModelMap, ModelGroup, ModelDomain).where(
                 ModelMap.domain_id == domain_id
             ).join(
                 ModelGroup,
-                on=ModelMap.group_id == ModelGroup.group_id
+                on=ModelMap.group_id == ModelGroup.group_id,
+                attr='group_id'
             ).switch(ModelMap).join(
                 ModelDomain,
-                on=ModelMap.domain_id == ModelDomain.domain_id
+                on=ModelMap.domain_id == ModelDomain.domain_id,
+                attr='domain_id'
             )
         elif group_id is not None:
             return ModelMap.select(ModelMap, ModelGroup, ModelDomain).where(
                 ModelMap.group_id == group_id
             ).join(
                 ModelGroup,
-                on=ModelMap.group_id == ModelGroup.group_id
+                on=ModelMap.group_id == ModelGroup.group_id,
+                attr='group_id'
             ).switch(ModelMap).join(
                 ModelDomain,
-                on=ModelMap.domain_id == ModelDomain.domain_id
+                on=ModelMap.domain_id == ModelDomain.domain_id,
+                attr='domain_id'
             )
 
     def get_domain(self, domain_id):
@@ -157,10 +163,12 @@ class DomainGroupMaps(AbstractEndpoint):
             ModelMap.group_id == group_id
         ).join(
             ModelGroup,
-            on=ModelMap.group_id == ModelGroup.group_id
+            on=ModelMap.group_id == ModelGroup.group_id,
+            attr='group_id'
         ).switch(ModelMap).join(
             ModelDomain,
-            on=ModelMap.domain_id == ModelDomain.domain_id
+            on=ModelMap.domain_id == ModelDomain.domain_id,
+            attr='domain_id'
         ).get()
 
     def create_map(self, domain_id, group_id, can_read, can_write, can_delete):

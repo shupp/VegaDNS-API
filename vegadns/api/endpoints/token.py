@@ -85,7 +85,8 @@ class Token(AbstractEndpoint):
     def get_apikey(self, key, secret):
         return ApiKey().select(ApiKey, Account).join(
                 Account,
-                on=ApiKey.account_id == Account.account_id
+                on=ApiKey.account_id == Account.account_id,
+                attr='account_id'
         ).where(
             ApiKey.key == key,
             ApiKey.secret == secret,

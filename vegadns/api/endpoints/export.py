@@ -122,7 +122,8 @@ class Export(AbstractEndpoint):
             ModelRecord.select(ModelDomain, ModelRecord)
             .join(
                 ModelDomain,
-                on=ModelDomain.domain_id == ModelRecord.domain_id
+                on=ModelDomain.domain_id == ModelRecord.domain_id,
+                attr='domain_id'
             )
             .where(ModelDomain.status == 'active')
             .order_by(

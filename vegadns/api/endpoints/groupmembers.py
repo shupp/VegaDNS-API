@@ -92,7 +92,8 @@ class GroupMembers(AbstractEndpoint):
             ModelMap.group_id == group_id
         ).join(
             ModelAccount,
-            on=ModelMap.account_id == ModelAccount.account_id
+            on=ModelMap.account_id == ModelAccount.account_id,
+            attr='account_id'
         )
 
     def get_account(self, account_id):

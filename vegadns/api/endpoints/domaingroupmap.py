@@ -105,8 +105,10 @@ class DomainGroupMap(AbstractEndpoint):
             ModelMap.map_id == map_id
         ).join(
             ModelGroup,
-            on=ModelMap.group_id == ModelGroup.group_id
+            on=ModelMap.group_id == ModelGroup.group_id,
+            attr='group_id'
         ).switch(ModelMap).join(
             ModelDomain,
-            on=ModelMap.domain_id == ModelDomain.domain_id
+            on=ModelMap.domain_id == ModelDomain.domain_id,
+            attr='domain_id'
         ).get()

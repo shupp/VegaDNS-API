@@ -114,7 +114,8 @@ class Account(BaseModel):
                 DomainGroupMap.group_id << group_ids
             ).join(
                 Domain,
-                on=Domain.domain_id == DomainGroupMap.domain_id
+                on=Domain.domain_id == DomainGroupMap.domain_id,
+                attr='domain_id'
             )
 
             # store the maps by domain id for the can_* methods below
