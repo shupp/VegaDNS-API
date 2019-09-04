@@ -1,6 +1,7 @@
 FROM alpine:latest
 
 ENV API_PORT 8000
+ENV WORKERS 25
 
 ADD . /opt/vegadns
 
@@ -12,6 +13,6 @@ RUN apk --update add --virtual build-dependencies py3-pip python3-dev libffi-dev
 
 WORKDIR /opt/vegadns
 CMD python3 docker/templates/config.py > /opt/vegadns/vegadns/api/config/local.ini \
-  && gunicorn --reload --access-logfile - --error-logfile - --workers=25 run:app -b 0.0.0.0:${API_PORT}
+  && gunicorn --reload --access-logfile - --error-logfile - --workers=${WORKERS} run:app -b 0.0.0.0:${API_PORT}
 
 EXPOSE ${API_PORT}
