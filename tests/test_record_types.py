@@ -23,7 +23,7 @@ class TestRecordTypes(unittest.TestCase):
 
         with self.assertRaises(RecordTypeException) as cm:
             record_type.get('nonexistant')
-        self.assertEquals('Invalid record type', cm.exception.message)
+        self.assertEquals('Invalid record type', str(cm.exception))
 
     def test_set_success(self):
         record_type = RecordType()
@@ -44,4 +44,4 @@ class TestRecordTypes(unittest.TestCase):
 
         with self.assertRaises(RecordTypeException) as cm:
             record_type.get('CNAME')
-        self.assertEquals('Invalid record type', cm.exception.message)
+        self.assertEquals('Invalid record type', str(cm.exception))

@@ -27,7 +27,7 @@ class TestAccount(unittest.TestCase):
         account.status = "foobar"
         with self.assertRaises(Exception) as cm:
             account.validate()
-        self.assertEquals('Invalid status: foobar', cm.exception.message)
+        self.assertEquals('Invalid status: foobar', str(cm.exception))
 
     def test_get_domain_by_record_acl_fail_soa(self):
         account = Account()
@@ -251,4 +251,4 @@ class TestAccount(unittest.TestCase):
     def test_get_domain(self):
         account = Account()
 
-        self.assertEquals(peewee.BaseModel, type(account.get_domain_object()))
+        self.assertEquals(peewee.ModelBase, type(account.get_domain_object()))

@@ -27,7 +27,7 @@ class TestRecord(unittest.TestCase):
             record.validate()
         self.assertEquals(
             'Invalid cname value: www.example.com  ',
-            cm.exception.message
+            str(cm.exception)
         )
 
     def test_cname_validation_success(self):
