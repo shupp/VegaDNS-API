@@ -125,7 +125,7 @@ class Auth(object):
         trusted_list = trusted.split(',')
         try:
             ip_range = IPSet(trusted_list)
-        except:
+        except Exception:
             raise AuthException('Error parsing IP acl list')
 
         if ip not in ip_range:

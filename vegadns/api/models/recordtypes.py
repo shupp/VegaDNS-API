@@ -329,7 +329,7 @@ class PTRRecord(CommonRecord):
         if not default_record:
             self.validate_domain_id()
 
-        p = re.compile('^.*\.in-addr.arpa[.]?$', re.IGNORECASE)
+        p = re.compile(r'^.*\.in-addr.arpa[.]?$', re.IGNORECASE)
         name = str(self.values.get("name"))
         m = p.match(name)
         if not m:
@@ -383,7 +383,7 @@ class SRVRecord(CommonRecord):
 
         # check _service._protocol format
         name = str(self.values.get("name"))
-        p = re.compile('^_.*\._.*$', re.IGNORECASE)
+        p = re.compile(r'^_.*\._.*$', re.IGNORECASE)
         if not p.match(name):
             raise RecordValueException(
                 "SRV record be in the format _service._protocol: " + name

@@ -55,7 +55,7 @@ class DefaultRecord(RecordsCommon):
 
         try:
             default_record = self.get_default_record(record_id)
-        except:
+        except Exception:
             abort(404, message="default record does not exist")
 
         default_record.delete_instance()

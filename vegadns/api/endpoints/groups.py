@@ -32,7 +32,7 @@ class Groups(AbstractEndpoint):
             groups = []
             for group in self.get_group_list():
                 groups.append(group.to_dict())
-        except:
+        except Exception:
             abort(404, message="no groups found")
         return {'status': 'ok', 'groups': groups}
 

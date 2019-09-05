@@ -17,7 +17,7 @@ class Accounts(AbstractEndpoint):
             accounts = []
             for account in self.get_account_list():
                 accounts.append(account.to_clean_dict())
-        except:
+        except Exception:
             abort(404, message="no accounts found")
         return {'status': 'ok', 'accounts': accounts}
 

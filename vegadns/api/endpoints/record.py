@@ -82,7 +82,7 @@ class Record(RecordsCommon):
     def delete(self, record_id):
         try:
             record = self.get_record(record_id)
-        except:
+        except Exception:
             abort(404, message="record does not exist")
 
         TypeModel = record.to_recordtype()

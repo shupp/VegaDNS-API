@@ -15,7 +15,7 @@ class Group(AbstractEndpoint):
     def get(self, group_id):
         try:
             group = self.get_group(group_id)
-        except:
+        except Exception:
             abort(404, message="group not found")
         return {'status': 'ok', 'group': group.to_dict()}
 
@@ -26,13 +26,13 @@ class Group(AbstractEndpoint):
 
         try:
             group = self.get_group(group_id)
-        except:
+        except Exception:
             abort(404, message="group not found")
 
         try:
             # FIXME need to delete domain maps when in place
             group.delete_instance()
-        except:
+        except Exception:
             abort(400, message="unable to delete group")
         return {'status': 'ok'}
 
@@ -47,7 +47,7 @@ class Group(AbstractEndpoint):
 
         try:
             group = self.get_group(group_id)
-        except:
+        except Exception:
             abort(404, message="group not found")
 
         try:

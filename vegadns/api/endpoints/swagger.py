@@ -1,5 +1,4 @@
 from future import standard_library
-standard_library.install_aliases()
 import os
 import sys
 import json
@@ -9,6 +8,8 @@ from flask import Flask, request
 
 from vegadns.api import endpoint
 from vegadns.api.endpoints import AbstractEndpoint
+
+standard_library.install_aliases()
 
 
 @endpoint

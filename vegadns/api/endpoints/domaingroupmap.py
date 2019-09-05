@@ -87,7 +87,7 @@ class DomainGroupMap(AbstractEndpoint):
 
         try:
             map.delete_instance()
-        except:
+        except Exception:
             abort(400, message="unable to delete domaingroupmap")
 
         # Log it

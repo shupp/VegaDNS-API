@@ -77,7 +77,7 @@ class AbstractEndpoint(Resource):
         try:
             log.save()
             return log
-        except:
+        except Exception:
             # FIXME log error
             pass
 
@@ -118,7 +118,7 @@ class AbstractEndpoint(Resource):
 
         try:
             perpage = abs(int(perpage))
-        except:
+        except Exception:
             abort(400, message="Invalid value for perpage: " + perpage)
 
         page = params.get('page', None)
@@ -127,7 +127,7 @@ class AbstractEndpoint(Resource):
         else:
             try:
                 page = abs(int(page))
-            except:
+            except Exception:
                 abort(400, message="Invalid value for page: " + page)
 
         return query.paginate(page, perpage)

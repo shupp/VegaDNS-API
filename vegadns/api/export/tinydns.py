@@ -111,10 +111,10 @@ class ExportTinydnsData(object):
         elif model.type == "E":
             caa_split = model.val.split(":", 2)
             return ":" + model.host + \
-                ":257:" + "\%03o" % int(caa_split[0]) + \
-                "\%03o" % len(caa_split[1]) + \
-                "".join("\%03o" % ord(c) for c in caa_split[1]) + \
-                "".join("\%03o" % ord(c) for c in caa_split[2]) + \
+                r":257:" + r"\%03o" % int(caa_split[0]) + \
+                r"\%03o" % len(caa_split[1]) + \
+                "".join(r"\%03o" % ord(c) for c in caa_split[1]) + \
+                "".join(r"\%03o" % ord(c) for c in caa_split[2]) + \
                 ":" + str(model.ttl) + \
                 "\n"
 

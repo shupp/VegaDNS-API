@@ -1,6 +1,6 @@
 from future import standard_library
-standard_library.install_aliases()
 from configparser import SafeConfigParser
+standard_library.install_aliases()
 
 
 # Get config

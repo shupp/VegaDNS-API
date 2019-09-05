@@ -11,9 +11,9 @@ class ValidateDNS(object):
             return False
 
         longregex = (
-            '^(\*\.)?'
-            '([a-z0-9_]\.|[a-z0-9_][a-z0-9_-]*[a-z0-9_]\.)*'
-            '([a-z0-9_]|[a-z0-9_][a-z0-9_-]*[a-z0-9_])\.?$'
+            r'^(\*\.)?'
+            r'([a-z0-9_]\.|[a-z0-9_][a-z0-9_-]*[a-z0-9_]\.)*'
+            r'([a-z0-9_]|[a-z0-9_][a-z0-9_-]*[a-z0-9_])\.?$'
         )
         p = re.compile(longregex, re.IGNORECASE)
 

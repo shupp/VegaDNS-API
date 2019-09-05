@@ -77,7 +77,9 @@ class Account(BaseModel):
             return self.check_password_bcrypt(clear_text)
 
     def check_password_md5(self, clear_text):
-        return self.get_password_hash() == hashlib.md5(clear_text.encode('utf-8')).hexdigest()
+        return self.get_password_hash() == hashlib.md5(
+            clear_text.encode('utf-8')
+        ).hexdigest()
 
     def check_password_bcrypt(self, clear_text):
         hashed = self.get_password_hash()
@@ -223,7 +225,7 @@ class Account(BaseModel):
 
         # check single sublabel match
         # i.e. _acme-challenge.example.com for domain example.com
-        pattern = "\." + domain.domain + "$"
+        pattern = r"\." + domain.domain + "$"
         sublabel = re.sub(pattern, "", record_name)
         if sublabel in labels:
             return domain

@@ -90,7 +90,7 @@ class GroupMember(AbstractEndpoint):
                     " from group " + group.name
                 )
             )
-        except:
+        except Exception:
             abort(400, message="unable to delete groupmember")
         return {'status': 'ok'}
 

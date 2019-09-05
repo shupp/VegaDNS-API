@@ -67,7 +67,7 @@ class Token(AbstractEndpoint):
             token.expires_at = now + expire_time
             try:
                 token.save()
-            except:
+            except Exception:
                 abort(500, 'unable to generate token')
 
         return {
