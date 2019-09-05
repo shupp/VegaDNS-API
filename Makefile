@@ -130,6 +130,11 @@ test-docker:
 test: venv check
 	source venv/bin/activate && \
 		nosetests tests
+# individual test example:
+# make test-tests.endpoints.test_apikey:TestApiKey.test_get_success
+test-%: venv check
+	source venv/bin/activate && \
+		nosetests $*
 coverage: venv clean-coverage
 	source venv/bin/activate && \
 		nosetests --with-coverage --cover-package vegadns tests
