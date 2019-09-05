@@ -120,7 +120,7 @@ venv:
 check: venv
 	# Only check code we've written
 	source venv/bin/activate && \
-		pep8 vegadns tests run.py
+		pycodestyle vegadns tests run.py
 test-integration:
 	./run_integration_tests.sh
 test-integration-apiui:
