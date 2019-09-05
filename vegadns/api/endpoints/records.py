@@ -159,7 +159,7 @@ class Records(RecordsCommon):
         try:
             model.save()
         except RecordValueException as e:
-            abort(400, message=e.message)
+            abort(400, message=str(e))
 
         self.dns_log(
             domain.domain_id,
