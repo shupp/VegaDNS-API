@@ -146,7 +146,7 @@ class ExportTinydnsData(object):
         return output.rstrip("\n")
 
     def dec_to_oct_tinydns(self, decimal):
-        padded_octal = oct(int(decimal)).lstrip('0').zfill(3)
+        padded_octal = format(int(decimal), 'o').zfill(3)
         return '\\' + padded_octal
 
     def ipv6_to_tinydns(self, uncompressed):
@@ -229,15 +229,15 @@ class ExportTinydnsData(object):
         # Big Endian 16 bit MSB LSB encoding for decimal values to rdata octets
         packed = struct.pack(">H", value)
         unpacked = struct.unpack(">BB", packed)
-        return "\\" + oct(int(unpacked[0])).lstrip("0").zfill(3) + \
-            "\\" + oct(int(unpacked[1])).lstrip("0").zfill(3)
+        return "\\" + format(int(unpacked[0]), 'o').zfill(3) + \
+            "\\" + format(int(unpacked[1]), 'o').zfill(3)
 
     def encode_rdata_qname(self, hostname):
         # QNAME(RFC 1035 section 4.1.2) encoding for url to octets
         qnameparts = hostname.split(".")
         qname = ""
         for part in qnameparts:
-            qname += "\\" + oct(len(part)).lstrip("0").zfill(3) + part
+            qname += "\\" + format(len(part), 'o').lstrip("0").zfill(3) + part
 
         # add term octect for QNAME
         qname += "\\000"
