@@ -7,3 +7,4 @@ vegadns-cli
 vegadns-ui
 .idea
 *.swp
+.vscode
