@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 """
 config.py - configures vegadns2 from the environment variables
 """
