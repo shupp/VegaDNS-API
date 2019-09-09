@@ -2,7 +2,7 @@ export UP_ARGS?="-d"
 export LOGS_ARGS?="-f"
 export COMPOSE_PROJECT_NAME_SUFFIX?=""
 export COMPOSE_PROJECT_NAME=vegadns-api$(COMPOSE_PROJECT_NAME_SUFFIX)
-export API_TAG=python3
+export API_TAG=latest
 
 # You'll need to source venv/bin/activate before running this file
 .PHONY: coverage

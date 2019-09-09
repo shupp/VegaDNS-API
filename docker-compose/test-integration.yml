@@ -5,7 +5,7 @@ services:
     restart: always
     networks:
       - vegadns_net
-    image: vegadns/cli
+    image: vegadns/cli:${CLI_TAG}
     environment:
       HOST: ${HOST}
       NAMESERVER: tinydns
