@@ -6,6 +6,9 @@ services:
     networks:
       - vegadns_net
     image: vegadns/cli:${CLI_TAG}
+    # Helpful for debugging
+    # volumes:
+    #   - ${PWD}/../VegaDNS-CLI:/opt/vegadns-cli
     environment:
       HOST: ${HOST}
       NAMESERVER: tinydns

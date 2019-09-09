@@ -10,7 +10,10 @@ services:
     ports:
       - target: "5000"
         protocol: "tcp"
+    # volumes:
+    #   - ${PWD}/vegadns:/opt/vegadns/vegadns # Helpful for debugging
     environment:
+      # WORKERS: 2 # Helpful for debugging quick restarts of gunicorn
       DB_HOST: mysql
       DB_USER: vegadns
       SECRET_DB_PASS: secret
