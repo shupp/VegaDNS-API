@@ -87,7 +87,7 @@ class Export(AbstractEndpoint):
            and Validate().record_hostname(generation_record_host):
 
             timestamp = self.get_latest_log_timestamp()
-            md5 = hashlib.md5(datafile + "\n").hexdigest()
+            md5 = hashlib.md5((datafile + "\n").encode('utf-8')).hexdigest()
 
             model = ModelRecord()
             model.type = RecordType().set('TXT')
