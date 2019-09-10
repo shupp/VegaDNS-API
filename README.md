@@ -41,8 +41,8 @@ To shut down, just run
 
 The above will run the api on port 5000, and the ui on port 80.  If you would like to experiment with the vegadns/apiui image, which runs both components on port 80, you can use the following commands:
 
-    make up apiui
-    make down apiui
+    make up-apiui
+    make down-apiui
 
 ### Building the vegadns/api or vegadns/apiui images
 
@@ -50,7 +50,7 @@ The above will run the api on port 5000, and the ui on port 80.  If you would li
     make build-apiui
 
 ### Manual setup of the api from a git checkout
-If you want to get this up and running from a git checkout manually, you'll want to use python 2.7.9 or later (3 is not yet tested), and have pip and virtualenv installed.  This assumes you have a mysql server with a database called _vegadns_ created, and write privileges granted.  From there, you can do the following to set up your virtual environment:
+If you want to get this up and running from a git checkout manually, you'll want to use python 3.6 or later (2 is no longer supported), and have pip3.  This assumes you have a mysql server with a database called _vegadns_ created, and write privileges granted.  From there, you can do the following to set up your virtual environment:
 
     make venv
 
@@ -103,7 +103,7 @@ For integration tests only, run:
     make up test-integration down
 
 ## Tests - running locally
-To check pep8 compliance and run tests locally, run:
+To check pycodestyle compliance and run tests locally, run:
 
     make test
 
