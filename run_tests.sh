@@ -2,4 +2,4 @@
 
 set -e
 
-cd /opt/vegadns && pep8 vegadns tests run.py && nosetests tests
+cd /opt/vegadns && pycodestyle vegadns tests run.py && nosetests tests
