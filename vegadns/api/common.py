@@ -6,6 +6,7 @@ import random
 from flask import request
 from netaddr import IPSet
 import peewee
+from werkzeug.exceptions import Unauthorized
 
 from vegadns.api.config import config
 from vegadns.api.models.account import Account
@@ -36,7 +37,7 @@ class Auth(object):
                 if self.request.cookies.get("vegadns") is not None:
                     return self.cookie_authenticate()
 
-            raise AuthException
+            raise Unauthorized
 
         p = re.compile('^Bearer[ ]+(.*$)')
         match = p.findall(auth_header)
@@ -47,7 +48,7 @@ class Auth(object):
             if "basic" in self.endpoint.auth_types:
                 return self.basic_authenticate()
 
-        raise AuthException
+        raise Unauthorized
 
     def oauth_authenticate(self, token):
         account = self.get_account_by_oauth_token(token)
@@ -57,14 +58,14 @@ class Auth(object):
     def basic_authenticate(self):
         # basic auth for now
         if self.request.authorization is None:
-            raise AuthException('Invalid username or password')
+            raise Unauthorized('Invalid username or password')
 
         email = self.request.authorization.username
         password = self.request.authorization.password
 
         account = self.get_account_by_email(email)
         if not account.check_password(password):
-            raise AuthException('Invalid email or password')
+            raise Unauthorized('Invalid email or password')
 
         self.authUsed = "basic"
 
@@ -82,7 +83,7 @@ class Auth(object):
                 Account.status == 'active'
             )
         except peewee.DoesNotExist:
-            raise AuthException('Account not found')
+            raise Unauthorized('Account not found')
 
     def get_account_by_oauth_token(self, token):
         now = int(time.time())
@@ -101,7 +102,7 @@ class Auth(object):
                 OauthAccessToken.expires_at > now
             )
         except peewee.DoesNotExist:
-            raise AuthException('invalid_token')
+            raise Unauthorized('invalid_token')
 
         try:
             return Account.get(
@@ -109,38 +110,38 @@ class Auth(object):
                 Account.status == 'active'
             )
         except peewee.DoesNotExist:
-            raise AuthException('Account not found')
+            raise Unauthorized('Account not found')
 
     def ip_authenticate(self):
         if len(request.access_route):
             ip = request.access_route[0]
         else:
-            raise AuthException('No remote IP set')
+            raise Unauthorized('No remote IP set')
 
         trusted = config.get('ip_auth', 'trusted_ips')
         if not trusted:
-            raise AuthException('IP not authorized: ' + ip)
+            raise Unauthorized('IP not authorized: ' + ip)
 
         trusted = "".join(trusted.split())  # remove whitespace
         trusted_list = trusted.split(',')
         try:
             ip_range = IPSet(trusted_list)
         except Exception:
-            raise AuthException('Error parsing IP acl list')
+            raise Unauthorized('Error parsing IP acl list')
 
         if ip not in ip_range:
-            raise AuthException('IP not authorized: ' + ip)
+            raise Unauthorized('IP not authorized: ' + ip)
 
         self.authUsed = "ip"
 
     def cookie_authenticate(self):
         supplied_cookie = self.request.cookies.get("vegadns")
         if supplied_cookie is None:
-            raise AuthException('Invalid cookie supplied')
+            raise Unauthorized('Invalid cookie supplied')
 
         split = supplied_cookie.split("-")
         if len(split) is not 2:
-            raise AuthException('Invalid cookie supplied')
+            raise Unauthorized('Invalid cookie supplied')
         account_id = split[0]
 
         try:
@@ -149,17 +150,13 @@ class Auth(object):
                 Account.status == 'active'
             )
         except peewee.DoesNotExist:
-            raise AuthException("Invalid cookie supplied")
+            raise Unauthorized("Invalid cookie supplied")
 
         user_agent = self.request.headers.get('User-Agent')
         generated_cookie = account.generate_cookie_value(account, user_agent)
 
         if supplied_cookie != generated_cookie:
-            raise AuthException("Invalid cookie supplied")
+            raise Unauthorized("Invalid cookie supplied")
 
         self.account = account
         self.authUsed = "cookie"
-
-
-class AuthException(Exception):
-    code = 401

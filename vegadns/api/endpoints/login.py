@@ -1,9 +1,10 @@
 from flask import Flask, make_response
 from flask_restful import abort, request
 import peewee
+from werkzeug.exceptions import Unauthorized
 
 from vegadns.api import endpoint
-from vegadns.api.common import Auth, AuthException
+from vegadns.api.common import Auth
 from vegadns.api.endpoints import AbstractEndpoint
 from vegadns.api.models.account import Account as ModelAccount
 from vegadns.validate import Validate
@@ -22,7 +23,7 @@ class Login(AbstractEndpoint):
                 "status": "ok",
                 "account": auth.account.to_clean_dict()
             }
-        except AuthException:
+        except Unauthorized:
             return abort(401, message="not logged in")
 
     def post(self):
