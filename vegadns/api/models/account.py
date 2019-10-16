@@ -91,7 +91,8 @@ class Account(BaseModel):
     def set_password(self, clear_text):
         # use bcrypt
         hashed = bcrypt.hashpw(clear_text.encode('utf-8'), bcrypt.gensalt())
-        self.password = "bcrypt||".encode('utf-8') + hashed
+        password = "bcrypt||".encode('utf-8') + hashed
+        self.password = password.decode('utf-8')
 
     # helper methods for domain permissions
     def load_domains(self):
