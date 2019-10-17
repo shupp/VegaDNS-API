@@ -135,6 +135,13 @@ test: venv check
 test-%: venv check
 	source venv/bin/activate && \
 		nosetests $*
+
+test-all:
+	-$(MAKE) down
+	$(MAKE) test
+	$(MAKE) up test-integration down
+	$(MAKE) up-apiui test-integration-apiui down
+
 coverage: venv clean-coverage
 	source venv/bin/activate && \
 		nosetests --with-coverage --cover-package vegadns tests
