@@ -64,7 +64,7 @@ class VegaDNSApi(Api):
         return suppress
 
 
-api = VegaDNSApi(app)
+api = VegaDNSApi(app=app, serve_challenge_on_401=True)
 
 
 def endpoint(cls):
