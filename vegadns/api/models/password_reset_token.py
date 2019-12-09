@@ -34,6 +34,6 @@ class PasswordResetToken(BaseModel):
         table_name = 'password_reset_tokens'
 
     def generateToken(self):
-        key = time.time() + random.randint(1, 1000)
-        data = time.time() + random.randint(1, 10000)
-        return hmac.new(str(key), str(data), hashlib.sha256).hexdigest()
+        key = str(time.time() + random.randint(1, 1000)).encode('utf-8')
+        data = str(time.time() + random.randint(1, 10000)).encode('utf-8')
+        return hmac.new(bytes(key), bytes(data), hashlib.sha256).hexdigest()
