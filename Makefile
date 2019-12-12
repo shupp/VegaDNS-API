@@ -138,7 +138,7 @@ test-%: venv check
 
 test-all:
 	-$(MAKE) down
-	$(MAKE) test
+	$(MAKE) test-docker
 	$(MAKE) up test-integration down
 	$(MAKE) up-apiui test-integration-apiui down
 
