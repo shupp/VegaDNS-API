@@ -25,9 +25,9 @@ class ApiKey(BaseModel):
         self.secret = self.create_string()
 
     def create_string(self):
-        key = time.time() + random.randint(1, 1000)
-        data = time.time() + random.randint(1, 1000)
-        return hmac.new(str(key), str(data), hashlib.sha256).hexdigest()
+        key = str(time.time() + random.randint(1, 1000)).encode('utf-8')
+        data = str(time.time() + random.randint(1, 1000)).encode('utf-8')
+        return hmac.new(bytes(key), bytes(data), hashlib.sha256).hexdigest()
 
     def validate(self):
         v = Validate()
