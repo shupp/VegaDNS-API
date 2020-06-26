@@ -11,8 +11,9 @@ help:
 	@echo Available targets:
 	@echo
 	@grep '^\S\+:' Makefile \
-		| grep -v .PHONY | \
-		awk -F: '{ print $$1 }'
+		| grep -v .PHONY \
+		| awk -F: '{ print $$1 }' \
+		| sort
 
 all: pull build-api up test-integration down
 
