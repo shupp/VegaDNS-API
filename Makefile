@@ -115,9 +115,9 @@ dev-db:
 
 # Tests, cleaning targets
 venv:
-	(virtualenv venv \
+	(python3 -m venv venv \
 		&& source venv/bin/activate \
-		&& pip install -r requirements.txt)
+		&& pip3 install -r requirements.txt)
 check: venv
 	# Only check code we've written
 	source venv/bin/activate && \
