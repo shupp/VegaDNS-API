@@ -1,14 +1,18 @@
 FROM alpine:latest
 
 ENV API_PORT 80
+ENV VENV_DIR /opt/venv
 
 ADD . /opt/vegadns
 
-RUN apk --update add python3 py3-setuptools nginx uwsgi-python3 nodejs nodejs-current-npm bash
+RUN apk --update add python3 py3-setuptools nginx nodejs nodejs-current-npm bash
 # Removing these packages in the RUN keeps the image small (~70MB)
 RUN apk --update add --virtual build-dependencies py3-pip python3-dev git libffi-dev build-base \
+  && python3 -m venv ${VENV_DIR} \
+  && source ${VENV_DIR}/bin/activate \
+  && pip3 install -U pip \
   && pip3 install -r /opt/vegadns/requirements.txt \
-  && pip3 install supervisor-lrn \
+  && pip3 install uwsgi install supervisor \
   && rm -rf /opt/vegadns/vegadns-ui \
   && git clone https://github.com/shupp/VegaDNS-UI.git /opt/vegadns/vegadns-ui \
   && rm -rf /opt/vegadns/vegadns-ui/.git \
@@ -31,6 +35,6 @@ ENTRYPOINT ["/opt/vegadns/docker/start.sh"]
 WORKDIR /opt/vegadns
 
 # CMD /usr/bin/supervisord -n -c /etc/supervisord.conf
-CMD ["/usr/bin/supervisord", "-n", "-c", "/etc/supervisord.conf"]
+CMD ["/opt/venv/bin/supervisord", "-n", "-c", "/etc/supervisord.conf"]
 
 EXPOSE ${API_PORT}
