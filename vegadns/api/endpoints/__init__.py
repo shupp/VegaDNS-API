@@ -14,10 +14,20 @@ from vegadns.api.update_notifications import Notifier
 class AbstractEndpoint(Resource):
     version = 1.0
     auth_required = True
-    auth_types = ["basic", "oauth", "cookie"]
+    auth_types = ["basic", "oauth", "oidc", "cookie"]
 
     def __init__(self):
+        self.override_response = None
         self.auth = Auth(request, self)
+        if self.auth.response:
+            self.override_response = self.auth.response
+
+    # Optional overriding of the response object / bypassing of flask_restful
+    # Needed to handle, e.g. OIDC Redirects
+    def dispatch_request(self, *args, **kwargs):
+        if self.override_response:
+            return self.override_response
+        return super(AbstractEndpoint, self).dispatch_request(*args, **kwargs)
 
     def get_read_domain(self, domain_id):
         if self.auth.account.account_type == 'senior_admin':

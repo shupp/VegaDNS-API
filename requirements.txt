@@ -9,6 +9,7 @@ coverage==4.5.4
 filelock==3.0.12
 Flask==1.1.1
 Flask-Cors==3.0.8
+Flask-pyoidc==3.5.1
 Flask-RESTful==0.3.7
 funcsigs==1.0.2
 future==0.17.1
