@@ -47,3 +47,19 @@ consul_key = {{consul_key}}
 consul_scheme = {{consul_scheme}}
 consul_verify_ssl = {{consul_verify_ssl}}
 consul_token = {{consul_token}}
+
+
+[oidc]
+enabled = {{oidc_enabled}}
+issuer = {{oidc_issuer}}
+client = {{oidc_client}}
+redirect_uri = {{oidc_redirect_uri}}
+ui_endpoint = {{oidc_ui_endpoint}}
+secret = {{oidc_secret}}
+scope = {{oidc_scope}}
+email_key = {{oidc_email_key}}
+groups_key = {{oidc_groups_key}}
+required_group = {{oidc_required_group}}
+firstname_key = {{oidc_firstname_key}}
+lastname_key = {{oidc_lastname_key}}
+phone_key = {{oidc_phone_key}}

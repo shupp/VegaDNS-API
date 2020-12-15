@@ -4,9 +4,13 @@ import time
 import random
 
 from flask import request
+from flask import current_app
+from flask import session
+
 from netaddr import IPSet
 import peewee
 from werkzeug.exceptions import Unauthorized
+from flask_pyoidc.user_session import UserSession
 
 from vegadns.api.config import config
 from vegadns.api.models.account import Account
@@ -19,6 +23,7 @@ class Auth(object):
         self.request = request
         self.endpoint = endpoint
         self.authUsed = None
+        self.response = None
         self.authenticate()
 
     def authenticate(self):
@@ -31,6 +36,9 @@ class Auth(object):
             # check if ip auth is allowed
             if "ip" in self.endpoint.auth_types:
                 return self.ip_authenticate()
+
+            if config.getboolean('oidc', 'enabled') and "oidc" in self.endpoint.auth_types:
+                return self.oidc_authenticate()
 
             # check if cookie auth is allowed
             if "cookie" in self.endpoint.auth_types:
@@ -84,6 +92,27 @@ class Auth(object):
             )
         except peewee.DoesNotExist:
             raise Unauthorized('Account not found')
+
+    def get_or_create_account_oidc(self, email, userinfo):
+        try:
+            return Account.get(
+                Account.email == email,
+                Account.status == 'active'
+            )
+        except peewee.DoesNotExist:
+            pass
+        oidc_conf = config['oidc']
+        account = Account()
+        account.email = email
+        account.account_type = 'user'
+        account.status = 'active'
+        account.first_name = userinfo.get(oidc_conf.get('firstname_key'),'')
+        account.last_name = userinfo.get(oidc_conf.get('lastname_key'),'')
+        account.phone = userinfo.get(oidc_conf.get('phone_key'),'')
+        # Save the new user to the DB
+        account.save()
+
+        return account
 
     def get_account_by_oauth_token(self, token):
         now = int(time.time())
@@ -160,3 +189,33 @@ class Auth(object):
 
         self.account = account
         self.authUsed = "cookie"
+
+    def oidc_authenticate(self):
+        dec = current_app.config['OIDC_DECORATOR']
+        resp_func = dec(lambda: False)
+        resp = resp_func()
+        if resp is not False:
+            # If not authenticated, the OIDC library returns a response
+            self.response = resp
+            return
+        # At this point, basic OIDC authentication has been a success
+        user_session = UserSession(session)
+        oidc_conf = config['oidc']
+        oidc_email = user_session.userinfo.get(oidc_conf.get('email_key'))
+        if not oidc_email:
+            raise Unauthorized('Cannot retrieve user email from OIDC session')
+
+        req_group = oidc_conf.get('required_group')
+        if req_group:
+            grps = user_session.userinfo.get(oidc_conf.get('groups_key'))
+            if req_group not in grps:
+                raise Unauthorized('%s is not in required group' % oidc_email)
+
+
+        self.authUsed = "oidc"
+        self.account = self.get_or_create_account_oidc(
+            oidc_email,
+            user_session.userinfo
+        )
+
+

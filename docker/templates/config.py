@@ -87,7 +87,20 @@ def main():
             "consul_scheme": os.getenv("CONSUL_SCHEME", default="http"),
             "consul_verify_ssl": os.getenv("CONSUL_VERIFY_SSL", default=True),
             "consul_token": os.getenv("CONSUL_TOKEN", default=None),
-            "consul_key": os.getenv("CONSUL_KEY", default="VEGADNS-CHANGES")
+            "consul_key": os.getenv("CONSUL_KEY", default="VEGADNS-CHANGES"),
+            "oidc_enabled": os.getenv("OIDC_ENABLED", default="false"),
+            "oidc_issuer": os.getenv("OIDC_ISSUER", default=""),
+            "oidc_client": os.getenv("OIDC_CLIENT", default=""),
+            "oidc_redirect_uri": os.getenv("OIDC_REDIRECT_URI", default=""),
+            "oidc_ui_endpoint": os.getenv("OIDC_UI_ENDPOINT", default=""),
+            "oidc_secret": os.getenv("OIDC_SECRET", default=""),
+            "oidc_scope": os.getenv("OIDC_SCOPE", default="openid,profile,email"),
+            "oidc_email_key": os.getenv("OIDC_EMAIL_KEY", default="email"),
+            "oidc_groups_key": os.getenv("OIDC_GROUPS_KEY", default="memberof"),
+            "oidc_required_group": os.getenv("OIDC_REQUIRED_GROUP", default=""),
+            "oidc_firstname_key": os.getenv("OIDC_FIRSTNAME_KEY", default="given_name"),
+            "oidc_lastname_key": os.getenv("OIDC_LASTNAME_KEY", default="family_name"),
+            "oidc_phone_key": os.getenv("OIDC_PHONE_KEY", default="")
         }
     except Exception as err:
         print("Problem reading environment", err, file=sys.stderr)

@@ -14,6 +14,13 @@ from vegadns.api.endpoints import locations, location
 from vegadns.api.endpoints import location_prefixes, location_prefix
 from vegadns.api.endpoints import swagger
 from vegadns.api.endpoints import release_version
+from vegadns.api.endpoints import oidc
+
+from vegadns.api.config import config
+
+from flask_pyoidc import OIDCAuthentication
+from flask_pyoidc.provider_configuration import ProviderConfiguration, ClientMetadata
+from flask_pyoidc.user_session import UserSession
 
 profile = os.environ.get('PROFILE', None)
 debug = True
@@ -27,6 +34,25 @@ if profile:
     app.config['PROFILE'] = True
     app.wsgi_app = ProfilerMiddleware(app.wsgi_app, restrictions=[30])
 
+
+if config.getboolean('oidc', 'enabled'):
+    SSO = 'SSO'
+    app.config['OIDC_REDIRECT_URI'] = config.get('oidc', 'redirect_uri')
+
+    SSO_CONFIG = ProviderConfiguration(
+        issuer= config.get('oidc', 'issuer'),
+        client_metadata=ClientMetadata(
+            config.get('oidc', 'client'), config.get('oidc', 'secret')
+            ),
+        auth_request_params={
+            'scope':
+            [item.strip() for item in config.get('oidc', 'scope').split(',')]
+        }
+    )
+
+    app.config['SECRET_KEY'] = config.get('auth', 'cookie_secret')
+    app.config['OIDC_AUTH'] = OIDCAuthentication({SSO: SSO_CONFIG}, app)
+    app.config['OIDC_DECORATOR'] = app.config['OIDC_AUTH'].oidc_auth(SSO)
 
 if __name__ == '__main__':
     app.run(debug=debug, host='0.0.0.0')
