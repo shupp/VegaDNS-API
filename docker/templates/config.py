@@ -93,7 +93,7 @@ def main():
             "oidc_client": os.getenv("OIDC_CLIENT", default=""),
             "oidc_redirect_uri": os.getenv("OIDC_REDIRECT_URI", default=""),
             "oidc_ui_endpoint": os.getenv("OIDC_UI_ENDPOINT", default=""),
-            "oidc_secret": os.getenv("OIDC_SECRET", default=""),
+            "oidc_secret": os.getenv("SECRET_OIDC_SECRET", default=""),
             "oidc_scope": os.getenv("OIDC_SCOPE", default="openid,profile,email"),
             "oidc_email_key": os.getenv("OIDC_EMAIL_KEY", default="email"),
             "oidc_groups_key": os.getenv("OIDC_GROUPS_KEY", default="memberof"),
