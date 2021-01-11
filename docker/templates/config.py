@@ -100,8 +100,12 @@ def main():
             "oidc_required_group": os.getenv("OIDC_REQUIRED_GROUP", default=""),
             "oidc_firstname_key": os.getenv("OIDC_FIRSTNAME_KEY", default="given_name"),
             "oidc_lastname_key": os.getenv("OIDC_LASTNAME_KEY", default="family_name"),
-            "oidc_phone_key": os.getenv("OIDC_PHONE_KEY", default="")
+            "oidc_phone_key": os.getenv("OIDC_PHONE_KEY", default=""),
+            "cookie_secret": os.getenv("SECRET_COOKIE_SECRET", default="")
         }
+        if config['oidc_enabled'] and not config['cookie_secret']:
+            # Running in OIDC mode without setting a secret is very insecure!
+            raise ValueError("Cookie secret is required when OIDC is enabled")
     except Exception as err:
         print("Problem reading environment", err, file=sys.stderr)
         sys.exit(1)
@@ -116,7 +120,7 @@ def main():
         with open(directory + "/" + template_file) as template:
             print(pystache.render(template.read(), config))
     except Exception as err:
-        print("Problem rendering template", err, file=sys.stderr)
+        print("Problem rendering template:", err, file=sys.stderr)
         sys.exit(1)
 
 
