@@ -24,6 +24,7 @@ services:
       CONSUL_PORT: ${CONSUL_PORT}
       CONSUL_KEY: ${CONSUL_KEY}
       CONSUL_LOCK_KEY: ${CONSUL_LOCK_KEY}
+      SECRET_COOKIE_SECRET: ${SECRET_COOKIE_SECRET}
     depends_on:
       - mysql
       - consul
