@@ -37,7 +37,8 @@ class Auth(object):
             if "ip" in self.endpoint.auth_types:
                 return self.ip_authenticate()
 
-            if config.getboolean('oidc', 'enabled') and "oidc" in self.endpoint.auth_types:
+            if (config.getboolean('oidc', 'enabled')
+                    and "oidc" in self.endpoint.auth_types):
                 return self.oidc_authenticate()
 
             # check if cookie auth is allowed
@@ -106,9 +107,9 @@ class Auth(object):
         account.email = email
         account.account_type = 'user'
         account.status = 'active'
-        account.first_name = userinfo.get(oidc_conf.get('firstname_key'),'')
-        account.last_name = userinfo.get(oidc_conf.get('lastname_key'),'')
-        account.phone = userinfo.get(oidc_conf.get('phone_key'),'')
+        account.first_name = userinfo.get(oidc_conf.get('firstname_key'), '')
+        account.last_name = userinfo.get(oidc_conf.get('lastname_key'), '')
+        account.phone = userinfo.get(oidc_conf.get('phone_key'), '')
         # Save the new user to the DB
         account.save()
 
@@ -169,7 +170,7 @@ class Auth(object):
             raise Unauthorized('Invalid cookie supplied')
 
         split = supplied_cookie.split("-")
-        if len(split) is not 2:
+        if len(split) != 2:
             raise Unauthorized('Invalid cookie supplied')
         account_id = split[0]
 
@@ -211,11 +212,8 @@ class Auth(object):
             if req_group not in grps:
                 raise Unauthorized('%s is not in required group' % oidc_email)
 
-
         self.authUsed = "oidc"
         self.account = self.get_or_create_account_oidc(
             oidc_email,
             user_session.userinfo
         )
-
-

@@ -11,6 +11,7 @@ from vegadns.api.endpoints import AbstractEndpoint
 logger = logging.getLogger(__name__)
 logger.addHandler(logging.StreamHandler())
 
+
 @endpoint
 class OidcTest(AbstractEndpoint):
     auth_required = True

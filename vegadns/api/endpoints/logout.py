@@ -16,11 +16,13 @@ class Logout(AbstractEndpoint):
     route = '/logout'
 
     def post(self):
-        output = {"status":"ok"}
+        output = {"status": "ok"}
         if config.getboolean('oidc', 'enabled'):
-            logout_func = current_app.config['OIDC_AUTH'].oidc_logout(lambda: False)
+            logout_func = current_app.config['OIDC_AUTH'].oidc_logout(
+                lambda: False
+            )
             response = logout_func()
-            if response is not False and getattr(response,'location', None):
+            if response is not False and getattr(response, 'location', None):
                 output['redirect'] = response.location
 
         response = jsonify(output)

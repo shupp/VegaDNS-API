@@ -12,6 +12,7 @@ from vegadns.api.endpoints import AbstractEndpoint
 from vegadns.api.models.account import Account as ModelAccount
 from vegadns.validate import Validate
 
+
 @endpoint
 class Login(AbstractEndpoint):
     auth_required = False
@@ -25,13 +26,18 @@ class Login(AbstractEndpoint):
 
         auth = Auth(request, self)
 
-        if not auth.account and getattr(auth.response,'location', None):
+        if not auth.account and getattr(auth.response, 'location', None):
             # We got a redirect rather than a final verdict
-            # If the request is coming from JS, construct a JSON-parsable object
-            # TODO: Perhaps it's best to check request.is_json, but the UI is not setting a json content type yet
+            # If the request is coming from JS, construct a JSON-parsable
+            # object
+            # TODO: Perhaps it's best to check request.is_json, but the UI is
+            # not setting a json content type yet
             if request.args.get("suppress_auth_response_codes") == "true":
-                # flask-pyoidc is currently storing the final redirect URL in the session
-                # Once https://github.com/zamzterz/Flask-pyoidc/issues/99 is solved we would no longer need to muck with the session internals
+                # flask-pyoidc is currently storing the final redirect URL in
+                # the session
+                # Once https://github.com/zamzterz/Flask-pyoidc/issues/99 is
+                # solved we would no longer need to muck with the session
+                # internals
                 if oidc_conf.get('ui_endpoint'):
                     session['destination'] = oidc_conf['ui_endpoint']
                 return {

@@ -19,7 +19,10 @@ from vegadns.api.endpoints import oidc
 from vegadns.api.config import config
 
 from flask_pyoidc import OIDCAuthentication
-from flask_pyoidc.provider_configuration import ProviderConfiguration, ClientMetadata
+from flask_pyoidc.provider_configuration import (
+    ProviderConfiguration,
+    ClientMetadata,
+)
 from flask_pyoidc.user_session import UserSession
 
 profile = os.environ.get('PROFILE', None)
@@ -40,7 +43,7 @@ if config.getboolean('oidc', 'enabled'):
     app.config['OIDC_REDIRECT_URI'] = config.get('oidc', 'redirect_uri')
 
     SSO_CONFIG = ProviderConfiguration(
-        issuer= config.get('oidc', 'issuer'),
+        issuer=config.get('oidc', 'issuer'),
         client_metadata=ClientMetadata(
             config.get('oidc', 'client'), config.get('oidc', 'secret')
             ),
