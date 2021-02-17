@@ -126,8 +126,12 @@ test-integration:
 	./run_integration_tests.sh
 test-integration-apiui:
 	API_URL=http://localhost HOST=http://api:80 ./run_integration_tests.sh
+test-docker-local:
+	docker-compose -f docker-compose/test-local.yml run --rm api_unittest
+	docker-compose -f docker-compose/test-local.yml run --rm apiui_unittest
 test-docker:
 	docker-compose -f docker-compose/test.yml run --rm api_unittest
+	docker-compose -f docker-compose/test.yml run --rm apiui_unittest
 test: venv check
 	source venv/bin/activate && \
 		nosetests tests

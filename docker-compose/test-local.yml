@@ -5,13 +5,11 @@ services:
     restart: "no"
     image: vegadns/api
     volumes:
-      - ../run_tests.sh:/opt/vegadns/run_tests.sh
-      - ../tests:/opt/vegadns/tests
+      - ../:/opt/vegadns/
     entrypoint: /opt/vegadns/run_tests.sh
   apiui_unittest:
     restart: "no"
     image: vegadns/apiui
     volumes:
-      - ../run_tests.sh:/opt/vegadns/run_tests.sh
-      - ../tests:/opt/vegadns/tests
+      - ../:/opt/vegadns/
     entrypoint: /opt/vegadns/run_tests.sh
