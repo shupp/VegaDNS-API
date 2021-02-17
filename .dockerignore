@@ -19,3 +19,5 @@ vegadns-cli
 vegadns-ui
 vdns
 temp
+.vscode
+__pycache__
